@@ -11,6 +11,7 @@ from . import repository
 from .consolidate import product_identity
 from .db import decision, ecart, nomenclature_version, produit, produit_version
 from .decisions import load_decisions
+from .export import export_sqlite
 from .importer import atomic
 from .model import Product
 
@@ -31,7 +32,7 @@ def _set_produit(conn: Connection, pv_id: int, produit_id: UUID | None) -> None:
     conn.execute(update(produit_version).where(produit_version.c.id == pv_id).values(produit_id=produit_id))
 
 
-def apply_and_publish(conn: Connection, label: str, decisions_path: Path) -> PublishSummary:
+def apply_and_publish(conn: Connection, label: str, decisions_path: Path, out_dir: Path | None = None) -> PublishSummary:
     with atomic(conn):
         version = repository.find_version(conn, label)
         if version is None:
@@ -80,7 +81,20 @@ def apply_and_publish(conn: Connection, label: str, decisions_path: Path) -> Pub
         conn.execute(update(nomenclature_version).where(nomenclature_version.c.id == version.id)
                      .values(state="publiee", published_at=func.now()))
         count = len(published_products(conn, label))
-    return PublishSummary(label, count, len(decisions))
+    summary = PublishSummary(label, count, len(decisions))
+    if out_dir is not None:
+        summary.sqlite_path = export_version(conn, label, out_dir)
+    return summary
+
+
+def export_version(conn: Connection, label: str, out_dir: Path) -> Path:
+    """(Re)génère le fichier SQLite et le manifeste d'une version publiée."""
+    version = repository.find_version(conn, label)
+    if version is None or version.state == "brouillon":
+        raise PublishRefused(f"La version {label} n'est pas publiée")
+    meta = {"version": label, "reference_date": version.reference_date.isoformat(),
+            "source_sha256": version.source_sha256, "source_filename": version.source_filename}
+    return export_sqlite(published_products(conn, label), meta, out_dir)
 
 
 def published_products(conn: Connection, label: str) -> list[tuple[UUID, Product]]:

@@ -81,7 +81,7 @@ def publish(ctx: typer.Context, version: str = typer.Argument(..., help="Version
     workdir: Path = ctx.obj["workdir"]
     try:
         with get_engine().connect() as conn:
-            s = apply_and_publish(conn, version, workdir / "decisions" / f"{version}.yaml")
+            s = apply_and_publish(conn, version, workdir / "decisions" / f"{version}.yaml", workdir / "publications")
     except DecisionsInvalid as e:
         _fail("\n- " + "\n- ".join(e.problems))
     except PublishRefused as e:
@@ -89,3 +89,39 @@ def publish(ctx: typer.Context, version: str = typer.Argument(..., help="Version
     typer.echo(f"Version {s.label} publiée : {s.products} produits, {s.decisions} décisions enregistrées")
     if s.sqlite_path:
         typer.echo(f"Fichier pour l'app : {s.sqlite_path}")
+
+
+@app.command()
+def export(ctx: typer.Context, version: str = typer.Argument(..., help="Version publiée AAAA-MM")):
+    """Régénérer le fichier SQLite et le manifeste d'une version publiée."""
+    from .publish import PublishRefused, export_version
+
+    try:
+        with get_engine().connect() as conn:
+            path = export_version(conn, version, ctx.obj["workdir"] / "publications")
+    except PublishRefused as e:
+        _fail(str(e))
+    typer.echo(f"Fichier pour l'app : {path}")
+
+
+@app.command()
+def search(ctx: typer.Context, texte: str = typer.Argument(..., help="Marque, DCI, code DCI ou labo"),
+           fichier: Path = typer.Option(None, "--fichier", help="Fichier SQLite (défaut : celui du manifeste)"),
+           limite: int = typer.Option(20, "--limite")):
+    """Chercher dans le fichier publié, comme le fera l'app hors connexion."""
+    import json
+    import time
+
+    from .search import search as do_search
+
+    if fichier is None:
+        manifest = ctx.obj["workdir"] / "publications" / "manifest.json"
+        if not manifest.exists():
+            _fail(f"Aucun manifeste ({manifest}) : publier une version ou passer --fichier")
+        fichier = manifest.parent / json.loads(manifest.read_text(encoding="utf-8"))["file"]
+    t = time.perf_counter()
+    hits = do_search(fichier, texte, limite)
+    ms = (time.perf_counter() - t) * 1000
+    for h in hits:
+        typer.echo(f"{h.marque:<35} {h.dosage:<14} {h.forme[:30]:<30} {h.dci[:35]:<35} {h.statut}")
+    typer.echo(f"{len(hits)} résultat(s) en {ms:.0f} ms")

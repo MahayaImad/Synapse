@@ -132,3 +132,9 @@ def test_cli_publish(clean_db, tmp_path, monkeypatch):
     r = runner.invoke(app, w + ["publish", "2026-08"])
     assert r.exit_code == 0, r.output
     assert "6 produits" in r.output
+    assert (tmp_path / "publications" / "nomenclature-2026-08.sqlite").exists()
+    r = runner.invoke(app, w + ["search", "zytrex"])
+    assert r.exit_code == 0 and "ZYTREX" in r.output and "1 résultat" in r.output
+    (tmp_path / "publications" / "nomenclature-2026-08.sqlite").unlink()
+    assert runner.invoke(app, w + ["export", "2026-08"]).exit_code == 0
+    assert (tmp_path / "publications" / "nomenclature-2026-08.sqlite").exists()
