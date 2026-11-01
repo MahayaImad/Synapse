@@ -7,7 +7,7 @@ import typer
 
 from . import repository
 from .db import get_engine
-from .decisions import render_report, write_decisions_template
+from .decisions import DecisionsInvalid, render_report, write_decisions_template
 from .excel_reader import WorkbookFormatError
 from .importer import ImportRefused, run_import
 
@@ -71,3 +71,21 @@ def review(ctx: typer.Context, version: str = typer.Argument(..., help="Version 
     typer.echo(f"Rapport : {report}")
     typer.echo(f"Décisions : {decisions} ({len(draft.cases)} cas à trancher)")
     typer.echo(f"Suite : remplir les choix puis synapse-admin publish {version}")
+
+
+@app.command()
+def publish(ctx: typer.Context, version: str = typer.Argument(..., help="Version AAAA-MM")):
+    """Appliquer les décisions et publier la version."""
+    from .publish import PublishRefused, apply_and_publish
+
+    workdir: Path = ctx.obj["workdir"]
+    try:
+        with get_engine().connect() as conn:
+            s = apply_and_publish(conn, version, workdir / "decisions" / f"{version}.yaml")
+    except DecisionsInvalid as e:
+        _fail("\n- " + "\n- ".join(e.problems))
+    except PublishRefused as e:
+        _fail(str(e))
+    typer.echo(f"Version {s.label} publiée : {s.products} produits, {s.decisions} décisions enregistrées")
+    if s.sqlite_path:
+        typer.echo(f"Fichier pour l'app : {s.sqlite_path}")

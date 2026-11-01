@@ -39,7 +39,7 @@ def _version(row) -> VersionRow:
     return VersionRow(**{k: row._mapping[k] for k in VersionRow.__dataclass_fields__})
 
 
-def _product(row) -> Product:
+def product_from_row(row) -> Product:
     m = row._mapping
     values = {k: m[k] for k in _PRODUCT_COLUMNS}
     return Product(registration=parse_registration(values["reg_raw"]), **values)
@@ -64,7 +64,7 @@ def latest_published(conn: Connection) -> tuple[VersionRow, list[PreviousProduct
     rows = conn.execute(select(produit_version).where(produit_version.c.version_id == version.id,
                                                       produit_version.c.produit_id.is_not(None))
                         .order_by(produit_version.c.id))
-    return version, [PreviousProduct(r.produit_id, _product(r), r.id) for r in rows]
+    return version, [PreviousProduct(r.produit_id, product_from_row(r), r.id) for r in rows]
 
 
 def _insert_pv(conn: Connection, version_id: int, p: Product, produit_id: UUID | None) -> int:
@@ -128,7 +128,7 @@ def load_draft(conn: Connection, label: str) -> Draft:
         pvs.update({r.id: r for r in conn.execute(select(produit_version).where(produit_version.c.id.in_(missing)))})
 
     def prod(pv_id):
-        return _product(pvs[pv_id]) if pv_id else None
+        return product_from_row(pvs[pv_id]) if pv_id else None
 
     gaps, cases = [], []
     for e in ecarts:

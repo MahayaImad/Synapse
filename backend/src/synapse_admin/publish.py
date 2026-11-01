@@ -1,0 +1,93 @@
+"""Application des décisions et publication d'une version."""
+from __future__ import annotations
+
+from dataclasses import dataclass
+from pathlib import Path
+from uuid import UUID, uuid4
+
+from sqlalchemy import Connection, func, insert, select, update
+
+from . import repository
+from .consolidate import product_identity
+from .db import decision, ecart, nomenclature_version, produit, produit_version
+from .decisions import load_decisions
+from .importer import atomic
+from .model import Product
+
+
+class PublishRefused(Exception):
+    pass
+
+
+@dataclass
+class PublishSummary:
+    label: str
+    products: int
+    decisions: int
+    sqlite_path: Path | None = None
+
+
+def _set_produit(conn: Connection, pv_id: int, produit_id: UUID | None) -> None:
+    conn.execute(update(produit_version).where(produit_version.c.id == pv_id).values(produit_id=produit_id))
+
+
+def apply_and_publish(conn: Connection, label: str, decisions_path: Path) -> PublishSummary:
+    with atomic(conn):
+        version = repository.find_version(conn, label)
+        if version is None:
+            raise PublishRefused(f"Version {label} inconnue")
+        if version.state != "brouillon":
+            raise PublishRefused(f"La version {label} est {version.state} : seule une version brouillon se publie")
+        draft = repository.load_draft(conn, label)
+        decisions = load_decisions(decisions_path, draft)
+        published = repository.latest_published(conn)
+        previous_by_identity = {product_identity(p.product): p.product_id for p in (published[1] if published else [])}
+
+        rows = {r.case_id: r for r in conn.execute(select(ecart).where(
+            ecart.c.version_id == version.id, ecart.c.category == "a_trancher"))}
+        for d in decisions:
+            row = rows[d.case_id]
+            action, _, ref = d.choice.partition(":")
+            candidates = {k["ref"]: k for k in row.candidates}
+            if action == "meme_produit":
+                _set_produit(conn, row.new_pv_id, UUID(candidates[ref]["produit_id"]))
+            elif action == "nouveau":
+                _set_produit(conn, row.new_pv_id, uuid4())
+            elif action == "garder":
+                kept_pv = candidates[ref]["pv_id"]
+                kept_row = conn.execute(select(produit_version).where(produit_version.c.id == kept_pv)).one()
+                kept = repository.product_from_row(kept_row)
+                _set_produit(conn, kept_pv, previous_by_identity.get(product_identity(kept)) or uuid4())
+            # disparu : rien à publier
+
+        dup = conn.execute(select(produit_version.c.produit_id).where(
+            produit_version.c.version_id == version.id, produit_version.c.produit_id.is_not(None))
+            .group_by(produit_version.c.produit_id).having(func.count() > 1)).scalars().all()
+        if dup:
+            raise PublishRefused(f"Identifiant produit attribué à plusieurs lignes : {', '.join(map(str, dup))}")
+
+        existing = select(produit.c.id)
+        new_ids = conn.execute(select(produit_version.c.produit_id).where(
+            produit_version.c.version_id == version.id, produit_version.c.produit_id.is_not(None),
+            produit_version.c.produit_id.not_in(existing))).scalars().all()
+        if new_ids:
+            conn.execute(insert(produit), [{"id": i, "created_in_version": version.id} for i in new_ids])
+        if decisions:
+            conn.execute(insert(decision), [dict(version_id=version.id, case_id=d.case_id, choice=d.choice,
+                                                 decided_by=d.decided_by, decided_at=d.decided_at) for d in decisions])
+        conn.execute(update(nomenclature_version).where(nomenclature_version.c.state == "publiee")
+                     .values(state="remplacee"))
+        conn.execute(update(nomenclature_version).where(nomenclature_version.c.id == version.id)
+                     .values(state="publiee", published_at=func.now()))
+        count = len(published_products(conn, label))
+    return PublishSummary(label, count, len(decisions))
+
+
+def published_products(conn: Connection, label: str) -> list[tuple[UUID, Product]]:
+    version = repository.find_version(conn, label)
+    if version is None:
+        raise LookupError(f"Version {label} inconnue")
+    rows = conn.execute(select(produit_version).where(produit_version.c.version_id == version.id,
+                                                      produit_version.c.produit_id.is_not(None))
+                        .order_by(produit_version.c.id))
+    return [(r.produit_id, repository.product_from_row(r)) for r in rows]
