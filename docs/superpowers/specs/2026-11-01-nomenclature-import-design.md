@@ -1,6 +1,6 @@
 # Conception — Import de la nomenclature et recherche hors connexion
 
-Date : 2026-11-01 · Statut : en attente d'approbation · Phase 1, sous-projet 1
+Date : 2026-11-01 · Statut : approuvé le 2026-11-01 · Phase 1, sous-projet 1
 
 ## 1. Intention
 
@@ -114,7 +114,7 @@ synapse-admin status                  # versions, en vigueur, brouillons
 | LISTE | `I`, `II`, `STUPEFIANT`, ou vide (non classé) |
 | P1/P2 | booléens `hopital`, `officine` (`HOP*`, `0FF`… reconnus) |
 | TYPE | `GE`, `RE`, `BIO`, ou vide |
-| STATUT | valeur d'origine (`F`/`I`) conservée telle quelle |
+| STATUT | `F` → `fabrique_localement`, `I` → `importe` (casse/espaces tolérés) ; autre valeur → anomalie |
 | Dates | date ISO ; texte non convertible → anomalie |
 | N° d'enregistrement | décomposé en `labo`, `code_dci`, `famille`, `sous_famille`, `num_molecule`, `annee_initiale`, `annee_renouvellement` ; échec → anomalie, ligne importée quand même |
 
@@ -220,6 +220,7 @@ citer une ancienne marque).
   pharmacien ne fait rien, ou un seul bouton (mise à jour auto prévue).
 - Admin = l'utilisateur pour l'instant ; outil en ligne de commande d'abord.
 - Approche A.
+- `STATUT` : `F` = fabriqué localement, `I` = importé.
 
 ## 7. Choix faits par Claude (à vérifier)
 
@@ -227,7 +228,6 @@ citer une ancienne marque).
   en vigueur.
 - Identifiant produit interne stable plutôt que le numéro d'enregistrement.
 - Fichiers Excel sources hors git, tracés par empreinte.
-- `STATUT` (`F`/`I`) gardé tel quel, sans interprétation.
 - Noms : CLI `synapse-admin`, dossier `backend/`.
 - Changement de marque, dosage ou forme sous un même numéro : toujours à
   trancher par l'admin, jamais automatique.
