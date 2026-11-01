@@ -1,0 +1,155 @@
+# Cahier des charges — Application de lecture et de contrôle des ordonnances
+
+Nov 1, 2026 · @imad
+
+startup est Synapse meme l'application sera nommé "Synapse"
+
+## 1. Contexte et objectifs
+
+L'application aide le pharmacien d'officine à lire une ordonnance, à retrouver chaque médicament dans la nomenclature algérienne et à repérer les risques avant la délivrance.
+
+- **Problème** : ordonnances souvent manuscrites, nombreux génériques sous des noms différents, interactions et erreurs de dose pédiatrique difficiles à voir au comptoir.
+- **Objectif** : en moins de 30 secondes, une ordonnance photographiée devient une liste de produits vérifiés, accompagnée des alertes utiles.
+- **Principe directeur** : le LLM lit et reformule ; l'identification, les interactions et les doses sont décidées par des données sourcées et des règles déterministes. Le pharmacien valide toujours.
+- **Nom commercial** : à choisir (pistes : Mizan, Mawzoun, Wasfia, Posolia).
+
+## 2. Périmètre et utilisateurs
+
+Le MVP vise les pharmaciens d'officine ; les médecins viennent ensuite et le grand public est exclu.
+
+| Élément | Choix retenu |
+| --- | --- |
+| Utilisateurs | Pharmaciens d'officine et leurs assistants ; médecins en V2 |
+| Hors périmètre | Grand public, prescription, vente ou commande de médicaments, décision automatique |
+| Plateformes | Android d'abord, iOS ensuite ; back-office web pour l'équipe |
+| Langues | Interface en français et en arabe ; ordonnances en français (arabe en V2) |
+| Couverture | Médicaments à usage humain de la nomenclature nationale |
+
+## 3. Fonctionnalités par phase
+
+Chaque phase s'appuie sur la précédente : sans identification sûre du produit exact, ni les interactions ni les doses ne peuvent être vérifiées.
+
+**Phase 1 — Lecture et nomenclature (MVP)**
+
+1. Photo de l'ordonnance, contrôle de netteté et masquage du nom du patient sur le téléphone.
+2. Lecture par LLM vision : nom lu, dosage, forme, posologie, durée, et âge et poids s'ils figurent.
+3. Liaison à la nomenclature : le système propose des produits candidats, le LLM choisit parmi eux ou répond « incertain ».
+4. Posologie structurée : dose par prise, unité, fréquence, durée, voie.
+5. Écran de validation : le pharmacien confirme ou corrige chaque ligne.
+6. Fiche produit : DCI, statut (enregistré ou retiré), liste I, liste II ou stupéfiant, équivalents de même code DCI.
+7. Recherche manuelle dans la nomenclature, même hors connexion.
+
+**Phase 2 — Interactions**
+
+- Contre-indications, associations déconseillées et précautions d'emploi, avec gravité, conduite à tenir et source.
+- Doublons : même DCI sous deux marques, ou même classe thérapeutique.
+- Explication en langage simple, rédigée uniquement à partir de l'alerte.
+
+**Phase 3 — Posologie pédiatrique**
+
+- Âge et poids obligatoires pour tout enfant.
+- Calcul en mg/kg/jour à partir de la concentration du produit exact (par exemple un sirop à 250 mg/5 ml).
+- Alerte si la dose sort de la fourchette, dépasse le maximum ou si l'âge minimal n'est pas atteint.
+- Détection des erreurs d'un facteur 10 et des confusions entre mg, ml, gouttes et cuillères.
+- Démarrage sur les 30 à 50 DCI pédiatriques les plus prescrites.
+
+**Back-office (toutes phases)** : import mensuel de la nomenclature, validation des correspondances, gestion des règles avec leur source et leur version, revue des analyses signalées.
+
+## 4. Exigences non fonctionnelles
+
+La sécurité clinique prime sur toutes les autres exigences.
+
+| Domaine | Exigence |
+| --- | --- |
+| Sécurité clinique | Aucune dose ni interaction produite par le LLM ; chaque alerte cite sa source et sa version ; validation humaine obligatoire |
+| Performance | Analyse d'une ordonnance de 5 lignes en moins de 10 s dans 95 % des cas ; recherche locale en moins de 300 ms |
+| Disponibilité | 99,5 % par mois pour l'analyse ; recherche dans la nomenclature toujours possible hors connexion |
+| Sécurité | TLS 1.2 ou plus en transit, chiffrement AES-256 au repos, statut de pharmacien vérifié à l'inscription, journal d'audit |
+| Données | Photos non conservées par défaut ; données de santé hébergées en Algérie |
+| Ergonomie | Utilisable d'une main au comptoir ; arabe affiché de droite à gauche ; texte agrandissable |
+
+## 5. Architecture technique
+
+Une app mobile, une chaîne de traitement en cinq étapes et PostgreSQL comme source de vérité ; le LLM n'intervient qu'en lecture et en explication.
+
+&#91;embedded content: architecture · 5 étapes, 1 base de référence\]
+
+Le backend et la base sont hébergés en Algérie ; seule la photo masquée quitte le téléphone.
+
+- **App** : Flutter (Android puis iOS), nomenclature embarquée en SQLite avec recherche plein texte.
+- **Backend** : Python (FastAPI), files d'attente Redis, stockage chiffré des images pour une durée courte.
+- **LLM** : modèle de vision par API avec masquage, ou modèle open-weight hébergé en Algérie, à trancher au cadrage ; sorties JSON validées par schéma.
+- **Données** : PostgreSQL avec pg\_trgm, unaccent et pgvector ; une version de référentiel par import mensuel.
+- **Suivi** : journaux, traces des appels au LLM et tableau de bord qualité.
+
+## 6. Données et référentiels
+
+Toute la valeur clinique repose sur des référentiels sourcés, versionnés et sous licence.
+
+| Référentiel | Source | Usage | Point de vigilance |
+| --- | --- | --- | --- |
+| Nomenclature nationale | Ministère de l'Industrie pharmaceutique, publiée la première semaine de chaque mois ([ligne directrice](https://www.miph.gov.dz/fr/wp-content/uploads/2026/02/NOMENCLATURE.pdf)) | Phase 1 : produits, code DCI, statut, classement | Importer chaque version et garder l'historique |
+| Pivot des substances | Construit en interne | Relier code DCI, substance et classe | Actif propre, indépendant des fournisseurs |
+| Classes ATC | OMS (WHOCC) | Doublons de classe | Licence commerciale à demander |
+| Interactions | Base agréée HAS sous licence : Vidal, Claude Bernard, Thériaque ou Thésorimed ([liste HAS](https://has-sante.fr/jcms/c_2790851/fr/bases-de-donnees-sur-les-medicaments-ayant-recu-un-agrement-has)) | Phase 2 | Le Thésaurus ANSM n'est plus mis à jour depuis 2023 ([ANSM](https://ansm.sante.fr/documents/reference/thesaurus-des-interactions-medicamenteuses-1)) : amorce seulement |
+| Posologie pédiatrique | Kinderformularium, licenciable par pays ([Radboudumc](https://www.radboudumc.nl/en/news-items/2021/dutch-childrens-formulary-now-also-in-use-abroad)), BNF for Children ou Lexicomp | Phase 3 | Validation par un comité local |
+
+Chaque licence doit autoriser explicitement : l'usage en Algérie, le rattachement à des produits non français, l'intégration mobile hors connexion, la reformulation par LLM, la traduction en arabe et l'envoi à un fournisseur de LLM.
+
+## 7. Conformité
+
+Trois démarches conditionnent le lancement : l'ANPDP pour les données de santé, l'ANPP pour le statut de l'outil, et les licences des référentiels.
+
+- **Données personnelles** : la loi 18-07 a été modifiée par la loi 25-11 de juillet 2025 ([Gide](https://www.gide.com/en/news-insights/protection-of-personal-data-focus-on-algerian-regulations/)). Tout traitement exige une déclaration ou une autorisation préalable de l'ANPDP, et un délégué à la protection des données est désormais requis ([synthèse](https://zoomalgerie.com/loi-18-07-protection-donnees-algerie/)).
+- **Transferts** : tout envoi de données hors d'Algérie exige l'autorisation de l'ANPDP ([article 44](https://www.upgrowth.dz/journal-officiel/loi-18-07-protection-donnees-personnelles)) ; d'où le masquage sur le téléphone ou un modèle hébergé en Algérie.
+- **Statut de l'outil** : en Europe, un logiciel qui vérifie des doses est en général un dispositif médical. L'ANPP intervient dans l'homologation des dispositifs médicaux ([arrêté](https://www.miph.gov.dz/en/wp-content/uploads/2022/09/Arrete-fixant-lorganisation-interne-de-lagence-nationale-des-produitspharmaceutique-ANPP.pdf)) : la consulter dès le cadrage.
+- **Licences** : contrats signés avant toute intégration de données tierces. Les conditions de vidal.fr interdisent par exemple d'utiliser son contenu pour enrichir une autre base ([CGU](https://www.vidal.fr/cgu)).
+- **Mentions** : outil d'aide à la dispensation, la décision reste au pharmacien ; conditions d'utilisation et politique de confidentialité en français et en arabe.
+
+## 8. Critères d'acceptation
+
+Une phase passe en production seulement si elle atteint ses cibles sur un jeu de test d'ordonnances algériennes réelles.
+
+- **Jeu de test** : 500 ordonnances anonymisées, imprimées et manuscrites, dont 150 pédiatriques, annotées par deux pharmaciens, collectées dans le cadre autorisé par l'ANPDP.
+- **Pilote** : 10 à 20 officines pendant 2 mois avant l'ouverture, avec mesure du temps gagné et de la part d'alertes jugées utiles.
+
+| Phase | Indicateur | Cible proposée |
+| --- | --- | --- |
+| 1 | Produit exact identifié (nom, dosage, forme), ordonnance imprimée | ≥ 95 % |
+| 1 | Produit exact identifié, ordonnance manuscrite | ≥ 85 %, le reste signalé « incertain » |
+| 1 | Posologie structurée correcte | ≥ 90 % |
+| 2 | Contre-indications du jeu de référence détectées | 100 % |
+| 3 | Surdosages d'un facteur 10 détectés | 100 % |
+| Toutes | Doses ou interactions inventées par le LLM | 0 |
+
+## 9. Planning, équipe et livrables
+
+Comptez environ 12 mois du cadrage à la phase 3 ; la phase 2 démarre seulement une fois la licence d'interactions signée.
+
+&#91;embedded content: planning · 4 étapes, 4 jalons\]
+
+Les durées sont indicatives et supposent l'équipe ci-dessous à plein temps.
+
+- **Équipe** : un chef de produit, deux développeurs (mobile et backend), un ingénieur IA et données, un pharmacien clinicien référent ; un pédiatre consultant en phase 3 ; un juriste et un délégué à la protection des données à temps partiel.
+- **Livrables** : app Android puis iOS, backend et back-office, référentiels versionnés, jeu de test annoté, dossiers ANPDP et ANPP, documentation technique et utilisateur.
+
+## 10. Risques et décisions
+
+Le risque principal est clinique : une erreur de lecture que le pharmacien ne voit pas. La validation obligatoire et la réponse « incertain » le traitent.
+
+| Risque | Parade |
+| --- | --- |
+| Écriture illisible, produit mal identifié | Choix limité aux produits réels, « incertain » plutôt qu'un pari, validation obligatoire |
+| Licence d'interactions trop chère ou inadaptée | Consulter plusieurs éditeurs dès le cadrage ; module interactions seul au départ |
+| Outil requalifié en dispositif médical | Avis de l'ANPP au cadrage ; phase 3 limitée à des alertes de fourchette |
+| Données de santé transférées hors d'Algérie | Masquage sur le téléphone ou modèle hébergé en Algérie |
+| Trop d'alertes ignorées | Phase 2 limitée aux niveaux graves au départ |
+| Faible adoption en officine | Pilote, gain de temps mesuré, intégration au geste de délivrance |
+
+**Décisions à prendre**
+
+- [ ] Choisir le nom commercial
+- [ ] Choisir l'éditeur de la base d'interactions
+- [ ] Choisir le LLM : API avec masquage ou modèle hébergé en Algérie
+- [ ] Fixer le modèle économique (abonnement par officine, par exemple)
+- [ ] Désigner le pharmacien référent et le délégué à la protection des données
