@@ -7,6 +7,7 @@ import typer
 
 from . import repository
 from .db import get_engine
+from .decisions import render_report, write_decisions_template
 from .excel_reader import WorkbookFormatError
 from .importer import ImportRefused, run_import
 
@@ -51,3 +52,22 @@ def status():
         typer.echo("Aucune version importée.")
     for v in versions:
         typer.echo(f"{v.label}  {v.state:<10} {v.reference_date}  {v.source_filename}")
+
+
+@app.command()
+def review(ctx: typer.Context, version: str = typer.Argument(..., help="Version AAAA-MM")):
+    """Écrire le rapport et le fichier de décisions d'un brouillon."""
+    workdir: Path = ctx.obj["workdir"]
+    with get_engine().connect() as conn:
+        try:
+            draft = repository.load_draft(conn, version)
+        except LookupError as e:
+            _fail(str(e))
+    report = workdir / "reports" / f"{version}.md"
+    report.parent.mkdir(parents=True, exist_ok=True)
+    report.write_text(render_report(draft), encoding="utf-8")
+    decisions = workdir / "decisions" / f"{version}.yaml"
+    write_decisions_template(draft, decisions)
+    typer.echo(f"Rapport : {report}")
+    typer.echo(f"Décisions : {decisions} ({len(draft.cases)} cas à trancher)")
+    typer.echo(f"Suite : remplir les choix puis synapse-admin publish {version}")

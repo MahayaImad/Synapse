@@ -105,3 +105,15 @@ def test_cli_import_and_status(clean_db, tmp_path, monkeypatch):
     assert r.exit_code == 0 and "2026-08" in r.output and "brouillon" in r.output
     r = runner.invoke(app, ["--workdir", str(tmp_path), "import", str(build_2026(tmp_path)), "--version", "2026-07"])
     assert r.exit_code == 1 and "AOUT 2026" in r.output
+
+
+def test_cli_review_writes_files(clean_db, tmp_path, monkeypatch):
+    from synapse_admin.cli import app
+    monkeypatch.setenv("DATABASE_URL", TEST_URL)
+    runner = CliRunner()
+    assert runner.invoke(app, ["--workdir", str(tmp_path), "import", str(build_2026(tmp_path)), "--version", "2026-08"]).exit_code == 0
+    r = runner.invoke(app, ["--workdir", str(tmp_path), "review", "2026-08"])
+    assert r.exit_code == 0, r.output
+    assert (tmp_path / "reports" / "2026-08.md").read_text().startswith("# Revue de la nomenclature 2026-08")
+    assert "cas: []" in (tmp_path / "decisions" / "2026-08.yaml").read_text()
+    assert runner.invoke(app, ["--workdir", str(tmp_path), "review", "2099-01"]).exit_code == 1
