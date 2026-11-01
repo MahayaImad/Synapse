@@ -26,6 +26,11 @@ def consolidate(products: list[Product]) -> tuple[list[Product], list[Anomaly], 
                                          f"Doublon de la ligne {f.row_number} (identique après normalisation) : fusionné"))
             else:
                 first_by_sheet[p.sheet] = p
+        if "en_vigueur" not in first_by_sheet and len(first_by_sheet) == 2:
+            # Non renouvelé et retiré : aucun des deux n'est délivrable, le retrait prime.
+            nr = first_by_sheet.pop("non_renouvele")
+            anomalies.append(Anomaly(nr.sheet, nr.row_number, "ligne", nr.reg_raw,
+                                     f"Aussi présent dans les retraits (ligne {first_by_sheet['retire'].row_number}) : statut retiré retenu"))
         distinct = list(first_by_sheet.values())
         if len(distinct) == 1:
             kept.append(distinct[0])

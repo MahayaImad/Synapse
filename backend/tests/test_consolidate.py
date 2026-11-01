@@ -34,3 +34,9 @@ def test_identity_uses_stem_so_renewal_is_same_identity():
 
 def test_identity_falls_back_to_raw_number():
     assert product_identity(product(n_enregistrement="001/09 H 178 20"))[0] == "001/09 H 178 20"
+
+
+def test_non_renewed_and_withdrawn_resolves_to_withdrawn():
+    kept, an, cases = consolidate([product(sheet="non_renouvele", row_number=3), product(sheet="retire", row_number=9)])
+    assert cases == [] and [p.sheet for p in kept] == ["retire"]
+    assert an[0].sheet == "non_renouvele" and "retiré" in an[0].message

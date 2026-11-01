@@ -56,3 +56,15 @@ def test_presentation_key_and_stem():
     p = normalize_row(raw())[0]
     assert p.presentation_key == ("CETIRIPEX", "10MG", "B/15")
     assert p.stem == ("035", "01 A 003", "17")
+
+
+@pytest.mark.parametrize("v", ["RETRAIT", "ABROGATION", " Abrogation "])
+def test_withdrawal_kind_in_date_column_is_not_an_anomaly(v):
+    p, an = normalize_row(raw(sheet="retire", date_retrait=v))
+    assert p.withdrawal_date is None and p.withdrawal_kind == v.strip().upper() and an == []
+
+
+def test_withdrawal_real_date_kept():
+    from datetime import datetime
+    p, an = normalize_row(raw(sheet="retire", date_retrait=datetime(2024, 3, 31)))
+    assert p.withdrawal_date == date(2024, 3, 31) and p.withdrawal_kind == "" and an == []

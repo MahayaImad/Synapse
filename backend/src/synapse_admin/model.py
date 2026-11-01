@@ -58,6 +58,7 @@ class Product:
     obs: str
     withdrawal_date: date | None
     withdrawal_reason: str
+    withdrawal_kind: str  # RETRAIT / ABROGATION, souvent saisi dans la colonne DATE DE RETRAIT
     raw: dict[str, object] = field(repr=False)
 
     @property

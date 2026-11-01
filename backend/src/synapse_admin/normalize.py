@@ -108,6 +108,16 @@ def _date(ctx: _Ctx, field: str, v: object) -> date | None:
     return None
 
 
+WITHDRAWAL_KINDS = {"RETRAIT", "ABROGATION"}
+
+
+def _withdrawal(ctx: _Ctx, v: object) -> tuple[date | None, str]:
+    text = normalize_text(v)
+    if isinstance(v, str) and text in WITHDRAWAL_KINDS:
+        return None, text
+    return _date(ctx, "date_retrait", v), ""
+
+
 def normalize_row(row: RawRow) -> tuple[Product, list[Anomaly]]:
     ctx = _Ctx(row)
     val = row.values.get
@@ -118,6 +128,7 @@ def normalize_row(row: RawRow) -> tuple[Product, list[Anomaly]]:
     dci_code = normalize_dci_code(normalize_text(val("code")))
     if not dci_code and registration:
         dci_code = registration.dci_code
+    withdrawal_date, withdrawal_kind = _withdrawal(ctx, val("date_retrait"))
     product = Product(
         sheet=row.sheet,
         row_number=row.row_number,
@@ -140,8 +151,9 @@ def normalize_row(row: RawRow) -> tuple[Product, list[Anomaly]]:
         final_date=_date(ctx, "date_enregistrement_final", val("date_enregistrement_final")),
         stability=normalize_text(val("duree_stabilite")),
         obs=normalize_text(val("obs")),
-        withdrawal_date=_date(ctx, "date_retrait", val("date_retrait")),
+        withdrawal_date=withdrawal_date,
         withdrawal_reason=normalize_text(val("motif_retrait")),
+        withdrawal_kind=withdrawal_kind,
         raw=row.raw,
     )
     return product, ctx.anomalies
