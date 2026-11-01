@@ -1,6 +1,6 @@
 # Conception — App Synapse : recherche hors connexion et fiche produit
 
-Date : 2026-11-01 · Statut : en attente d'approbation · Phase 1, sous-projet 2
+Date : 2026-11-01 · Statut : approuvé le 2026-11-01 · Phase 1, sous-projet 2
 
 ## 1. Intention
 
