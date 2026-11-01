@@ -57,7 +57,7 @@ void main() {
     final f = File('${dir.path}/x.sqlite')..writeAsStringSync('pas une base');
     expect(() => NomenclatureDb.open(f.path), throwsA(isA<NomenclatureFormatError>()));
     final empty = sqlite3.open('${dir.path}/vide.sqlite')..execute('create table t(a)');
-    empty.dispose();
+    empty.close();
     expect(() => NomenclatureDb.open('${dir.path}/vide.sqlite'), throwsA(isA<NomenclatureFormatError>()));
   });
 }

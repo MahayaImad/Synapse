@@ -36,13 +36,13 @@ class NomenclatureDb {
       );
       return NomenclatureDb._(db, path, meta);
     } on SqliteException catch (e) {
-      db.dispose();
+      db.close();
       throw NomenclatureFormatError('Fichier illisible : ${e.message}');
     } on FormatException catch (e) {
-      db.dispose();
+      db.close();
       throw NomenclatureFormatError('Métadonnées invalides : ${e.message}');
     } on NomenclatureFormatError {
-      db.dispose();
+      db.close();
       rethrow;
     }
   }
@@ -56,5 +56,5 @@ class NomenclatureDb {
     return rows.isEmpty ? null : Product.fromRow(rows.first);
   }
 
-  void close() => raw.dispose();
+  void close() => raw.close();
 }
