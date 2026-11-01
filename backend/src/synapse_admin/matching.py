@@ -20,6 +20,7 @@ GapCategory = Literal["nouveau", "disparu", "statut", "modifie", "inchange"]
 class PreviousProduct:
     product_id: UUID
     product: Product
+    pv_id: int | None = None  # ligne produit_version d'origine, quand elle vient de la base
 
 
 @dataclass
