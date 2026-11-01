@@ -44,6 +44,8 @@ Les données viennent de la nomenclature officielle du ministère, importée cha
 
 Nom : Synapse (startup Synapse). Outil d'aide à la dispensation : la décision reste au pharmacien.
 
+Direction visuelle choisie par l'utilisateur (après deux tirages) : Material 3 standard, joué franchement, sans signature propre ; référence de finition : les apps Google (Contacts, Fichiers, Agenda).
+
 ## Evidence on Hand
 
 Nomenclature réelle publiée par `synapse-admin` (≈ 9 500 produits, versions 2024-08 à 2026-08). Aucun logo, aucune charte graphique, aucun témoignage : ne pas en inventer.
