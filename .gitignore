@@ -121,3 +121,9 @@ app.*.symbols
 !.claude/
 !.claude/skills/
 !.claude/skills/**
+
+# Superpowers execution scratch
+.superpowers/
+nomenclature/publications/
+backend/.venv/
+!backend/uv.lock
