@@ -7,7 +7,7 @@ from sqlalchemy import (ARRAY, Boolean, CheckConstraint, Column, Date, DateTime,
                         MetaData, Table, Text, create_engine, func)
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 
-DEFAULT_URL = "postgresql+psycopg://synapse:synapse@localhost:5432/synapse"
+DEFAULT_URL = "postgresql+psycopg://synapse:synapse@localhost:5442/synapse"
 
 metadata = MetaData()
 
