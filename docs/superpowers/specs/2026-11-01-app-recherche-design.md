@@ -159,7 +159,8 @@ app/
 - Recherche à chaque frappe (120 ms), sans bouton « Rechercher ».
 - Mise à jour seulement en Wi-Fi, au lancement et toutes les 24 h ;
   notification discrète (snackbar), pas de dialogue.
-- URL du manifeste fixée au build et modifiable dans « À propos » pendant le pilote.
+- URL du manifeste fixée au build (`--dart-define=SYNAPSE_MANIFEST_URL=…`) et modifiable dans « À propos » pendant le pilote ; vide par défaut tant qu'aucun hébergement n'existe : la mise à jour est alors désactivée et « À propos » le dit.
+- Fichier embarqué : la dernière version publiée (`nomenclature/publications/`), copiée dans `app/assets/` par un script ; les tests utilisent un petit fichier généré par le backend.
 - Aucune donnée personnelle, aucune télémétrie.
 - Dossier `app/` à la racine du dépôt, application `dz.synapse.app`.
 
