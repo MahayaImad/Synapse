@@ -52,7 +52,7 @@ def test_template_lists_possible_choices(draft, tmp_path):
     d = yaml.safe_load(p.read_text())
     assert d["version"] == "2026-08"
     by_id = {c["id"]: c for c in d["cas"]}
-    assert by_id["champ_clinique:en_vigueur:12"]["choix_possibles"] == ["meme_produit:c1", "nouveau"]
+    assert by_id["champ_clinique:en_vigueur:12"]["choix_possibles"] == ["meme_produit:c1", "nouveau_et_disparu:c1"]
     assert by_id[f"disparu_sans_retrait:{GONE}"]["choix_possibles"] == ["disparu"]
     assert all(c["choix"] is None for c in d["cas"])
 

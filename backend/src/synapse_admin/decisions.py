@@ -1,6 +1,8 @@
 """Rapport de revue (Markdown) et fichier de décisions (YAML)."""
 from __future__ import annotations
 
+import hashlib
+import json
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import date
@@ -8,8 +10,8 @@ from pathlib import Path
 
 import yaml
 
-from .matching import changed_fields
-from .model import Case, Product
+from .matching import changed_fields, sole_candidate_ids
+from .model import CONSOLIDATION_KINDS, Case, Product
 from .repository import Draft
 
 FIELD_LABELS = {"brand": "marque", "form": "forme", "dosage": "dosage", "packaging": "conditionnement",
@@ -35,13 +37,37 @@ class DecisionsInvalid(Exception):
         super().__init__("Fichier de décisions invalide :\n- " + "\n- ".join(problems))
 
 
-def possible_choices(case: Case) -> list[str]:
+def linked_old_ids(cases: list[Case]) -> set:
+    """Anciens produits proposés comme candidats d'un cas de rapprochement."""
+    return {k.product_id for c in cases if c.kind not in CONSOLIDATION_KINDS for k in c.candidates if k.product_id}
+
+
+def possible_choices(case: Case, cases_or_linked=None) -> list[str]:
+    """Choix permis ; `cases_or_linked` = tous les cas du brouillon (ou l'ensemble déjà calculé des produits liés)."""
+    if isinstance(cases_or_linked, list):
+        linked, sole = linked_old_ids(cases_or_linked), sole_candidate_ids(cases_or_linked)
+    else:
+        linked, sole = cases_or_linked or set(), set()
     refs = [c.ref for c in case.candidates]
+    if (case.kind not in CONSOLIDATION_KINDS and len(case.candidates) == 1 and case.candidates[0].product_id in sole
+            and case.candidates[0].product is not None and case.candidates[0].product.sheet == "en_vigueur"):
+        return ["meme_produit:c1", "nouveau_et_disparu:c1"]
     if case.kind == "disparu_sans_retrait":
-        return ["disparu"]
-    if case.kind == "double_feuille":
+        return ["disparu", "rattache"] if linked and case.subject_product_id in linked else ["disparu"]
+    if case.kind in CONSOLIDATION_KINDS:
         return [f"garder:{r}" for r in refs]
     return [f"meme_produit:{r}" for r in refs] + ["nouveau"]
+
+
+def case_fingerprint(case: Case) -> str:
+    """Empreinte du contenu d'un cas : un choix n'est repris que si le cas est resté identique."""
+    payload = {"kind": case.kind, "sujet": _brief(case.subject), "sujet_id": str(case.subject_product_id),
+               "candidats": [[k.ref, str(k.product_id), _brief(k.product)] for k in case.candidates]}
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:16]
+
+
+def draft_stamp(draft: Draft) -> dict:
+    return {"sha256": draft.version.source_sha256, "importe_le": draft.version.imported_at.isoformat()}
 
 
 def describe(p: Product | None) -> str:
@@ -69,6 +95,7 @@ def render_report(draft: Draft) -> str:
     out += [f"| {c} | {counts.get(c, 0)} |" for c in CATEGORY_ORDER]
     out += [f"| à trancher | {len(draft.cases)} |", f"| anomalies | {len(draft.anomalies)} |", ""]
 
+    linked = linked_old_ids(draft.cases)
     out += ["## À trancher", ""]
     if not draft.cases:
         out.append("Aucun cas.")
@@ -80,9 +107,9 @@ def render_report(draft: Draft) -> str:
             out.append(f"- Produit publié disparu sans retrait : `{c.subject_product_id}`")
         for k in c.candidates:
             out.append(f"- Candidat {k.ref} : {describe(k.product)}")
-            if c.subject is not None and k.product is not None and c.kind != "double_feuille":
+            if c.subject is not None and k.product is not None and c.kind not in CONSOLIDATION_KINDS:
                 out += [f"  - {line}" for line in _diff_lines(k.product, c.subject)]
-        out += [f"- Choix possibles : {', '.join(possible_choices(c))}", ""]
+        out += [f"- Choix possibles : {', '.join(possible_choices(c, draft.cases))}", ""]
 
     titles = {"nouveau": "Nouveaux produits", "statut": "Changements de statut", "modifie": "Modifications",
               "disparu": "Disparus (déjà retirés ou non renouvelés)"}
@@ -119,16 +146,21 @@ def write_decisions_template(draft: Draft, path: Path) -> None:
     if path.exists():
         old = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
         existing = {c.get("id"): c for c in old.get("cas") or [] if isinstance(c, dict)}
+    linked = linked_old_ids(draft.cases)
     cas = []
     for c in draft.cases:
+        fp = case_fingerprint(c)
         prev = existing.get(c.case_id, {})
+        if prev.get("empreinte") != fp:
+            prev = {}  # cas différent (brouillon refait) : l'ancien choix ne vaut plus
         cas.append({
             "id": c.case_id,
             "type": c.kind,
             "sujet": _brief(c.subject) if c.subject is not None else {"produit_id": str(c.subject_product_id)},
             "candidats": [{"ref": k.ref, "produit_id": str(k.product_id) if k.product_id else None, **(_brief(k.product) or {})}
                           for k in c.candidates],
-            "choix_possibles": possible_choices(c),
+            "choix_possibles": possible_choices(c, draft.cases),
+            "empreinte": fp,
             "choix": prev.get("choix"),
             "par": prev.get("par"),
             "le": prev.get("le"),
@@ -136,7 +168,7 @@ def write_decisions_template(draft: Draft, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     header = (f"# Décisions pour la nomenclature {draft.version.label}.\n"
               "# Pour chaque cas : remplir `choix` (une valeur de choix_possibles), `par` (votre nom) et `le` (AAAA-MM-JJ).\n")
-    path.write_text(header + yaml.safe_dump({"version": draft.version.label, "cas": cas}, allow_unicode=True,
+    path.write_text(header + yaml.safe_dump({"version": draft.version.label, "brouillon": draft_stamp(draft), "cas": cas}, allow_unicode=True,
                                             sort_keys=False, width=120), encoding="utf-8")
 
 
@@ -162,7 +194,12 @@ def load_decisions(path: Path, draft: Draft) -> list[Decision]:
     problems: list[str] = []
     if str(data.get("version")) != draft.version.label:
         problems.append(f"version {data.get('version')} dans le fichier, {draft.version.label} attendue")
+    elif data.get("brouillon") != draft_stamp(draft):
+        problems.append(f"ce fichier a été établi pour un autre brouillon de {draft.version.label} : "
+                        f"relancer `synapse-admin review {draft.version.label}` et revoir les choix")
     cases = {c.case_id: c for c in draft.cases}
+    linked = linked_old_ids(draft.cases)
+    disappearance: dict[str, tuple[str, str]] = {}  # produit_id -> (cas disparu_sans_retrait, choix)
     seen: set[str] = set()
     decisions: list[Decision] = []
     claimed: dict[str, list[str]] = defaultdict(list)
@@ -171,18 +208,24 @@ def load_decisions(path: Path, draft: Draft) -> list[Decision]:
         if cid not in cases:
             problems.append(f"cas inconnu : {cid}")
             continue
+        if cid in seen:
+            problems.append(f"{cid} : cas en double dans le fichier")
+            continue
         seen.add(cid)
         case, choice = cases[cid], entry.get("choix")
+        if entry.get("empreinte") != case_fingerprint(case):
+            problems.append(f"{cid} : contenu du cas modifié depuis la revue (empreinte) : relancer review")
+            continue
         if choice in (None, ""):
             problems.append(f"{cid} : sans choix")
             continue
         choice = str(choice).strip()
-        if choice not in possible_choices(case):
+        if choice not in possible_choices(case, draft.cases):
             ref = choice.split(":", 1)[1] if ":" in choice else None
             if ref and choice.split(":", 1)[0] in ("meme_produit", "garder"):
                 problems.append(f"{cid} : référence {ref} absente des candidats")
             else:
-                problems.append(f"{cid} : choix invalide « {choice} » (possibles : {', '.join(possible_choices(case))})")
+                problems.append(f"{cid} : choix invalide « {choice} » (possibles : {', '.join(possible_choices(case, draft.cases))})")
             continue
         by = entry.get("par")
         if not by or not str(by).strip():
@@ -196,9 +239,16 @@ def load_decisions(path: Path, draft: Draft) -> list[Decision]:
             k = next(k for k in case.candidates if k.ref == choice.split(":", 1)[1])
             if k.product_id:
                 claimed[str(k.product_id)].append(cid)
+        if case.kind == "disparu_sans_retrait":
+            disappearance[str(case.subject_product_id)] = (cid, choice)
         decisions.append(Decision(cid, choice, str(by).strip(), when))
     for cid in cases.keys() - seen:
         problems.append(f"{cid} : cas manquant dans le fichier")
+    for pid, (cid, choice) in disappearance.items():
+        if choice == "rattache" and pid not in claimed:
+            problems.append(f"{cid} : « rattache » mais aucun cas ne rattache ce produit (choisir disparu)")
+        elif choice == "disparu" and pid in claimed:
+            problems.append(f"{cid} : « disparu » alors que {', '.join(claimed[pid])} rattache ce produit (choisir rattache)")
     for pid, cids in claimed.items():
         if len(cids) > 1:
             problems.append(f"produit {pid} rattaché à plusieurs cas : {', '.join(cids)}")

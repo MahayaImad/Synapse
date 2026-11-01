@@ -91,7 +91,8 @@ def save_draft(conn: Connection, label: str, reference_date: date, filename: str
         pv_of[id(p)] = _insert_pv(conn, vid, p, new_ids.get(id(p)))
     for c in consolidation_cases:
         for k in c.candidates:
-            pv_of[id(k.product)] = _insert_pv(conn, vid, k.product, None)
+            if id(k.product) not in pv_of:
+                pv_of[id(k.product)] = _insert_pv(conn, vid, k.product, None)
 
     rows = []
     for g in match.gaps:

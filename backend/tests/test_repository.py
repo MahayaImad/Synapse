@@ -41,8 +41,8 @@ def test_save_and_load_draft_roundtrip(conn):
     _first_import(conn)
     d = repo.load_draft(conn, "2026-08")
     assert d.version.state == "brouillon" and d.version.reference_date == date(2026, 8, 31)
-    assert sorted(g.category for g in d.gaps) == ["nouveau", "nouveau"]
-    assert {g.new.brand for g in d.gaps} == {"CETIRIPEX", "ZYTREX"}
+    assert sorted(g.category for g in d.gaps) == ["nouveau"] * 3          # BUSILVEX via son représentant
+    assert {g.new.brand for g in d.gaps} == {"CETIRIPEX", "ZYTREX", "BUSILVEX"}
     assert all(isinstance(g.product_id, UUID) for g in d.gaps)
     [case] = d.cases
     assert case.kind == "double_feuille" and [c.product.sheet for c in case.candidates] == ["en_vigueur", "retire"]
@@ -53,8 +53,8 @@ def test_latest_published_returns_products_with_ids(conn):
     vid = _first_import(conn)
     conn.execute(text("update nomenclature_version set state='publiee' where id=:v"), {"v": vid})
     version, prev = repo.latest_published(conn)
-    assert version.label == "2026-08" and len(prev) == 2
-    assert all(p.pv_id for p in prev) and {p.product.brand for p in prev} == {"CETIRIPEX", "ZYTREX"}
+    assert version.label == "2026-08" and len(prev) == 3
+    assert all(p.pv_id for p in prev) and {p.product.brand for p in prev} == {"CETIRIPEX", "ZYTREX", "BUSILVEX"}
 
 
 def test_delete_draft(conn):
@@ -74,4 +74,4 @@ def test_second_draft_links_old_rows(conn):
     by_cat = {g.category: g for g in d.gaps}
     assert by_cat["modifie"].old.stability == "24 MOIS" and by_cat["modifie"].new.stability == "36 MOIS"
     assert by_cat["modifie"].product_id == next(p.product_id for p in prev if p.product.brand == "CETIRIPEX")
-    assert [c.kind for c in d.cases] == ["disparu_sans_retrait"]
+    assert [c.kind for c in d.cases] == ["disparu_sans_retrait"] * 2

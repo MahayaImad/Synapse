@@ -62,6 +62,21 @@ def clinical_changes(old: Product, new: Product) -> list[str]:
     return [f for f in CLINICAL_FIELDS if clinical_key(f, getattr(old, f)) != clinical_key(f, getattr(new, f))]
 
 
+def sole_candidate_ids(cases: list[Case]) -> set[UUID]:
+    """Anciens produits candidats d'un seul cas, et seul candidat de ce cas."""
+    count: dict[UUID, int] = defaultdict(int)
+    single: set[UUID] = set()
+    for c in cases:
+        if c.kind in ("double_feuille", "doublon_divergent"):
+            continue
+        for k in c.candidates:
+            if k.product_id:
+                count[k.product_id] += 1
+                if len(c.candidates) == 1:
+                    single.add(k.product_id)
+    return {pid for pid in single if count[pid] == 1}
+
+
 def _new_case_id(kind: str, p: Product) -> str:
     return f"{kind}:{p.sheet}:{p.row_number}"
 
@@ -72,6 +87,7 @@ def match_versions(previous: list[PreviousProduct], new: list[Product]) -> Match
     old_left: dict[int, PreviousProduct] = {i: o for i, o in enumerate(previous)}
     new_left: dict[int, Product] = {i: n for i, n in enumerate(new)}
     in_case: set[int] = set()  # anciens produits déjà proposés comme candidats
+    clinical_olds: dict[int, PreviousProduct] = {}  # sortis du jeu par un cas champ_clinique
 
     def pair(oi: int, ni: int, tier: int) -> None:
         o, n = old_left.pop(oi), new_left.pop(ni)
@@ -80,6 +96,7 @@ def match_versions(previous: list[PreviousProduct], new: list[Product]) -> Match
             cases.append(Case(_new_case_id("champ_clinique", n), "champ_clinique", n, None,
                               [Candidate("c1", o.product_id, o.product)]))
             in_case.add(oi)
+            clinical_olds[oi] = o
             return
         if o.product.sheet != n.sheet:
             category = "statut"
@@ -135,13 +152,15 @@ def match_versions(previous: list[PreviousProduct], new: list[Product]) -> Match
             in_case.update(matches)
 
     # Palier 5 : nouveaux et disparus.
+    sole = sole_candidate_ids(cases)
     for n in new_left.values():
         gaps.append(Gap("nouveau", None, None, None, n, []))
-    for oi, o in old_left.items():
-        if oi in in_case:
-            continue  # sort de l'un des cas ; non retenu à la publication = disparu
+    for oi, o in sorted({**old_left, **clinical_olds}.items()):
+        if o.product.sheet == "en_vigueur" and o.product_id in sole:
+            continue  # unique candidat d'un seul cas : son choix dit explicitement s'il disparaît
         if o.product.sheet == "en_vigueur":
+            # Y compris s'il est candidat d'un cas : sa disparition doit être confirmée (« rattache » ou « disparu »).
             cases.append(Case(f"disparu_sans_retrait:{o.product_id}", "disparu_sans_retrait", None, o.product_id, []))
-        else:
+        elif oi not in in_case:
             gaps.append(Gap("disparu", None, o.product_id, o.product, None, []))
     return MatchResult(gaps, cases)
