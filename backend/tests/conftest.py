@@ -8,7 +8,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
 
 BACKEND = Path(__file__).resolve().parent.parent
-TEST_URL = os.environ.get("TEST_DATABASE_URL", "postgresql+psycopg://synapse:synapse@localhost:5432/synapse_test")
+TEST_URL = os.environ.get("TEST_DATABASE_URL", "postgresql+psycopg://synapse:synapse@localhost:5442/synapse_test")
 
 
 def alembic_config(url: str) -> Config:

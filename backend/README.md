@@ -14,7 +14,7 @@ uv run alembic upgrade head          # schéma
 ```
 
 Sans Docker, n'importe quel PostgreSQL ≥ 14 convient : définir
-`DATABASE_URL` (défaut `postgresql+psycopg://synapse:synapse@localhost:5432/synapse`)
+`DATABASE_URL` (défaut `postgresql+psycopg://synapse:synapse@localhost:5442/synapse`)
 et `TEST_DATABASE_URL` pour les tests (défaut `…/synapse_test`).
 
 ## Cycle mensuel

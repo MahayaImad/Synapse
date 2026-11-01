@@ -331,7 +331,7 @@ def test_conservation():               # chaque nouvelle ligne et chaque ancien 
 **Interfaces:**
 - Consumes: `Product`, `Anomaly`, `Gap`, `Case`, `PreviousProduct`
 - Produces:
-  - `db.py` : `metadata`, tables, `get_engine(url: str | None = None) -> Engine` (défaut env `DATABASE_URL`, sinon `postgresql+psycopg://synapse:synapse@localhost:5432/synapse`).
+  - `db.py` : `metadata`, tables, `get_engine(url: str | None = None) -> Engine` (défaut env `DATABASE_URL`, sinon `postgresql+psycopg://synapse:synapse@localhost:5442/synapse`).
   - Tables (colonnes clés) :
     - `nomenclature_version(id serial, label text unique, reference_date date, source_filename, source_sha256, state text check in ('brouillon','publiee','remplacee'), imported_at, published_at)`
     - `produit(id uuid pk, created_at, created_in_version int)`
