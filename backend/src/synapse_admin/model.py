@@ -71,3 +71,22 @@ class Product:
 
 # Attributs ignorés quand on compare deux versions d'un même produit.
 NON_COMPARED_FIELDS = {"sheet", "row_number", "raw", "registration"}
+
+
+CaseKind = Literal["changement_titulaire", "candidats_multiples", "champ_clinique", "disparu_sans_retrait", "double_feuille"]
+
+
+@dataclass
+class Candidate:
+    ref: str  # "c1", "c2"… : référence utilisée dans le fichier de décisions
+    product_id: UUID | None
+    product: Product
+
+
+@dataclass
+class Case:
+    case_id: str
+    kind: CaseKind
+    subject: Product | None  # nouvelle ligne à rattacher (None si le sujet est un ancien produit)
+    subject_product_id: UUID | None  # ancien produit sujet (disparu_sans_retrait)
+    candidates: list[Candidate]
