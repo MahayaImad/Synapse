@@ -1,0 +1,730 @@
+[
+ {
+  "id": "5503c583-bf18-537e-8eda-7c9dd842b26b",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "1f0ff1d6-7811-50c2-94e6-2801375acde9",
+   "3496a9e3-b9a2-51a4-b95a-8a9b785be2fe",
+   "d3962245-9aa3-5078-ac35-dfb2cb2176b8",
+   "57ca888e-2c95-52aa-bf25-6feb67073cee"
+  ],
+  "active_same_dosage": [
+   "1f0ff1d6-7811-50c2-94e6-2801375acde9",
+   "3496a9e3-b9a2-51a4-b95a-8a9b785be2fe"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "5MG",
+    "ids": [
+     "17381475-c1a9-57cc-b210-9f782b54c214"
+    ]
+   },
+   {
+    "dosage": "5MG/ML",
+    "ids": [
+     "74268e23-152f-5777-a557-346d1fe38811"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "3496a9e3-b9a2-51a4-b95a-8a9b785be2fe",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "5503c583-bf18-537e-8eda-7c9dd842b26b",
+   "1f0ff1d6-7811-50c2-94e6-2801375acde9",
+   "d3962245-9aa3-5078-ac35-dfb2cb2176b8",
+   "57ca888e-2c95-52aa-bf25-6feb67073cee"
+  ],
+  "active_same_dosage": [
+   "5503c583-bf18-537e-8eda-7c9dd842b26b",
+   "1f0ff1d6-7811-50c2-94e6-2801375acde9"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "5MG",
+    "ids": [
+     "17381475-c1a9-57cc-b210-9f782b54c214"
+    ]
+   },
+   {
+    "dosage": "5MG/ML",
+    "ids": [
+     "74268e23-152f-5777-a557-346d1fe38811"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "1f0ff1d6-7811-50c2-94e6-2801375acde9",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "5503c583-bf18-537e-8eda-7c9dd842b26b",
+   "3496a9e3-b9a2-51a4-b95a-8a9b785be2fe",
+   "d3962245-9aa3-5078-ac35-dfb2cb2176b8",
+   "57ca888e-2c95-52aa-bf25-6feb67073cee"
+  ],
+  "active_same_dosage": [
+   "5503c583-bf18-537e-8eda-7c9dd842b26b",
+   "3496a9e3-b9a2-51a4-b95a-8a9b785be2fe"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "5MG",
+    "ids": [
+     "17381475-c1a9-57cc-b210-9f782b54c214"
+    ]
+   },
+   {
+    "dosage": "5MG/ML",
+    "ids": [
+     "74268e23-152f-5777-a557-346d1fe38811"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "57ca888e-2c95-52aa-bf25-6feb67073cee",
+  "statut": "retire",
+  "same_dosage": [
+   "5503c583-bf18-537e-8eda-7c9dd842b26b",
+   "1f0ff1d6-7811-50c2-94e6-2801375acde9",
+   "3496a9e3-b9a2-51a4-b95a-8a9b785be2fe",
+   "d3962245-9aa3-5078-ac35-dfb2cb2176b8"
+  ],
+  "active_same_dosage": [
+   "5503c583-bf18-537e-8eda-7c9dd842b26b",
+   "1f0ff1d6-7811-50c2-94e6-2801375acde9",
+   "3496a9e3-b9a2-51a4-b95a-8a9b785be2fe"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "5MG",
+    "ids": [
+     "17381475-c1a9-57cc-b210-9f782b54c214"
+    ]
+   },
+   {
+    "dosage": "5MG/ML",
+    "ids": [
+     "74268e23-152f-5777-a557-346d1fe38811"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "d3962245-9aa3-5078-ac35-dfb2cb2176b8",
+  "statut": "non_renouvele",
+  "same_dosage": [
+   "5503c583-bf18-537e-8eda-7c9dd842b26b",
+   "1f0ff1d6-7811-50c2-94e6-2801375acde9",
+   "3496a9e3-b9a2-51a4-b95a-8a9b785be2fe",
+   "57ca888e-2c95-52aa-bf25-6feb67073cee"
+  ],
+  "active_same_dosage": [
+   "5503c583-bf18-537e-8eda-7c9dd842b26b",
+   "1f0ff1d6-7811-50c2-94e6-2801375acde9",
+   "3496a9e3-b9a2-51a4-b95a-8a9b785be2fe"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "5MG",
+    "ids": [
+     "17381475-c1a9-57cc-b210-9f782b54c214"
+    ]
+   },
+   {
+    "dosage": "5MG/ML",
+    "ids": [
+     "74268e23-152f-5777-a557-346d1fe38811"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "74268e23-152f-5777-a557-346d1fe38811",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": [
+   {
+    "dosage": "10MG",
+    "ids": [
+     "5503c583-bf18-537e-8eda-7c9dd842b26b",
+     "1f0ff1d6-7811-50c2-94e6-2801375acde9",
+     "3496a9e3-b9a2-51a4-b95a-8a9b785be2fe",
+     "d3962245-9aa3-5078-ac35-dfb2cb2176b8",
+     "57ca888e-2c95-52aa-bf25-6feb67073cee"
+    ]
+   },
+   {
+    "dosage": "5MG",
+    "ids": [
+     "17381475-c1a9-57cc-b210-9f782b54c214"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "17381475-c1a9-57cc-b210-9f782b54c214",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": [
+   {
+    "dosage": "10MG",
+    "ids": [
+     "5503c583-bf18-537e-8eda-7c9dd842b26b",
+     "1f0ff1d6-7811-50c2-94e6-2801375acde9",
+     "3496a9e3-b9a2-51a4-b95a-8a9b785be2fe",
+     "d3962245-9aa3-5078-ac35-dfb2cb2176b8",
+     "57ca888e-2c95-52aa-bf25-6feb67073cee"
+    ]
+   },
+   {
+    "dosage": "5MG/ML",
+    "ids": [
+     "74268e23-152f-5777-a557-346d1fe38811"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "3843c540-a154-5d1a-a449-0b8a840c3e62",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "c8e0267c-7cfd-568a-9315-bf061bf1619b",
+   "b447f7ad-2059-5b2a-b518-493475dbabae"
+  ],
+  "active_same_dosage": [
+   "c8e0267c-7cfd-568a-9315-bf061bf1619b"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "500MG",
+    "ids": [
+     "dc2e4ca3-1e2e-55ce-820f-41c3ffa7689b",
+     "a44d6fb8-b9e7-5f4b-9116-eb0196dcc732"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "dc2e4ca3-1e2e-55ce-820f-41c3ffa7689b",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "a44d6fb8-b9e7-5f4b-9116-eb0196dcc732"
+  ],
+  "active_same_dosage": [],
+  "other_dosages": [
+   {
+    "dosage": "1G",
+    "ids": [
+     "3843c540-a154-5d1a-a449-0b8a840c3e62",
+     "c8e0267c-7cfd-568a-9315-bf061bf1619b",
+     "b447f7ad-2059-5b2a-b518-493475dbabae"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "c8e0267c-7cfd-568a-9315-bf061bf1619b",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "3843c540-a154-5d1a-a449-0b8a840c3e62",
+   "b447f7ad-2059-5b2a-b518-493475dbabae"
+  ],
+  "active_same_dosage": [
+   "3843c540-a154-5d1a-a449-0b8a840c3e62"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "500MG",
+    "ids": [
+     "dc2e4ca3-1e2e-55ce-820f-41c3ffa7689b",
+     "a44d6fb8-b9e7-5f4b-9116-eb0196dcc732"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "b447f7ad-2059-5b2a-b518-493475dbabae",
+  "statut": "retire",
+  "same_dosage": [
+   "3843c540-a154-5d1a-a449-0b8a840c3e62",
+   "c8e0267c-7cfd-568a-9315-bf061bf1619b"
+  ],
+  "active_same_dosage": [
+   "3843c540-a154-5d1a-a449-0b8a840c3e62",
+   "c8e0267c-7cfd-568a-9315-bf061bf1619b"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "500MG",
+    "ids": [
+     "dc2e4ca3-1e2e-55ce-820f-41c3ffa7689b",
+     "a44d6fb8-b9e7-5f4b-9116-eb0196dcc732"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "a44d6fb8-b9e7-5f4b-9116-eb0196dcc732",
+  "statut": "non_renouvele",
+  "same_dosage": [
+   "dc2e4ca3-1e2e-55ce-820f-41c3ffa7689b"
+  ],
+  "active_same_dosage": [
+   "dc2e4ca3-1e2e-55ce-820f-41c3ffa7689b"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "1G",
+    "ids": [
+     "3843c540-a154-5d1a-a449-0b8a840c3e62",
+     "c8e0267c-7cfd-568a-9315-bf061bf1619b",
+     "b447f7ad-2059-5b2a-b518-493475dbabae"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "afaa7d49-3c0e-5333-88af-cad85e2dc6b7",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": [
+   {
+    "dosage": "1000MG",
+    "ids": [
+     "66d8fca0-2256-5e31-b895-4b7cb27d0d9e"
+    ]
+   },
+   {
+    "dosage": "850MG",
+    "ids": [
+     "c2a70e01-fc5f-5a72-b089-af291508bed9",
+     "a616eb73-8df8-5673-b334-98f392ca5e36",
+     "794f7249-5837-5c8e-b3b2-4312cf70b663"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "c2a70e01-fc5f-5a72-b089-af291508bed9",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "a616eb73-8df8-5673-b334-98f392ca5e36",
+   "794f7249-5837-5c8e-b3b2-4312cf70b663"
+  ],
+  "active_same_dosage": [
+   "a616eb73-8df8-5673-b334-98f392ca5e36"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "1000MG",
+    "ids": [
+     "66d8fca0-2256-5e31-b895-4b7cb27d0d9e"
+    ]
+   },
+   {
+    "dosage": "500MG",
+    "ids": [
+     "afaa7d49-3c0e-5333-88af-cad85e2dc6b7"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "66d8fca0-2256-5e31-b895-4b7cb27d0d9e",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": [
+   {
+    "dosage": "500MG",
+    "ids": [
+     "afaa7d49-3c0e-5333-88af-cad85e2dc6b7"
+    ]
+   },
+   {
+    "dosage": "850MG",
+    "ids": [
+     "c2a70e01-fc5f-5a72-b089-af291508bed9",
+     "a616eb73-8df8-5673-b334-98f392ca5e36",
+     "794f7249-5837-5c8e-b3b2-4312cf70b663"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "a616eb73-8df8-5673-b334-98f392ca5e36",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "c2a70e01-fc5f-5a72-b089-af291508bed9",
+   "794f7249-5837-5c8e-b3b2-4312cf70b663"
+  ],
+  "active_same_dosage": [
+   "c2a70e01-fc5f-5a72-b089-af291508bed9"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "1000MG",
+    "ids": [
+     "66d8fca0-2256-5e31-b895-4b7cb27d0d9e"
+    ]
+   },
+   {
+    "dosage": "500MG",
+    "ids": [
+     "afaa7d49-3c0e-5333-88af-cad85e2dc6b7"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "794f7249-5837-5c8e-b3b2-4312cf70b663",
+  "statut": "retire",
+  "same_dosage": [
+   "c2a70e01-fc5f-5a72-b089-af291508bed9",
+   "a616eb73-8df8-5673-b334-98f392ca5e36"
+  ],
+  "active_same_dosage": [
+   "c2a70e01-fc5f-5a72-b089-af291508bed9",
+   "a616eb73-8df8-5673-b334-98f392ca5e36"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "1000MG",
+    "ids": [
+     "66d8fca0-2256-5e31-b895-4b7cb27d0d9e"
+    ]
+   },
+   {
+    "dosage": "500MG",
+    "ids": [
+     "afaa7d49-3c0e-5333-88af-cad85e2dc6b7"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "6ab346e1-3a1d-5b08-b998-1df98c5710e7",
+  "statut": "retire",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": [
+   {
+    "dosage": "250MG/5ML",
+    "ids": [
+     "a680a24a-3f63-52bd-859c-db0c157153f2"
+    ]
+   },
+   {
+    "dosage": "500MG",
+    "ids": [
+     "65e82dfa-da11-58f0-9111-1a1d1a201efb",
+     "61c8a765-627d-5410-aace-ec61ac8d25a7"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "65e82dfa-da11-58f0-9111-1a1d1a201efb",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "61c8a765-627d-5410-aace-ec61ac8d25a7"
+  ],
+  "active_same_dosage": [
+   "61c8a765-627d-5410-aace-ec61ac8d25a7"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "1G",
+    "ids": [
+     "6ab346e1-3a1d-5b08-b998-1df98c5710e7"
+    ]
+   },
+   {
+    "dosage": "250MG/5ML",
+    "ids": [
+     "a680a24a-3f63-52bd-859c-db0c157153f2"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "61c8a765-627d-5410-aace-ec61ac8d25a7",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "65e82dfa-da11-58f0-9111-1a1d1a201efb"
+  ],
+  "active_same_dosage": [
+   "65e82dfa-da11-58f0-9111-1a1d1a201efb"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "1G",
+    "ids": [
+     "6ab346e1-3a1d-5b08-b998-1df98c5710e7"
+    ]
+   },
+   {
+    "dosage": "250MG/5ML",
+    "ids": [
+     "a680a24a-3f63-52bd-859c-db0c157153f2"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "a680a24a-3f63-52bd-859c-db0c157153f2",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": [
+   {
+    "dosage": "1G",
+    "ids": [
+     "6ab346e1-3a1d-5b08-b998-1df98c5710e7"
+    ]
+   },
+   {
+    "dosage": "500MG",
+    "ids": [
+     "65e82dfa-da11-58f0-9111-1a1d1a201efb",
+     "61c8a765-627d-5410-aace-ec61ac8d25a7"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "d5ac30a2-09db-50d3-aec2-7e30716fb114",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "31d938d3-f09e-5a53-a25c-ff0341080de0"
+  ],
+  "active_same_dosage": [
+   "31d938d3-f09e-5a53-a25c-ff0341080de0"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "40MG",
+    "ids": [
+     "8c5455c7-125b-56be-91f5-0266685a78a2"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "31d938d3-f09e-5a53-a25c-ff0341080de0",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "d5ac30a2-09db-50d3-aec2-7e30716fb114"
+  ],
+  "active_same_dosage": [
+   "d5ac30a2-09db-50d3-aec2-7e30716fb114"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "40MG",
+    "ids": [
+     "8c5455c7-125b-56be-91f5-0266685a78a2"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "8c5455c7-125b-56be-91f5-0266685a78a2",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": [
+   {
+    "dosage": "20MG",
+    "ids": [
+     "d5ac30a2-09db-50d3-aec2-7e30716fb114",
+     "31d938d3-f09e-5a53-a25c-ff0341080de0"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "9f33332d-836a-501c-8126-8df412a36c8b",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "41160209-9977-5dcf-93fd-489df693a0da"
+  ],
+  "active_same_dosage": [
+   "41160209-9977-5dcf-93fd-489df693a0da"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "10MG",
+    "ids": [
+     "210cfeb1-f380-5e19-972a-facc94805d39"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "210cfeb1-f380-5e19-972a-facc94805d39",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": [
+   {
+    "dosage": "5MG",
+    "ids": [
+     "41160209-9977-5dcf-93fd-489df693a0da",
+     "9f33332d-836a-501c-8126-8df412a36c8b"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "41160209-9977-5dcf-93fd-489df693a0da",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "9f33332d-836a-501c-8126-8df412a36c8b"
+  ],
+  "active_same_dosage": [
+   "9f33332d-836a-501c-8126-8df412a36c8b"
+  ],
+  "other_dosages": [
+   {
+    "dosage": "10MG",
+    "ids": [
+     "210cfeb1-f380-5e19-972a-facc94805d39"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "3ad80bd3-58d6-5238-bff8-57b014cdc36a",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "48db6177-fdd7-5d9e-8a1a-4c9f77c1f5d0"
+  ],
+  "active_same_dosage": [],
+  "other_dosages": []
+ },
+ {
+  "id": "48db6177-fdd7-5d9e-8a1a-4c9f77c1f5d0",
+  "statut": "non_renouvele",
+  "same_dosage": [
+   "3ad80bd3-58d6-5238-bff8-57b014cdc36a"
+  ],
+  "active_same_dosage": [
+   "3ad80bd3-58d6-5238-bff8-57b014cdc36a"
+  ],
+  "other_dosages": []
+ },
+ {
+  "id": "8d79e50a-52ce-5f82-aeeb-9f7b75990504",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": []
+ },
+ {
+  "id": "46025a8f-91dd-52fa-a149-ecbedf8fd6b8",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": []
+ },
+ {
+  "id": "b75b2aca-3718-5560-bc4d-ccaf8acfb26d",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "7c6c7ea6-7fb5-5577-b023-c1f413e43714"
+  ],
+  "active_same_dosage": [
+   "7c6c7ea6-7fb5-5577-b023-c1f413e43714"
+  ],
+  "other_dosages": []
+ },
+ {
+  "id": "7c6c7ea6-7fb5-5577-b023-c1f413e43714",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "b75b2aca-3718-5560-bc4d-ccaf8acfb26d"
+  ],
+  "active_same_dosage": [
+   "b75b2aca-3718-5560-bc4d-ccaf8acfb26d"
+  ],
+  "other_dosages": []
+ },
+ {
+  "id": "68f3fda6-3d92-5243-853f-88f99b6710a6",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "8fa667b3-d3e5-59e4-a8dc-a206670aecd8"
+  ],
+  "active_same_dosage": [
+   "8fa667b3-d3e5-59e4-a8dc-a206670aecd8"
+  ],
+  "other_dosages": []
+ },
+ {
+  "id": "8fa667b3-d3e5-59e4-a8dc-a206670aecd8",
+  "statut": "en_vigueur",
+  "same_dosage": [
+   "68f3fda6-3d92-5243-853f-88f99b6710a6"
+  ],
+  "active_same_dosage": [
+   "68f3fda6-3d92-5243-853f-88f99b6710a6"
+  ],
+  "other_dosages": []
+ },
+ {
+  "id": "02f0d128-12e0-512f-9689-24f02d87620e",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": [
+   {
+    "dosage": "100UG",
+    "ids": [
+     "39ea9e8e-8db7-5dcb-a1b8-75d25207d049"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "39ea9e8e-8db7-5dcb-a1b8-75d25207d049",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": [
+   {
+    "dosage": "50UG",
+    "ids": [
+     "02f0d128-12e0-512f-9689-24f02d87620e"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "0ecd686c-46e3-52fd-9744-653fe3bb1fea",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": []
+ },
+ {
+  "id": "04c383e8-5773-5ebe-a0cf-4fb448dafb6d",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": []
+ },
+ {
+  "id": "48e9a488-78dd-5a8a-88e2-6ac7610d93e5",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": []
+ }
+]
