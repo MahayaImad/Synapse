@@ -106,3 +106,17 @@ def test_conservation():
     old_in_cases = {c.subject_product_id for c in r.cases} | {k.product_id for c in r.cases for k in c.candidates}
     assert len(old_in_gaps) == len(set(old_in_gaps)) and not set(old_in_gaps) & old_in_cases
     assert set(old_in_gaps) | (old_in_cases - {None}) == {o.product_id for o in olds}
+
+
+@pytest.mark.parametrize("field,old,new", [("dosage", "10 MG", "10MG"), ("marque", "ANTALFEN-GYN", "ANTALFEN GYN"),
+                                           ("marque", "DOLI RHUME", "DOLIRHUME"), ("forme", "SOL.INJ", "SOL INJ")])
+def test_formatting_only_clinical_change_is_safe_modification(field, old, new):
+    g = gap(prev(product(**{field: old})), product(**{field: new}))
+    assert g.category == "modifie" and g.changed_fields
+
+
+@pytest.mark.parametrize("field,old,new", [("dosage", "0.5MG", "05MG"), ("dosage", "0,5MG", "0.5MG"),
+                                           ("dosage", "10MG", "100MG"), ("marque", "XUDOL 400", "XYDOL 400")])
+def test_meaningful_clinical_change_stays_a_case(field, old, new):
+    r = match_versions([prev(product(**{field: old}))], [product(**{field: new})])
+    assert [c.kind for c in r.cases] == ["champ_clinique"]

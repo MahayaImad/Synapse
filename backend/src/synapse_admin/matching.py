@@ -1,6 +1,7 @@
 """Rapprochement par paliers entre la version publiée et la nouvelle version."""
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from dataclasses import dataclass, fields
 from typing import Literal
@@ -46,6 +47,21 @@ def changed_fields(old: Product, new: Product) -> list[str]:
     return [name for name in _COMPARED if getattr(old, name) != getattr(new, name)]
 
 
+def clinical_key(field: str, value: str) -> str:
+    """Forme comparable d'un champ clinique : seule la mise en forme est neutralisée.
+
+    Dosage : espaces seulement (un point ou une virgule peut changer la valeur).
+    Marque, forme : espaces, tirets, points, apostrophes.
+    """
+    if field == "dosage":
+        return re.sub(r"\s+", "", value)
+    return re.sub(r"[\s\-.'’]+", "", value)
+
+
+def clinical_changes(old: Product, new: Product) -> list[str]:
+    return [f for f in CLINICAL_FIELDS if clinical_key(f, getattr(old, f)) != clinical_key(f, getattr(new, f))]
+
+
 def _new_case_id(kind: str, p: Product) -> str:
     return f"{kind}:{p.sheet}:{p.row_number}"
 
@@ -60,7 +76,7 @@ def match_versions(previous: list[PreviousProduct], new: list[Product]) -> Match
     def pair(oi: int, ni: int, tier: int) -> None:
         o, n = old_left.pop(oi), new_left.pop(ni)
         diff = changed_fields(o.product, n)
-        if any(f in diff for f in CLINICAL_FIELDS):
+        if clinical_changes(o.product, n):
             cases.append(Case(_new_case_id("champ_clinique", n), "champ_clinique", n, None,
                               [Candidate("c1", o.product_id, o.product)]))
             in_case.add(oi)
