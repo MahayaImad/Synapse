@@ -87,7 +87,7 @@ SYNAPSE_REAL_FILES=/chemin/vers/fichiers uv run pytest tests/test_real_files.py 
 | 2026-06 | 44 | 37 | 0 | 0 | 21 | 408 |
 | 2026-08 | 42 | 164 | 2 | 0 | 24 | 409 |
 
-Entre deux mois consécutifs, il reste 25 à 30 cas ; les écarts de 4 à 16 mois
+Entre deux mois consécutifs, il reste 20 à 25 cas ; les écarts de 4 à 16 mois
 en produisent davantage (le ministère réécrit des formes et des dosages).
 Recherche : 7 ms au pire sur 50 marques, fichier publié ≈ 3,6 Mo.
 
