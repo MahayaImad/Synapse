@@ -1,0 +1,31 @@
+[project]
+name = "synapse-admin"
+version = "0.1.0"
+description = "Outil d'administration de la nomenclature nationale pour Synapse"
+requires-python = ">=3.12"
+dependencies = [
+    "typer>=0.12",
+    "openpyxl>=3.1",
+    "pyyaml>=6.0",
+    "rapidfuzz>=3.9",
+    "sqlalchemy>=2.0",
+    "psycopg[binary]>=3.2",
+    "alembic>=1.13",
+]
+
+[project.scripts]
+synapse-admin = "synapse_admin.cli:app"
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/synapse_admin"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["tests"]

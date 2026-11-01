@@ -1,0 +1,127 @@
+"""CLI d'administration : synapse-admin."""
+from __future__ import annotations
+
+from pathlib import Path
+
+import typer
+
+from . import repository
+from .db import get_engine
+from .decisions import DecisionsInvalid, render_report, write_decisions_template
+from .excel_reader import WorkbookFormatError
+from .importer import ImportRefused, run_import
+
+app = typer.Typer(help="Administration de la nomenclature nationale (Synapse).", no_args_is_help=True)
+
+
+@app.callback()
+def main(ctx: typer.Context,
+         workdir: Path = typer.Option(Path("nomenclature"), "--workdir", help="Répertoire des rapports, décisions et publications")):
+    ctx.obj = {"workdir": workdir}
+
+
+def _fail(message: str) -> None:
+    typer.secho(f"Refusé : {message}", fg=typer.colors.RED, err=False)
+    raise typer.Exit(1)
+
+
+@app.command("import")
+def import_cmd(fichier: Path = typer.Argument(..., exists=True, dir_okay=False, help="Fichier Excel du ministère"),
+               version: str = typer.Option(..., "--version", help="Version AAAA-MM, ex. 2026-08"),
+               remplacer: bool = typer.Option(False, "--remplacer", help="Refaire un brouillon existant")):
+    """Importer un fichier mensuel en brouillon."""
+    try:
+        with get_engine().connect() as conn:
+            s = run_import(conn, fichier, version, replace=remplacer)
+    except (ImportRefused, WorkbookFormatError) as e:
+        _fail(str(e))
+    typer.echo(f"Brouillon {s.label} : {s.rows_read} lignes lues")
+    for cat, n in sorted(s.counts_by_category.items()):
+        typer.echo(f"  {cat:<10} {n}")
+    typer.echo(f"  à trancher {s.cases}")
+    typer.echo(f"  anomalies  {s.anomalies}")
+    typer.echo(f"Suite : synapse-admin review {s.label}")
+
+
+@app.command()
+def status():
+    """Lister les versions."""
+    with get_engine().connect() as conn:
+        versions = repository.list_versions(conn)
+    if not versions:
+        typer.echo("Aucune version importée.")
+    for v in versions:
+        typer.echo(f"{v.label}  {v.state:<10} {v.reference_date}  {v.source_filename}")
+
+
+@app.command()
+def review(ctx: typer.Context, version: str = typer.Argument(..., help="Version AAAA-MM")):
+    """Écrire le rapport et le fichier de décisions d'un brouillon."""
+    workdir: Path = ctx.obj["workdir"]
+    with get_engine().connect() as conn:
+        try:
+            draft = repository.load_draft(conn, version)
+        except LookupError as e:
+            _fail(str(e))
+    report = workdir / "reports" / f"{version}.md"
+    report.parent.mkdir(parents=True, exist_ok=True)
+    report.write_text(render_report(draft), encoding="utf-8")
+    decisions = workdir / "decisions" / f"{version}.yaml"
+    write_decisions_template(draft, decisions)
+    typer.echo(f"Rapport : {report}")
+    typer.echo(f"Décisions : {decisions} ({len(draft.cases)} cas à trancher)")
+    typer.echo(f"Suite : remplir les choix puis synapse-admin publish {version}")
+
+
+@app.command()
+def publish(ctx: typer.Context, version: str = typer.Argument(..., help="Version AAAA-MM")):
+    """Appliquer les décisions et publier la version."""
+    from .publish import PublishRefused, apply_and_publish
+
+    workdir: Path = ctx.obj["workdir"]
+    try:
+        with get_engine().connect() as conn:
+            s = apply_and_publish(conn, version, workdir / "decisions" / f"{version}.yaml", workdir / "publications")
+    except DecisionsInvalid as e:
+        _fail("\n- " + "\n- ".join(e.problems))
+    except PublishRefused as e:
+        _fail(str(e))
+    typer.echo(f"Version {s.label} publiée : {s.products} produits, {s.decisions} décisions enregistrées")
+    if s.sqlite_path:
+        typer.echo(f"Fichier pour l'app : {s.sqlite_path}")
+
+
+@app.command()
+def export(ctx: typer.Context, version: str = typer.Argument(..., help="Version publiée AAAA-MM")):
+    """Régénérer le fichier SQLite et le manifeste d'une version publiée."""
+    from .publish import PublishRefused, export_version
+
+    try:
+        with get_engine().connect() as conn:
+            path = export_version(conn, version, ctx.obj["workdir"] / "publications")
+    except PublishRefused as e:
+        _fail(str(e))
+    typer.echo(f"Fichier pour l'app : {path}")
+
+
+@app.command()
+def search(ctx: typer.Context, texte: str = typer.Argument(..., help="Marque, DCI, code DCI ou labo"),
+           fichier: Path = typer.Option(None, "--fichier", help="Fichier SQLite (défaut : celui du manifeste)"),
+           limite: int = typer.Option(20, "--limite")):
+    """Chercher dans le fichier publié, comme le fera l'app hors connexion."""
+    import json
+    import time
+
+    from .search import search as do_search
+
+    if fichier is None:
+        manifest = ctx.obj["workdir"] / "publications" / "manifest.json"
+        if not manifest.exists():
+            _fail(f"Aucun manifeste ({manifest}) : publier une version ou passer --fichier")
+        fichier = manifest.parent / json.loads(manifest.read_text(encoding="utf-8"))["file"]
+    t = time.perf_counter()
+    hits = do_search(fichier, texte, limite)
+    ms = (time.perf_counter() - t) * 1000
+    for h in hits:
+        typer.echo(f"{h.marque:<35} {h.dosage:<14} {h.forme[:30]:<30} {h.dci[:35]:<35} {h.statut}")
+    typer.echo(f"{len(hits)} résultat(s) en {ms:.0f} ms")

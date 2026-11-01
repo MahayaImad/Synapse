@@ -1,0 +1,5 @@
+2026-11-01 20:41 [Synapse] workspace: created=observation-log,observation-log/archive,last-review-date.txt,cross-cutting-principles.md
+2026-11-01 20:41 [Synapse] session-start scan: files=0 parsed=0 principles=0
+2026-11-01 21:30 [Synapse] deliverable flush (design doc): no observations
+2026-11-01 22:01 [Synapse] checkpoint after task 6/7: observation 0001 logged earlier; no new observations
+2026-11-01 22:04 [Synapse] checkpoint after task 9/10: no new observations
