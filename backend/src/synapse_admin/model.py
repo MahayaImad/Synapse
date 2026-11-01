@@ -74,7 +74,8 @@ class Product:
 NON_COMPARED_FIELDS = {"sheet", "row_number", "raw", "registration"}
 
 
-CaseKind = Literal["changement_titulaire", "candidats_multiples", "champ_clinique", "disparu_sans_retrait", "double_feuille"]
+CaseKind = Literal["changement_titulaire", "candidats_multiples", "champ_clinique", "disparu_sans_retrait", "double_feuille", "doublon_divergent"]
+CONSOLIDATION_KINDS = ("double_feuille", "doublon_divergent")
 
 
 @dataclass

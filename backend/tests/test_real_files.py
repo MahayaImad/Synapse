@@ -28,8 +28,12 @@ def auto_decide(conn, path, label):
     write_decisions_template(repo.load_draft(conn, label), path)
     d = yaml.safe_load(path.read_text())
     used = set()
+    d["cas"].sort(key=lambda c: c["type"] == "disparu_sans_retrait")   # rattachements d'abord
     for c in d["cas"]:
         pid = {k["ref"]: k["produit_id"] for k in c["candidats"]}
+        if c["type"] == "disparu_sans_retrait":
+            c["choix"], c["par"], c["le"] = ("rattache" if c["sujet"]["produit_id"] in used else "disparu"), "test", "2026-11-01"
+            continue
         choice = next((ch for ch in c["choix_possibles"]
                        if not ch.startswith("meme_produit:") or pid[ch.split(":")[1]] not in used), "nouveau")
         if choice.startswith("meme_produit:"):
@@ -49,8 +53,8 @@ def test_five_real_versions_in_order(conn, tmp_path, capsys):
         pv_rows = conn.execute(text("select count(*) from produit_version where version_id=:v"), {"v": vid}).scalar()
         merged = sum(1 for a in draft.anomalies if a.field == "ligne")
         assert s.rows_read == pv_rows + merged, label                       # aucune ligne perdue
-        referenced = sum(1 for g in draft.gaps if g.new) + sum(1 for c in draft.cases if c.subject and c.kind != "double_feuille") \
-            + sum(len(c.candidates) for c in draft.cases if c.kind == "double_feuille")
+        referenced = sum(1 for g in draft.gaps if g.new) + sum(1 for c in draft.cases if c.subject and c.kind not in ("double_feuille", "doublon_divergent")) \
+            + sum(len(c.candidates) - 1 for c in draft.cases if c.kind in ("double_feuille", "doublon_divergent"))
         assert referenced == pv_rows, label                                 # chaque ligne a un écart
         summaries[label] = (s.counts_by_category, Counter(c.kind for c in draft.cases), len(draft.anomalies))
         if label == "2026-08":

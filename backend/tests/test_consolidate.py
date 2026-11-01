@@ -24,7 +24,7 @@ def test_same_product_in_two_sheets_is_a_case():
     assert [c.kind for c in cases] == ["double_feuille"]
     assert [c.ref for c in cases[0].candidates] == ["c1", "c2"]
     assert cases[0].case_id == "double_feuille:en_vigueur:5"
-    assert kept == []
+    assert kept == [cases[0].candidates[0].product]  # représentant rapproché ; la ligne gardée se décide
 
 
 def test_identity_uses_stem_so_renewal_is_same_identity():

@@ -48,6 +48,17 @@ def _json_safe(v: object) -> object:
     return v
 
 
+def _cell_value(cell) -> object:
+    """Valeur telle qu'affichée pour les nombres au format pourcentage (0.005 au format 0.0% -> « 0,5% »)."""
+    v = cell.value
+    fmt = getattr(cell, "number_format", "General") or "General"
+    if isinstance(v, (int, float)) and not isinstance(v, bool) and "%" in fmt:
+        pct = round(v * 100, 6)
+        text = str(int(pct)) if float(pct).is_integer() else format(pct, "f").rstrip("0").rstrip(".")
+        return text.replace(".", ",") + "%"
+    return v
+
+
 def _is_numbered(cell: object) -> bool:
     if isinstance(cell, bool):
         return False
@@ -89,7 +100,8 @@ def read_workbook(path: Path) -> WorkbookData:
             kind = sheet_kind(ws.title)
             if kind is None:
                 continue
-            all_rows = list(ws.iter_rows(values_only=True))
+            cells = list(ws.iter_rows())
+            all_rows = [tuple(c.value for c in r) for r in cells]
             h = next((i for i, r in enumerate(all_rows) if r and is_header_start(r[0])), None)
             if h is None:
                 raise WorkbookFormatError(f"Feuille '{ws.title.strip()}' : ligne d'en-tête (N°) introuvable")
@@ -105,7 +117,7 @@ def read_workbook(path: Path) -> WorkbookData:
             for idx, r in enumerate(all_rows[h + 1:], start=h + 2):
                 if not r or not _is_numbered(r[0]):
                     continue
-                values = {f: r[i] for i, f in fields.items() if f and i < len(r)}
+                values = {f: _cell_value(cells[idx - 1][i]) for i, f in fields.items() if f and i < len(r)}
                 raw = {str(header[i]).strip(): _json_safe(r[i]) for i in fields if i < len(r)}
                 rows.append(RawRow(kind, ws.title.strip(), idx, values, raw))
                 n += 1

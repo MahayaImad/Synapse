@@ -90,8 +90,8 @@ def test_multiple_candidates_same_stem():
     olds = [prev(product(conditionnement="B/10"), uuid4()), prev(product(conditionnement="B/20"), uuid4())]
     news = [product(conditionnement="B/ 10", row_number=1), product(conditionnement="B/ 20", row_number=2)]
     r = match_versions(olds, news)
-    assert [c.kind for c in r.cases] == ["candidats_multiples"] * 2
-    assert all(len(c.candidates) == 2 for c in r.cases)
+    assert [c.kind for c in r.cases] == ["candidats_multiples"] * 2 + ["disparu_sans_retrait"] * 2
+    assert all(len(c.candidates) == 2 for c in r.cases if c.kind == "candidats_multiples")
 
 
 def test_conservation():

@@ -129,6 +129,9 @@ def normalize_row(row: RawRow) -> tuple[Product, list[Anomaly]]:
     if not dci_code and registration:
         dci_code = registration.dci_code
     withdrawal_date, withdrawal_kind = _withdrawal(ctx, val("date_retrait"))
+    dosage = val("dosage")
+    if isinstance(dosage, (int, float)) and not isinstance(dosage, bool):
+        ctx.flag("dosage", dosage, "Dosage saisi comme nombre, sans unité : vérifier dans le fichier source")
     product = Product(
         sheet=row.sheet,
         row_number=row.row_number,

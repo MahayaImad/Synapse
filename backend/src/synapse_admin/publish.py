@@ -8,7 +8,6 @@ from uuid import UUID, uuid4
 from sqlalchemy import Connection, func, insert, select, update
 
 from . import repository
-from .consolidate import product_identity
 from .db import decision, ecart, nomenclature_version, produit, produit_version
 from .decisions import load_decisions
 from .export import export_sqlite
@@ -41,24 +40,24 @@ def apply_and_publish(conn: Connection, label: str, decisions_path: Path, out_di
             raise PublishRefused(f"La version {label} est {version.state} : seule une version brouillon se publie")
         draft = repository.load_draft(conn, label)
         decisions = load_decisions(decisions_path, draft)
-        published = repository.latest_published(conn)
-        previous_by_identity = {product_identity(p.product): p.product_id for p in (published[1] if published else [])}
 
         rows = {r.case_id: r for r in conn.execute(select(ecart).where(
             ecart.c.version_id == version.id, ecart.c.category == "a_trancher"))}
-        for d in decisions:
+        # Les choix « garder » s'appliquent en dernier : la ligne gardée hérite de l'identifiant du représentant.
+        for d in sorted(decisions, key=lambda d: d.choice.startswith("garder:")):
             row = rows[d.case_id]
             action, _, ref = d.choice.partition(":")
             candidates = {k["ref"]: k for k in row.candidates}
             if action == "meme_produit":
                 _set_produit(conn, row.new_pv_id, UUID(candidates[ref]["produit_id"]))
-            elif action == "nouveau":
+            elif action in ("nouveau", "nouveau_et_disparu"):
                 _set_produit(conn, row.new_pv_id, uuid4())
             elif action == "garder":
-                kept_pv = candidates[ref]["pv_id"]
-                kept_row = conn.execute(select(produit_version).where(produit_version.c.id == kept_pv)).one()
-                kept = repository.product_from_row(kept_row)
-                _set_produit(conn, kept_pv, previous_by_identity.get(product_identity(kept)) or uuid4())
+                kept_pv, rep_pv = candidates[ref]["pv_id"], candidates["c1"]["pv_id"]
+                rep_id = conn.execute(select(produit_version.c.produit_id).where(produit_version.c.id == rep_pv)).scalar()
+                if kept_pv != rep_pv:
+                    _set_produit(conn, rep_pv, None)
+                _set_produit(conn, kept_pv, rep_id or uuid4())
             # disparu : rien à publier
 
         dup = conn.execute(select(produit_version.c.produit_id).where(
@@ -94,7 +93,8 @@ def export_version(conn: Connection, label: str, out_dir: Path) -> Path:
         raise PublishRefused(f"La version {label} n'est pas publiée")
     meta = {"version": label, "reference_date": version.reference_date.isoformat(),
             "source_sha256": version.source_sha256, "source_filename": version.source_filename}
-    return export_sqlite(published_products(conn, label), meta, out_dir)
+    # Seule la version en vigueur met à jour le manifeste lu par l'app.
+    return export_sqlite(published_products(conn, label), meta, out_dir, write_manifest=version.state == "publiee")
 
 
 def published_products(conn: Connection, label: str) -> list[tuple[UUID, Product]]:

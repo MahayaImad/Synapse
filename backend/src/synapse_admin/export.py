@@ -34,7 +34,8 @@ def _row(pid: UUID, p: Product) -> tuple:
             p.withdrawal_reason or None, p.lab, p.country, p.type, int(p.hospital), int(p.pharmacy), p.reg_raw)
 
 
-def export_sqlite(products: list[tuple[UUID, Product]], meta: dict[str, str], out_dir: Path) -> Path:
+def export_sqlite(products: list[tuple[UUID, Product]], meta: dict[str, str], out_dir: Path,
+                  write_manifest: bool = True) -> Path:
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     target = out_dir / f"nomenclature-{meta['version']}.sqlite"
@@ -54,6 +55,8 @@ def export_sqlite(products: list[tuple[UUID, Product]], meta: dict[str, str], ou
     finally:
         con.close()
     tmp.replace(target)
+    if not write_manifest:
+        return target
     data = target.read_bytes()
     manifest = {"version": meta["version"], "reference_date": meta.get("reference_date"), "file": target.name,
                 "size": len(data), "sha256": hashlib.sha256(data).hexdigest(),

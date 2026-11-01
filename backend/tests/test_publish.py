@@ -17,9 +17,15 @@ def decide(conn, tmp_path, label, choices=None, by="imad"):
     draft = repo.load_draft(conn, label)
     write_decisions_template(draft, p)
     d = yaml.safe_load(p.read_text())
+    claimed = set()
     for c in d["cas"]:
         c["choix"] = (choices or {}).get(c["type"], c["choix_possibles"][0])
         c["par"], c["le"] = by, "2026-09-03"
+        if c["choix"].startswith("meme_produit:"):
+            claimed.add(next(k["produit_id"] for k in c["candidats"] if k["ref"] == c["choix"].split(":")[1]))
+    for c in d["cas"]:
+        if c["type"] == "disparu_sans_retrait" and c["sujet"]["produit_id"] in claimed:
+            c["choix"] = "rattache"
     p.write_text(yaml.safe_dump(d, allow_unicode=True, sort_keys=False))
     return p
 
@@ -64,7 +70,7 @@ def test_same_product_keeps_id(conn, tmp_path):
 
 
 def test_new_choice_creates_new_id(conn, tmp_path):
-    p = two_versions(conn, tmp_path, {"changement_titulaire": "nouveau"})
+    p = two_versions(conn, tmp_path, {"changement_titulaire": "nouveau_et_disparu:c1"})
     before = ids_by_brand(conn, "2026-07")
     apply_and_publish(conn, "2026-08", p)
     after = ids_by_brand(conn, "2026-08")
