@@ -113,9 +113,10 @@ void main() {
     ('product_active_light', 'CETIRIPEX', '10MG', Brightness.light),
     ('product_retired_light', 'CETIRIZINE MYLAN', '10MG', Brightness.light),
     ('product_retired_dark', 'CETIRIZINE MYLAN', '10MG', Brightness.dark),
+    ('product_long_font130', 'COAGIL-VII', '4,8MG', Brightness.light),
   ]) {
     testWidgets('golden $name', (tester) async {
-      phone(tester, brightness: b);
+      phone(tester, brightness: b, textScale: name.contains('font130') ? 1.3 : 1.0);
       await open(tester, idOf(marque, dosage));
       await golden(tester, find.byType(ProductScreen), name);
     });

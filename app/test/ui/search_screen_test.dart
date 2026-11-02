@@ -91,6 +91,19 @@ void main() {
     await expectLater(tester, meetsGuideline(textContrastGuideline));
   });
 
+  testWidgets('golden empty', (tester) async {
+    phone(tester);
+    await open(tester);
+    await golden(tester, find.byType(SearchScreen), 'search_empty_light');
+  });
+
+  testWidgets('golden no results', (tester) async {
+    phone(tester);
+    await open(tester);
+    await typeQuery(tester, 'zzzz');
+    await golden(tester, find.byType(SearchScreen), 'search_noresults_light');
+  });
+
   for (final (name, scale, b) in [('light', 1.0, Brightness.light), ('dark', 1.0, Brightness.dark), ('font130', 1.3, Brightness.light)]) {
     testWidgets('golden $name', (tester) async {
       phone(tester, textScale: scale, brightness: b);

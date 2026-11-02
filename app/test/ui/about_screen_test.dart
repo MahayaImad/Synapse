@@ -87,4 +87,9 @@ void main() {
     expect(h.settings.manifestUrl, url);
     expect(find.text('Adresse enregistrée'), findsOneWidget);
   });
+
+  testWidgets('golden about', (tester) async {
+    await open(tester, manifestUrl: url);
+    await golden(tester, find.byType(AboutScreen), 'about_light');
+  });
 }
