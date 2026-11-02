@@ -45,19 +45,71 @@ class StatusColors extends ThemeExtension<StatusColors> {
         );
 }
 
-/// Schéma Material : dérivé de la couleur système quand le téléphone en fournit une, sinon statique.
-ColorScheme schemeFor(Brightness brightness, Color? dynamicSeed) => dynamicSeed == null
-    ? fallbackScheme(brightness)
-    : ColorScheme.fromSeed(seedColor: dynamicSeed, brightness: brightness);
+/// Couleurs des champs remplis (bleu pâle arrondi, à la manière de la référence El Hana).
+@immutable
+class FieldColors extends ThemeExtension<FieldColors> {
+  const FieldColors({required this.fill});
 
-/// Schéma statique quand le téléphone ne fournit pas de couleurs dynamiques (avant Android 12).
-ColorScheme fallbackScheme(Brightness brightness) =>
-    ColorScheme.fromSeed(seedColor: const Color(0xFF2E5D7A), brightness: brightness);
+  final Color fill;
+
+  @override
+  FieldColors copyWith({Color? fill}) => FieldColors(fill: fill ?? this.fill);
+
+  @override
+  FieldColors lerp(FieldColors? other, double t) => other == null ? this : FieldColors(fill: Color.lerp(fill, other.fill, t)!);
+}
+
+/// Bleu azur de référence (actions, icônes, en-têtes).
+const azure = Color(0xFF4A90E2);
+
+/// Schéma Synapse : bleu azur, fond gris clair et cartes blanches (clair), gris ardoise (sombre).
+ColorScheme fallbackScheme(Brightness brightness) {
+  final base = ColorScheme.fromSeed(seedColor: azure, brightness: brightness);
+  return brightness == Brightness.light
+      ? base.copyWith(
+          primary: const Color(0xFF2F78C4),
+          onPrimary: Colors.white,
+          surface: const Color(0xFFF3F5F8),
+          surfaceContainerLowest: Colors.white,
+          surfaceContainerLow: const Color(0xFFF8FAFC),
+        )
+      : base.copyWith(
+          primary: const Color(0xFF8AB8F0),
+          onPrimary: const Color(0xFF0B2E55),
+          surface: const Color(0xFF1B1F25),
+          surfaceContainerLowest: const Color(0xFF262B33),
+          surfaceContainerLow: const Color(0xFF222730),
+          onSurface: const Color(0xFFE3E6EB),
+        );
+}
 
 ThemeData buildTheme(ColorScheme scheme) {
-  final base = ThemeData(colorScheme: scheme, useMaterial3: true);
+  final light = scheme.brightness == Brightness.light;
+  final base = ThemeData(colorScheme: scheme, useMaterial3: true, fontFamily: 'Nunito', scaffoldBackgroundColor: scheme.surface);
   return base.copyWith(
-    extensions: [StatusColors.forScheme(scheme)],
-    listTileTheme: const ListTileThemeData(minVerticalPadding: 8),
+    extensions: [
+      StatusColors.forScheme(scheme),
+      FieldColors(fill: light ? const Color(0xFFDCE9F8) : const Color(0xFF2C3A4D)),
+    ],
+    cardTheme: CardThemeData(
+      color: scheme.surfaceContainerLowest,
+      elevation: 0,
+      surfaceTintColor: Colors.transparent,
+      margin: const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 6),
+      // Filet très clair plutôt qu'une ombre : même lecture « carte blanche sur fond gris », rendu identique partout.
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: light ? const BorderSide(color: Color(0xFFE3E8EF)) : BorderSide.none,
+      ),
+    ),
+    appBarTheme: AppBarTheme(
+      centerTitle: true,
+      backgroundColor: scheme.surfaceContainerLowest,
+      surfaceTintColor: Colors.transparent,
+      scrolledUnderElevation: 1,
+      titleTextStyle: base.textTheme.titleLarge!.copyWith(color: scheme.onSurface),
+    ),
+    listTileTheme: ListTileThemeData(minVerticalPadding: 8, iconColor: scheme.primary),
+    iconTheme: IconThemeData(color: scheme.primary),
   );
 }

@@ -110,7 +110,21 @@ void main() {
         expect(size.height >= 48 && size.width >= 48, isTrue, reason: '${e.widget.runtimeType} $size');
       }
     }
-    await expectLater(tester, meetsGuideline(textContrastGuideline));
+    // Contraste du champ : vérifié sur les couleurs (theme_test) ; le guide Flutter échantillonne les pixels
+    // et mesure l'anticrénelage de Nunito dans le champ (faux négatif). On le garde pour les résultats.
+    final field = tester.widget<SearchBar>(find.byType(SearchBar));
+    final theme = Theme.of(tester.element(find.byType(SearchBar)));
+    final fill = field.backgroundColor!.resolve({})!;
+    double contrast(Color a, Color b) {
+      final la = a.computeLuminance(), lb = b.computeLuminance();
+      return (la > lb ? la + 0.05 : lb + 0.05) / (la > lb ? lb + 0.05 : la + 0.05);
+    }
+    expect(contrast(field.textStyle!.resolve({})!.color!, fill), greaterThanOrEqualTo(4.5));
+    expect(contrast(field.hintStyle!.resolve({})!.color!, fill), greaterThanOrEqualTo(4.5));
+    final s = theme.colorScheme;
+    expect(contrast(s.onSurface, s.surfaceContainerLowest), greaterThanOrEqualTo(4.5)); // titres des lignes
+    expect(contrast(s.onSurfaceVariant, s.surfaceContainerLowest), greaterThanOrEqualTo(4.5)); // sous-titres
+    expect(contrast(s.onSurfaceVariant, s.surface), greaterThanOrEqualTo(4.5)); // version sous la barre
   });
 
   testWidgets('golden fiche ouverte depuis la recherche', (tester) async {

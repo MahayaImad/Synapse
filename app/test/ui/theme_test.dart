@@ -25,13 +25,6 @@ void main() {
     });
   }
 
-  test('couleur d\'avertissement harmonisée avec un schéma dynamique', () {
-    for (final b in Brightness.values) {
-      final w = buildTheme(schemeFor(b, const Color(0xFF6750A4))).extension<StatusColors>()!;
-      expect(contrast(w.onWarningContainer, w.warningContainer), greaterThanOrEqualTo(4.5));
-    }
-  });
-
   test('conteneurs de statut de même ton (clairs en thème clair)', () {
     final theme = buildTheme(fallbackScheme(Brightness.light));
     final w = theme.extension<StatusColors>()!;
@@ -40,6 +33,51 @@ void main() {
   });
 
   test('pas de coupure après « / »', () => expect(noBreakAfterSlash('B/10'), 'B/\u206010'));
+
+  group('direction El Hana', () {
+    double hue(Color c) => HSLColor.fromColor(c).hue;
+
+    test('bleu azur pour les actions, lisible', () {
+      for (final b in Brightness.values) {
+        final s = buildTheme(fallbackScheme(b)).colorScheme;
+        expect(hue(s.primary), inInclusiveRange(200, 225), reason: '$b');
+        expect(HSLColor.fromColor(s.primary).saturation, greaterThan(0.45), reason: '$b');
+        expect(contrast(s.onPrimary, s.primary), greaterThanOrEqualTo(4.5), reason: '$b');
+        expect(contrast(s.primary, s.surface), greaterThanOrEqualTo(3.0), reason: '$b icônes');
+      }
+    });
+
+    test('clair : fond gris clair, cartes blanches, champs bleu pâle', () {
+      final t = buildTheme(fallbackScheme(Brightness.light));
+      final s = t.colorScheme;
+      expect(s.surface.computeLuminance(), inInclusiveRange(0.82, 0.94)); // gris, pas blanc
+      expect(s.surfaceContainerLowest, const Color(0xFFFFFFFF));
+      expect(t.cardTheme.color, s.surfaceContainerLowest);
+      final fill = t.extension<FieldColors>()!.fill;
+      expect(hue(fill), inInclusiveRange(200, 225));
+      expect(fill.computeLuminance(), greaterThan(0.6));
+      expect(contrast(s.onSurfaceVariant, fill), greaterThanOrEqualTo(4.5));
+    });
+
+    test('sombre : gris ardoise, cartes plus claires que le fond', () {
+      final s = buildTheme(fallbackScheme(Brightness.dark)).colorScheme;
+      expect(s.surface.computeLuminance(), lessThan(0.03));
+      expect(s.surfaceContainerLowest.computeLuminance(), greaterThan(s.surface.computeLuminance()));
+      expect(contrast(s.onSurface, s.surfaceContainerLowest), greaterThanOrEqualTo(4.5));
+      expect(contrast(s.onSurfaceVariant, s.surfaceContainerLowest), greaterThanOrEqualTo(4.5));
+    });
+
+    test('police arrondie Nunito', () {
+      expect(buildTheme(fallbackScheme(Brightness.light)).textTheme.bodyLarge!.fontFamily, 'Nunito');
+    });
+
+    test('aucun orange décoratif : seul « non renouvelé » est ambre', () {
+      final s = buildTheme(fallbackScheme(Brightness.light)).colorScheme;
+      for (final c in [s.primary, s.secondary, s.tertiary]) {
+        expect(hue(c), isNot(inInclusiveRange(20, 60)));
+      }
+    });
+  });
 
   test('libellé de version', () {
     expect(versionLabel('2026-08'), 'août 2026');

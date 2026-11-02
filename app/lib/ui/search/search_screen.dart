@@ -9,6 +9,7 @@ import '../../l10n/app_localizations.dart';
 import '../../services.dart';
 import '../about/about_screen.dart';
 import '../format.dart';
+import '../theme.dart';
 import '../product/product_screen.dart';
 import '../widgets/product_tile.dart';
 
@@ -79,12 +80,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 controller: _controller,
                 autoFocus: true,
                 hintText: l.searchHint,
-                // Barre plate sur fond tonal, comme les apps Google de référence.
+                // Champ rempli bleu pâle, arrondi, icône en tête.
                 elevation: const WidgetStatePropertyAll(0),
-                backgroundColor: WidgetStatePropertyAll(theme.colorScheme.surfaceContainerHigh),
-                leading: const Padding(
-                  padding: EdgeInsetsDirectional.only(start: 8),
-                  child: Icon(Icons.search),
+                backgroundColor: WidgetStatePropertyAll(theme.extension<FieldColors>()!.fill),
+                shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+                textStyle: WidgetStatePropertyAll(theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.onSurface)),
+                hintStyle: WidgetStatePropertyAll(theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                leading: Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 8),
+                  child: Icon(Icons.search, color: theme.colorScheme.primary),
                 ),
                 trailing: [
                   if (_query.isNotEmpty)
@@ -132,10 +136,19 @@ class _SearchScreenState extends State<SearchScreen> {
     if (_results.isEmpty) {
       return _Message(icon: Icons.search_off, title: l.noResults(_query.trim()), body: l.noResultsHelp);
     }
-    return ListView.builder(
+    // Résultats regroupés dans une carte blanche sur le fond gris.
+    return SingleChildScrollView(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      itemCount: _results.length,
-      itemBuilder: (_, i) => ProductTile(_results[i], onTap: () => _open(_results[i])),
+      padding: const EdgeInsetsDirectional.only(top: 4, bottom: 16),
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        child: Column(children: [
+          for (var i = 0; i < _results.length; i++) ...[
+            if (i > 0) const Divider(height: 1, indent: 16, endIndent: 16),
+            ProductTile(_results[i], onTap: () => _open(_results[i])),
+          ],
+        ]),
+      ),
     );
   }
 }

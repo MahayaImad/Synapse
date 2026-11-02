@@ -10,16 +10,13 @@ import 'ui/theme.dart';
 
 class SynapseApp extends StatelessWidget {
   const SynapseApp({super.key, required this.store, required this.updates, required this.settings, required this.home,
-      this.messengerKey, this.dynamicSeed});
+      this.messengerKey});
 
   final NomenclatureStore store;
   final UpdateService updates;
   final Settings settings;
   final Widget home;
   final GlobalKey<ScaffoldMessengerState>? messengerKey;
-
-  /// Couleur principale du thème système (Material You, Android 12+), sinon null.
-  final Color? dynamicSeed;
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +28,8 @@ class SynapseApp extends StatelessWidget {
         onGenerateTitle: (c) => AppLocalizations.of(c).appTitle,
         debugShowCheckedModeBanner: false,
         scaffoldMessengerKey: messengerKey,
-        theme: buildTheme(schemeFor(Brightness.light, dynamicSeed)),
-        darkTheme: buildTheme(schemeFor(Brightness.dark, dynamicSeed)),
+        theme: buildTheme(fallbackScheme(Brightness.light)),
+        darkTheme: buildTheme(fallbackScheme(Brightness.dark)),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('fr'),

@@ -4,6 +4,7 @@ import '../../data/update_service.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services.dart';
 import '../format.dart';
+import '../theme.dart';
 
 /// Version installée, mises à jour et adresse du manifeste.
 class AboutScreen extends StatefulWidget {
@@ -77,54 +78,64 @@ class _AboutScreenState extends State<AboutScreen> {
               : last == null
                   ? l.neverChecked
                   : '${shortDate(last.checkedAt)} ${two(last.checkedAt.hour)}:${two(last.checkedAt.minute)} — ${outcomeMessage(l, last)}';
+          final fill = theme.extension<FieldColors>()!.fill;
           return SingleChildScrollView(
-            padding: const EdgeInsetsDirectional.only(bottom: 24),
+            padding: const EdgeInsetsDirectional.only(top: 8, bottom: 24),
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              _Row(l.aboutVersion, '${versionLabel(m.version)} (${m.version})'),
-              _Row(l.aboutReference, shortDate(m.referenceDate)),
-              _Row(l.aboutProducts, '${m.products}'),
-              _Row(l.aboutPublished, shortDate(m.publishedAt.toLocal())),
-              _Row(l.aboutLastCheck, status),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 8),
-                child: Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: FilledButton.tonalIcon(
-                    onPressed: _checking ? null : _check,
-                    icon: _checking
-                        ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                        : const Icon(Icons.sync),
-                    label: Text(l.checkNow),
-                  ),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.symmetric(vertical: 8),
+                  child: Column(children: [
+                    _Row(Icons.inventory_2_outlined, l.aboutVersion, versionLabel(m.version)),
+                    _Row(Icons.event_outlined, l.aboutReference, shortDate(m.referenceDate)),
+                    _Row(Icons.medication_outlined, l.aboutProducts, '${m.products}'),
+                    _Row(Icons.publish_outlined, l.aboutPublished, shortDate(m.publishedAt.toLocal())),
+                    _Row(Icons.sync, l.aboutLastCheck, status),
+                    Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(56, 8, 16, 8),
+                      child: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: FilledButton.icon(
+                          onPressed: _checking ? null : _check,
+                          icon: _checking
+                              ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                              : const Icon(Icons.sync),
+                          label: Text(l.checkNow),
+                        ),
+                      ),
+                    ),
+                  ]),
                 ),
               ),
-              const Divider(height: 32),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
-                child: TextField(
-                  key: const Key('manifest-url'),
-                  controller: _url,
-                  keyboardType: TextInputType.url,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    labelText: l.manifestUrl,
-                    helperText: l.manifestUrlHelp,
-                    errorText: _urlError,
-                    border: const OutlineInputBorder(),
-                  ),
-                  onSubmitted: (_) => _save(),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 8),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                    TextField(
+                      key: const Key('manifest-url'),
+                      controller: _url,
+                      keyboardType: TextInputType.url,
+                      autocorrect: false,
+                      decoration: InputDecoration(
+                        labelText: l.manifestUrl,
+                        helperText: l.manifestUrlHelp,
+                        errorText: _urlError,
+                        filled: true,
+                        fillColor: fill,
+                        prefixIcon: Icon(Icons.link, color: theme.colorScheme.primary),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+                      ),
+                      onSubmitted: (_) => _save(),
+                    ),
+                    Align(
+                      alignment: AlignmentDirectional.centerEnd,
+                      child: TextButton(onPressed: _save, child: Text(l.save)),
+                    ),
+                  ]),
                 ),
               ),
               Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 0),
-                child: Align(
-                  alignment: AlignmentDirectional.centerEnd,
-                  child: TextButton(onPressed: _save, child: Text(l.save)),
-                ),
-              ),
-              const Divider(height: 32),
-              Padding(
-                padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
+                padding: const EdgeInsetsDirectional.fromSTEB(24, 12, 24, 0),
                 child: Text(l.disclaimer, style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
               ),
             ]),
@@ -144,8 +155,9 @@ String outcomeMessage(AppLocalizations l, UpdateResult r) => switch (r.outcome) 
     };
 
 class _Row extends StatelessWidget {
-  const _Row(this.label, this.value);
+  const _Row(this.icon, this.label, this.value);
 
+  final IconData icon;
   final String label;
   final String value;
 
@@ -155,10 +167,16 @@ class _Row extends StatelessWidget {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 8),
       child: MergeSemantics(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(label, style: theme.textTheme.labelMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-          const SizedBox(height: 2),
-          Text(value, style: theme.textTheme.bodyLarge),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          ExcludeSemantics(child: Icon(icon, color: theme.colorScheme.primary)),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(label, style: theme.textTheme.labelMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              const SizedBox(height: 2),
+              Text(value, style: theme.textTheme.bodyLarge),
+            ]),
+          ),
         ]),
       ),
     );

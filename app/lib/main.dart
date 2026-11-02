@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -37,15 +36,7 @@ Future<void> start() async {
     onUnmeteredNetwork: () async => (await Connectivity().checkConnectivity()).contains(ConnectivityResult.wifi),
   );
   final messenger = GlobalKey<ScaffoldMessengerState>();
-  Color? seed;
-  try {
-    final palette = await DynamicColorPlugin.getCorePalette();
-    if (palette != null) seed = Color(palette.primary.get(40));
-  } catch (_) {
-    seed = null; // pas de couleurs dynamiques : schéma statique
-  }
-  runApp(SynapseApp(store: store, updates: updates, settings: settings, messengerKey: messenger, dynamicSeed: seed,
-      home: const SearchScreen()));
+  runApp(SynapseApp(store: store, updates: updates, settings: settings, messengerKey: messenger, home: const SearchScreen()));
   Future<void> tick() async {
     if (updates.due) notifyUpdate(messenger, await updates.check());
   }

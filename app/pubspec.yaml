@@ -40,7 +40,6 @@ dependencies:
   crypto: ^3.0.8
   connectivity_plus: ^7.3.2
   shared_preferences: ^2.5.6
-  dynamic_color: ^2.1.0
   intl: ^0.20.3
   flutter_localizations:
     sdk: flutter
@@ -65,6 +64,14 @@ flutter:
   generate: true
   assets:
     - assets/nomenclature/
+  fonts:
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Regular.ttf
+        - asset: assets/fonts/Nunito-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Nunito-Bold.ttf
+          weight: 700
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

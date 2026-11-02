@@ -38,10 +38,18 @@ void main() {
 
   testWidgets('informations de version et mention', (tester) async {
     await open(tester);
-    expect(find.text('août 2026 (2026-08)'), findsOneWidget);
+    expect(find.text('août 2026'), findsOneWidget);
     expect(find.text('31/08/2026'), findsOneWidget);
     expect(find.text('43'), findsOneWidget);
     expect(find.textContaining('La décision reste au pharmacien', skipOffstage: false), findsOneWidget);
+  });
+
+  testWidgets('informations groupées en cartes, avec icônes', (tester) async {
+    await open(tester);
+    expect(find.byType(Card), findsWidgets);
+    expect(find.byIcon(Icons.event_outlined), findsOneWidget);
+    final field = tester.widget<TextField>(find.byKey(const Key('manifest-url')));
+    expect(field.decoration!.filled, isTrue);
   });
 
   testWidgets('URL vide : mises à jour désactivées', (tester) async {
@@ -64,14 +72,14 @@ void main() {
     file = (await tester.runAsync(() async => relabel(h.dir, '2026-09', name: 'src.sqlite').readAsBytesSync()))!;
     await tapAndWait(tester, find.text('Vérifier maintenant'));
     expect(find.text('Nomenclature mise à jour : septembre 2026'), findsWidgets);
-    expect(find.text('septembre 2026 (2026-09)'), findsOneWidget);
+    expect(find.text('septembre 2026'), findsOneWidget);
   });
 
   testWidgets('vérifier maintenant : échec, version inchangée', (tester) async {
     await open(tester, client: MockClient((_) async => http.Response('', 404)), manifestUrl: url);
     await tapAndWait(tester, find.text('Vérifier maintenant'));
     expect(find.textContaining('Échec de la mise à jour'), findsWidgets);
-    expect(find.text('août 2026 (2026-08)'), findsOneWidget);
+    expect(find.text('août 2026'), findsOneWidget);
   });
 
   testWidgets('adresse du manifeste : https seulement', (tester) async {

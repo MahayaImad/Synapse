@@ -17,5 +17,10 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
 
   await load('Roboto', ['Roboto-Regular.ttf', 'Roboto-Medium.ttf', 'Roboto-Bold.ttf']);
   await load('MaterialIcons', ['MaterialIcons-Regular.otf']);
+  final nunito = FontLoader('Nunito');
+  for (final f in ['Nunito-Regular.ttf', 'Nunito-SemiBold.ttf', 'Nunito-Bold.ttf']) {
+    nunito.addFont(Future.value(ByteData.sublistView(File('assets/fonts/$f').readAsBytesSync())));
+  }
+  await nunito.load();
   await testMain();
 }

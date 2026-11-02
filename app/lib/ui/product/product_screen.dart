@@ -62,64 +62,78 @@ class _Sheet extends StatelessWidget {
 
     return Scaffold(
       body: CustomScrollView(slivers: [
-        // Barre Material moyenne : le nom du produit reste visible en haut quand on fait défiler la fiche.
-        SliverAppBar.medium(title: Text(p.marque, maxLines: 1, overflow: TextOverflow.ellipsis)),
+        // Titre centré, toujours visible : le nom du produit reste en haut pendant la lecture de la fiche.
+        SliverAppBar(pinned: true, title: Text(p.marque, maxLines: 1, overflow: TextOverflow.ellipsis)),
         SliverPadding(
           padding: const EdgeInsetsDirectional.only(bottom: 24),
           sliver: SliverToBoxAdapter(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 16),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(noBreakAfterSlash('${p.dosage} · ${p.forme}'),
-                  style: theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.onSurfaceVariant, fontFeatures: tabular)),
-              const SizedBox(height: 8),
-              StatusChip(p.statut, showActive: true),
-            ]),
+          const SizedBox(height: 8),
+          Card(
+            child: Padding(
+              padding: const EdgeInsetsDirectional.all(16),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(p.marque, style: theme.textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w700)),
+                const SizedBox(height: 4),
+                Text(noBreakAfterSlash('${p.dosage} · ${p.forme}'),
+                    style: theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.onSurfaceVariant, fontFeatures: tabular)),
+                const SizedBox(height: 12),
+                StatusChip(p.statut, showActive: true),
+              ]),
+            ),
           ),
           if (!active) ...[
             _StatusBanner(p),
-            _Header(l.activeEquivalents),
-            Column(
-              key: const Key('active-equivalents'),
-              children: shownOnTop.isEmpty ? [_Note(l.noActiveEquivalent)] : tiles(shownOnTop),
-            ),
+            _Section(title: l.activeEquivalents, children: [
+              Column(
+                key: const Key('active-equivalents'),
+                children: shownOnTop.isEmpty ? [_Note(l.noActiveEquivalent)] : tiles(shownOnTop),
+              ),
+            ]),
           ],
-          _Header(l.information),
-          _Field(l.fieldDci, p.dci),
-          _Field(l.fieldCodeDci, p.codeDci, numeric: true),
-          _Field(l.fieldPackaging, p.conditionnement, valueKey: const Key('field-packaging'), numeric: true),
-          _Field(l.fieldListe, listeLabel(l, p.liste) ?? l.unclassified),
-          if (_type(l, p.type) case final t?) _Field(l.fieldType, t),
-          if (_origin(l, p.origine) case final o?) _Field(l.fieldOrigin, o),
-          _Field(l.fieldLab, p.pays.isEmpty ? p.labo : '${p.labo} — ${p.pays}'),
-          if (_availability(l, p) case final a?) _Field(l.fieldAvailability, a),
-          _Field(l.fieldRegistration, p.nEnregistrement, numeric: true),
+          _Section(title: l.information, children: [
+            _Field(Icons.science_outlined, l.fieldDci, p.dci),
+            _Field(Icons.tag, l.fieldCodeDci, p.codeDci, numeric: true),
+            _Field(Icons.inventory_2_outlined, l.fieldPackaging, p.conditionnement,
+                valueKey: const Key('field-packaging'), numeric: true),
+            _Field(Icons.policy_outlined, l.fieldListe, listeLabel(l, p.liste) ?? l.unclassified),
+            if (_type(l, p.type) case final t?) _Field(Icons.category_outlined, l.fieldType, t),
+            if (_origin(l, p.origine) case final o?) _Field(Icons.factory_outlined, l.fieldOrigin, o),
+            _Field(Icons.business_outlined, l.fieldLab, p.pays.isEmpty ? p.labo : '${p.labo} — ${p.pays}'),
+            if (_availability(l, p) case final a?) _Field(Icons.local_pharmacy_outlined, l.fieldAvailability, a),
+            _Field(Icons.badge_outlined, l.fieldRegistration, p.nEnregistrement, numeric: true),
+          ]),
           if (equivalents.isEmpty)
-            ...[_Header(l.sameDosage), _Note(l.noEquivalent)]
+            _Section(title: l.sameDosage, children: [_Note(l.noEquivalent)])
           else ...[
-            if (sameRest.isNotEmpty || active) _Header(l.sameDosage),
-            Column(
-              key: const Key('same-dosage'),
-              children: active && sameRest.isEmpty ? [_Note(l.noEquivalent)] : tiles(sameRest),
-            ),
-            if (equivalents.otherDosages.isNotEmpty) _Header(l.otherDosages),
-            Column(
-              key: const Key('other-dosages'),
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                for (final g in equivalents.otherDosages) ...[
-                  Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 0),
-                    child: Text(g.isUnknown ? l.dosageUnknown : noBreakAfterSlash(g.dosage),
-                        style: theme.textTheme.labelLarge!.copyWith(color: theme.colorScheme.onSurfaceVariant, fontFeatures: tabular)),
-                  ),
-                  ...tiles(g.products),
-                ],
-              ],
-            ),
+            if (sameRest.isNotEmpty || active)
+              _Section(title: l.sameDosage, children: [
+                Column(
+                  key: const Key('same-dosage'),
+                  children: active && sameRest.isEmpty ? [_Note(l.noEquivalent)] : tiles(sameRest),
+                ),
+              ])
+            else
+              const SizedBox.shrink(key: Key('same-dosage')),
+            if (equivalents.otherDosages.isNotEmpty)
+              _Section(title: l.otherDosages, children: [
+                Column(
+                  key: const Key('other-dosages'),
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (final g in equivalents.otherDosages) ...[
+                      Padding(
+                        padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 0),
+                        child: Text(g.isUnknown ? l.dosageUnknown : noBreakAfterSlash(g.dosage),
+                            style: theme.textTheme.labelLarge!.copyWith(color: theme.colorScheme.onSurfaceVariant, fontFeatures: tabular)),
+                      ),
+                      ...tiles(g.products),
+                    ],
+                  ],
+                ),
+              ]),
           ],
           Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(16, 24, 16, 0),
+            padding: const EdgeInsetsDirectional.fromSTEB(24, 12, 24, 0),
             child: Text(l.sourceFooter(version),
                 style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
           ),
@@ -174,7 +188,7 @@ class _StatusBanner extends StatelessWidget {
     ];
     return Padding(
       key: const Key('status-banner'),
-      padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 8),
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6),
       child: Card.filled(
         margin: EdgeInsets.zero,
         color: bg,
@@ -199,27 +213,38 @@ class _StatusBanner extends StatelessWidget {
   }
 }
 
-class _Header extends StatelessWidget {
-  const _Header(this.text);
+/// Carte blanche titrée qui regroupe une partie de la fiche.
+class _Section extends StatelessWidget {
+  const _Section({required this.title, required this.children});
 
-  final String text;
+  final String title;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16, 24, 16, 8),
-      child: Semantics(
-        header: true,
-        child: Text(text, style: theme.textTheme.titleSmall!.copyWith(color: theme.colorScheme.primary)),
-      ),
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 4),
+          child: Semantics(
+            header: true,
+            child: Text(title,
+                style: theme.textTheme.titleSmall!.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w700)),
+          ),
+        ),
+        ...children,
+        const SizedBox(height: 8),
+      ]),
     );
   }
 }
 
 class _Field extends StatelessWidget {
-  const _Field(this.label, this.value, {this.valueKey, this.numeric = false});
+  const _Field(this.icon, this.label, this.value, {this.valueKey, this.numeric = false});
 
+  final IconData icon;
   final String label;
   final String value;
   final Key? valueKey;
@@ -229,13 +254,19 @@ class _Field extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6),
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 8),
       child: MergeSemantics(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(label, style: theme.textTheme.labelMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-          const SizedBox(height: 2),
-          Text(noBreakAfterSlash(value), key: valueKey,
-              style: theme.textTheme.bodyLarge!.copyWith(fontFeatures: numeric ? tabular : null)),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          ExcludeSemantics(child: Icon(icon, size: 24, color: theme.colorScheme.primary)),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(label, style: theme.textTheme.labelMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              const SizedBox(height: 2),
+              Text(noBreakAfterSlash(value), key: valueKey,
+                  style: theme.textTheme.bodyLarge!.copyWith(fontFeatures: numeric ? tabular : null)),
+            ]),
+          ),
         ]),
       ),
     );
