@@ -13,3 +13,6 @@ String two(int n) => n.toString().padLeft(2, '0');
 
 /// Date au format JJ/MM/AAAA.
 String shortDate(DateTime d) => '${two(d.day)}/${two(d.month)}/${d.year}';
+
+/// Empêche les coupures de ligne juste après « / » (« B/10 », « 5MG/ML ») : U+2060 (WORD JOINER).
+String noBreakAfterSlash(String s) => s.replaceAll('/', '/\u2060');

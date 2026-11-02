@@ -11,7 +11,7 @@ import 'app.dart';
 import 'data/settings.dart';
 import 'data/store.dart';
 import 'data/update_service.dart';
-import 'ui/home.dart';
+import 'ui/search/search_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +35,7 @@ Future<void> main() async {
     seed = null; // pas de couleurs dynamiques : schéma statique
   }
   runApp(SynapseApp(store: store, updates: updates, settings: settings, messengerKey: messenger, dynamicSeed: seed,
-      home: const HomeScreen()));
+      home: const SearchScreen()));
   Future<void> tick() async {
     if (updates.due) await updates.check();
   }

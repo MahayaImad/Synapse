@@ -11,7 +11,7 @@ class StatusColors extends ThemeExtension<StatusColors> {
 
   factory StatusColors.forScheme(ColorScheme scheme) {
     final seed = Color(Blend.harmonize(_amber.toARGB32(), scheme.primary.toARGB32()));
-    final tonal = ColorScheme.fromSeed(seedColor: seed, brightness: scheme.brightness, dynamicSchemeVariant: DynamicSchemeVariant.fidelity);
+    final tonal = ColorScheme.fromSeed(seedColor: seed, brightness: scheme.brightness, dynamicSchemeVariant: DynamicSchemeVariant.tonalSpot);
     return StatusColors(
       warning: tonal.primary,
       onWarning: tonal.onPrimary,

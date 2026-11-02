@@ -32,6 +32,15 @@ void main() {
     }
   });
 
+  test('conteneurs de statut de même ton (clairs en thème clair)', () {
+    final theme = buildTheme(fallbackScheme(Brightness.light));
+    final w = theme.extension<StatusColors>()!;
+    expect(w.warningContainer.computeLuminance(), greaterThan(0.5));
+    expect((w.warningContainer.computeLuminance() - theme.colorScheme.errorContainer.computeLuminance()).abs(), lessThan(0.25));
+  });
+
+  test('pas de coupure après « / »', () => expect(noBreakAfterSlash('B/10'), 'B/\u206010'));
+
   test('libellé de version', () {
     expect(versionLabel('2026-08'), 'août 2026');
     expect(versionLabel('2027-02'), 'février 2027');
@@ -49,3 +58,4 @@ void main() {
     expect((await Settings.load()).manifestUrl, '');
   });
 }
+
