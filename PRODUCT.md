@@ -44,6 +44,8 @@ Les données viennent de la nomenclature officielle du ministère, importée cha
 
 Nom : Synapse (startup Synapse). Outil d'aide à la dispensation : la décision reste au pharmacien.
 
+Direction visuelle fixée par l'utilisateur : Material 3, thème inspiré de l'app El Hana de la CNAS (captures de référence : `.impeccable/references/elhana/`) — bleu azur pour les actions et icônes, fond gris clair, cartes blanches qui regroupent les informations, champs remplis bleu pâle arrondis avec icône, icône devant chaque information, titre centré, typographie arrondie, mode sombre gris ardoise. Inspiration seulement : ni logo, ni nom, ni identité CNAS (Synapse n'est pas une app officielle). L'orange d'El Hana n'est pas repris : il est réservé au statut « non renouvelé ».
+
 ## Evidence on Hand
 
 Nomenclature réelle publiée par `synapse-admin` (≈ 9 500 produits, versions 2024-08 à 2026-08). Aucun logo, aucune charte graphique, aucun témoignage : ne pas en inventer.

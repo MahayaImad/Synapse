@@ -1,0 +1,4 @@
+# Ordonnances réelles et résultats : JAMAIS dans git (données de santé)
+data/
+results/
+.ipynb_checkpoints/

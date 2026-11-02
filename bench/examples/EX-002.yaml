@@ -1,0 +1,40 @@
+type: imprimee
+notes: Ordonnance FICTIVE générée par make_examples.py
+masques:
+- - 0.0
+  - 0.0
+  - 1.0
+  - 0.16
+- - 0.6
+  - 0.78
+  - 1.0
+  - 0.9
+zone:
+- 0.0
+- 0.18
+- 1.0
+- 0.75
+attendu:
+  age: 34 ans
+  poids: null
+  lignes:
+  - produit_id: a510e119-db6e-4aa9-a78c-a0cb3a670f5d
+    marque: SMECTA FRAISE
+    dosage: 3G/SACHET
+    forme: null
+    posologie:
+      dose_par_prise: 1
+      unite: sachet
+      frequence: 3/j
+      duree: 3 j
+      voie: orale
+  - produit_id: 9c38ffaf-f71d-49c5-bc4c-8de1de9cc7c3
+    marque: VENTOLINE
+    dosage: 100µG/DOSE
+    forme: AEROSOL
+    posologie:
+      dose_par_prise: 2
+      unite: bouffée
+      frequence: si besoin
+      duree: null
+      voie: inhalée

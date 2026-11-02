@@ -1,0 +1,35 @@
+[project]
+name = "synapse-bench"
+version = "0.0.1"
+description = "Banc d'essai TEMPORAIRE : lecture d'ordonnances par LLM de vision (aide à la décision, pas du code de production)"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=0.80",
+    "openai>=1.50",
+    "pillow>=10",
+    "pyyaml>=6",
+    "pydantic>=2.7",
+    "rapidfuzz>=3.9",
+    "pandas>=2.2",
+    "matplotlib>=3.8",
+    "nbformat>=5.10",
+    "ipykernel>=6.29",
+    "jupyterlab>=4",
+    "synapse-admin",
+]
+
+[tool.uv.sources]
+synapse-admin = { path = "../backend", editable = true }
+
+[dependency-groups]
+dev = ["pytest>=8", "nbconvert>=7"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["synapse_bench"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

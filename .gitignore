@@ -127,3 +127,4 @@ app.*.symbols
 nomenclature/publications/
 backend/.venv/
 !backend/uv.lock
+!app/pubspec.lock

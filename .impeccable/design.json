@@ -1,0 +1,826 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-02T06:13:25+00:00",
+  "title": "Design System: Synapse",
+  "extensions": {
+    "colorMeta": {
+      "azure-seed": {
+        "role": "primary",
+        "displayName": "Graine bleu azur",
+        "canonical": "#4A90E2",
+        "oklch": "oklch(64.6% 0.142 253.9)",
+        "tonalRamp": [
+          "#000B1E",
+          "#00234A",
+          "#083F78",
+          "#1E5EA4",
+          "#3D7FCB",
+          "#6AA1E4",
+          "#9EC8FB",
+          "#E4F0FF"
+        ]
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "Bleu azur d'action",
+        "canonical": "#2F78C4",
+        "oklch": "oklch(56.5% 0.138 252.3)",
+        "tonalRamp": [
+          "#000B1D",
+          "#032446",
+          "#064076",
+          "#1C5FA2",
+          "#3C80C8",
+          "#6AA2E2",
+          "#9AC8FE",
+          "#E4F0FE"
+        ]
+      },
+      "on-primary": {
+        "role": "primary",
+        "displayName": "Sur bleu azur",
+        "canonical": "#FFFFFF",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#404040",
+          "#5D5D5D",
+          "#7D7D7D",
+          "#9E9E9E",
+          "#C4C4C4",
+          "#EEEEEE"
+        ]
+      },
+      "primary-container": {
+        "role": "primary",
+        "displayName": "Conteneur azur",
+        "canonical": "#D4E3FF",
+        "oklch": "oklch(91.3% 0.042 263.0)",
+        "tonalRamp": [
+          "#070B14",
+          "#1D2431",
+          "#374051",
+          "#525E74",
+          "#717E95",
+          "#939FB4",
+          "#BBC4D6",
+          "#E7EFFD"
+        ]
+      },
+      "on-primary-container": {
+        "role": "primary",
+        "displayName": "Sur conteneur azur",
+        "canonical": "#204876",
+        "oklch": "oklch(39.7% 0.090 253.7)",
+        "tonalRamp": [
+          "#010B1D",
+          "#0E253F",
+          "#244164",
+          "#3B608B",
+          "#5880AF",
+          "#7FA1CB",
+          "#AAC7EA",
+          "#E4F0FE"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Gris de comptoir",
+        "canonical": "#F3F5F8",
+        "oklch": "oklch(96.9% 0.005 258.3)",
+        "tonalRamp": [
+          "#0B0B0C",
+          "#232425",
+          "#3F4042",
+          "#5C5E60",
+          "#7C7D80",
+          "#9D9EA1",
+          "#C3C4C6",
+          "#EDEEF0"
+        ]
+      },
+      "on-surface": {
+        "role": "neutral",
+        "displayName": "Encre",
+        "canonical": "#191C20",
+        "oklch": "oklch(22.5% 0.009 255.6)",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#222427",
+          "#3D4043",
+          "#5B5E62",
+          "#7A7E82",
+          "#9B9FA3",
+          "#C2C4C8",
+          "#ECEFF1"
+        ]
+      },
+      "on-surface-variant": {
+        "role": "neutral",
+        "displayName": "Encre secondaire",
+        "canonical": "#43474E",
+        "oklch": "oklch(39.7% 0.013 261.7)",
+        "tonalRamp": [
+          "#0A0B0E",
+          "#222428",
+          "#3D4045",
+          "#5A5E64",
+          "#797D85",
+          "#9B9FA5",
+          "#C1C4CA",
+          "#ECEFF3"
+        ]
+      },
+      "surface-container-lowest": {
+        "role": "neutral",
+        "displayName": "Blanc de carte",
+        "canonical": "#FFFFFF",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#242424",
+          "#404040",
+          "#5D5D5D",
+          "#7D7D7D",
+          "#9E9E9E",
+          "#C4C4C4",
+          "#EEEEEE"
+        ]
+      },
+      "surface-container-low": {
+        "role": "neutral",
+        "displayName": "Blanc cassé",
+        "canonical": "#F8FAFC",
+        "oklch": "oklch(98.4% 0.003 247.9)",
+        "tonalRamp": [
+          "#0B0B0C",
+          "#232425",
+          "#3F4041",
+          "#5C5E5F",
+          "#7C7D7F",
+          "#9D9EA0",
+          "#C3C4C5",
+          "#EDEEEF"
+        ]
+      },
+      "outline-variant": {
+        "role": "neutral",
+        "displayName": "Filet",
+        "canonical": "#E3E8EF",
+        "oklch": "oklch(92.9% 0.011 256.7)",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#222427",
+          "#3D4044",
+          "#5A5E63",
+          "#797E83",
+          "#9B9FA4",
+          "#C1C4C9",
+          "#ECEFF2"
+        ]
+      },
+      "field-fill": {
+        "role": "primary",
+        "displayName": "Bleu pâle de champ",
+        "canonical": "#DCE9F8",
+        "oklch": "oklch(92.9% 0.025 251.9)",
+        "tonalRamp": [
+          "#080C10",
+          "#1F252C",
+          "#39414A",
+          "#555F6A",
+          "#737E8B",
+          "#96A0AB",
+          "#BDC5CF",
+          "#E9EFF7"
+        ]
+      },
+      "error": {
+        "role": "tertiary",
+        "displayName": "Rouge de retrait",
+        "canonical": "#BA1A1A",
+        "oklch": "oklch(50.6% 0.193 27.7)",
+        "tonalRamp": [
+          "#1F0000",
+          "#4A0203",
+          "#7C0308",
+          "#AB1F1C",
+          "#D4433A",
+          "#F07366",
+          "#FEACA1",
+          "#FFE9E5"
+        ]
+      },
+      "error-container": {
+        "role": "tertiary",
+        "displayName": "Conteneur retiré",
+        "canonical": "#FFDAD6",
+        "oklch": "oklch(91.8% 0.042 25.2)",
+        "tonalRamp": [
+          "#130807",
+          "#301F1D",
+          "#503937",
+          "#725653",
+          "#947571",
+          "#B39794",
+          "#D6BEBB",
+          "#FCEAE7"
+        ]
+      },
+      "on-error-container": {
+        "role": "tertiary",
+        "displayName": "Sur conteneur retiré",
+        "canonical": "#93000A",
+        "oklch": "oklch(41.7% 0.170 27.4)",
+        "tonalRamp": [
+          "#1E0001",
+          "#490505",
+          "#761513",
+          "#A32D28",
+          "#CB4E45",
+          "#E77A6E",
+          "#FCADA3",
+          "#FEE9E6"
+        ]
+      },
+      "warning": {
+        "role": "tertiary",
+        "displayName": "Ambre harmonisé",
+        "canonical": "#6E5D0E",
+        "oklch": "oklch(48.1% 0.094 95.7)",
+        "tonalRamp": [
+          "#0F0B00",
+          "#2B2403",
+          "#4B3F06",
+          "#6C5D1B",
+          "#8D7D3A",
+          "#AC9F67",
+          "#D0C597",
+          "#F7EFCD"
+        ]
+      },
+      "warning-container": {
+        "role": "tertiary",
+        "displayName": "Conteneur non renouvelé",
+        "canonical": "#FAE287",
+        "oklch": "oklch(91.3% 0.114 95.0)",
+        "tonalRamp": [
+          "#0F0B00",
+          "#2C2301",
+          "#4C3F02",
+          "#6F5C07",
+          "#927C22",
+          "#B09E58",
+          "#D3C48C",
+          "#FAEFC5"
+        ]
+      },
+      "on-warning-container": {
+        "role": "tertiary",
+        "displayName": "Sur conteneur non renouvelé",
+        "canonical": "#544600",
+        "oklch": "oklch(39.7% 0.082 96.0)",
+        "tonalRamp": [
+          "#0F0B00",
+          "#2B2402",
+          "#4A3F13",
+          "#6A5D28",
+          "#8B7D45",
+          "#AA9F6F",
+          "#CEC59D",
+          "#F6EFD1"
+        ]
+      },
+      "secondary-container": {
+        "role": "secondary",
+        "displayName": "Ardoise tonale (en vigueur)",
+        "canonical": "#D8E3F8",
+        "oklch": "oklch(91.4% 0.031 263.5)",
+        "tonalRamp": [
+          "#080B12",
+          "#1F242E",
+          "#39404D",
+          "#555E6E",
+          "#747E8F",
+          "#969FAF",
+          "#BDC4D2",
+          "#E9EFF9"
+        ]
+      },
+      "on-secondary-container": {
+        "role": "secondary",
+        "displayName": "Sur ardoise tonale",
+        "canonical": "#3C4758",
+        "oklch": "oklch(39.5% 0.032 259.0)",
+        "tonalRamp": [
+          "#070B12",
+          "#1E242E",
+          "#38404D",
+          "#545E6F",
+          "#727E90",
+          "#959FAF",
+          "#BCC5D2",
+          "#E8EFF9"
+        ]
+      },
+      "inverse-surface": {
+        "role": "neutral",
+        "displayName": "Inverse (snackbar)",
+        "canonical": "#2E3035",
+        "oklch": "oklch(30.9% 0.009 268.4)",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#232427",
+          "#3E4044",
+          "#5B5D63",
+          "#7B7D83",
+          "#9C9EA3",
+          "#C2C4C8",
+          "#EDEEF2"
+        ]
+      },
+      "on-inverse-surface": {
+        "role": "neutral",
+        "displayName": "Sur inverse",
+        "canonical": "#EFF0F7",
+        "oklch": "oklch(95.6% 0.009 279.7)",
+        "tonalRamp": [
+          "#0B0B0D",
+          "#232427",
+          "#3F3F44",
+          "#5C5D62",
+          "#7C7D83",
+          "#9D9EA3",
+          "#C3C4C8",
+          "#EEEEF2"
+        ]
+      },
+      "primary-dark": {
+        "role": "primary",
+        "displayName": "Bleu azur d'action — sombre",
+        "canonical": "#8AB8F0",
+        "oklch": "oklch(77.1% 0.095 253.8)",
+        "tonalRamp": [
+          "#000B1E",
+          "#0D2540",
+          "#224165",
+          "#395F8D",
+          "#5680B2",
+          "#7DA1CE",
+          "#A9C7EC",
+          "#E4F0FF"
+        ]
+      },
+      "on-primary-dark": {
+        "role": "primary",
+        "displayName": "Sur bleu azur — sombre",
+        "canonical": "#0B2E55",
+        "oklch": "oklch(30.0% 0.081 254.1)",
+        "tonalRamp": [
+          "#020B1B",
+          "#11253C",
+          "#284160",
+          "#405F86",
+          "#5D80AA",
+          "#83A1C7",
+          "#ADC7E7",
+          "#E4F0FF"
+        ]
+      },
+      "surface-dark": {
+        "role": "neutral",
+        "displayName": "Gris de comptoir — sombre",
+        "canonical": "#1B1F25",
+        "oklch": "oklch(23.8% 0.013 258.4)",
+        "tonalRamp": [
+          "#0A0B0E",
+          "#222428",
+          "#3D4045",
+          "#5A5E64",
+          "#797E85",
+          "#9A9FA5",
+          "#C1C4CA",
+          "#ECEFF3"
+        ]
+      },
+      "on-surface-dark": {
+        "role": "neutral",
+        "displayName": "Encre — sombre",
+        "canonical": "#E3E6EB",
+        "oklch": "oklch(92.4% 0.008 260.7)",
+        "tonalRamp": [
+          "#0A0B0D",
+          "#232426",
+          "#3E4043",
+          "#5B5E62",
+          "#7B7D82",
+          "#9C9EA2",
+          "#C2C4C7",
+          "#EDEEF1"
+        ]
+      },
+      "on-surface-variant-dark": {
+        "role": "neutral",
+        "displayName": "Encre secondaire — sombre",
+        "canonical": "#C3C6CF",
+        "oklch": "oklch(82.7% 0.013 271.3)",
+        "tonalRamp": [
+          "#0A0B0E",
+          "#222428",
+          "#3E4045",
+          "#5B5D64",
+          "#7A7D85",
+          "#9C9EA5",
+          "#C2C4CA",
+          "#EDEEF3"
+        ]
+      },
+      "surface-container-lowest-dark": {
+        "role": "neutral",
+        "displayName": "Blanc de carte — sombre",
+        "canonical": "#262B33",
+        "oklch": "oklch(28.8% 0.016 259.8)",
+        "tonalRamp": [
+          "#090B0F",
+          "#212429",
+          "#3C4047",
+          "#595E66",
+          "#787E87",
+          "#9A9FA7",
+          "#C0C4CB",
+          "#EBEFF4"
+        ]
+      },
+      "surface-container-low-dark": {
+        "role": "neutral",
+        "displayName": "Blanc cassé — sombre",
+        "canonical": "#222730",
+        "oklch": "oklch(27.2% 0.018 262.2)",
+        "tonalRamp": [
+          "#090B0F",
+          "#21242A",
+          "#3C4047",
+          "#595E67",
+          "#787E88",
+          "#999FA8",
+          "#C0C4CC",
+          "#EBEFF5"
+        ]
+      },
+      "outline-variant-dark": {
+        "role": "neutral",
+        "displayName": "Filet — sombre",
+        "canonical": "#353B45",
+        "oklch": "oklch(35.1% 0.019 260.7)",
+        "tonalRamp": [
+          "#090B0F",
+          "#21242A",
+          "#3B4048",
+          "#585E68",
+          "#777E88",
+          "#999FA8",
+          "#BFC4CD",
+          "#EBEFF5"
+        ]
+      },
+      "field-fill-dark": {
+        "role": "primary",
+        "displayName": "Bleu pâle de champ — sombre",
+        "canonical": "#2C3A4D",
+        "oklch": "oklch(34.5% 0.038 256.2)",
+        "tonalRamp": [
+          "#060B13",
+          "#1C2530",
+          "#36414F",
+          "#515F71",
+          "#6F7F93",
+          "#92A0B2",
+          "#BAC5D5",
+          "#E7EFFB"
+        ]
+      },
+      "error-dark": {
+        "role": "tertiary",
+        "displayName": "Rouge de retrait — sombre",
+        "canonical": "#FFB4AB",
+        "oklch": "oklch(83.8% 0.089 26.8)",
+        "tonalRamp": [
+          "#1A0403",
+          "#3B1815",
+          "#5F302C",
+          "#864B45",
+          "#AA6962",
+          "#C88D86",
+          "#E8B6B0",
+          "#FFE9E6"
+        ]
+      },
+      "error-container-dark": {
+        "role": "tertiary",
+        "displayName": "Conteneur retiré — sombre",
+        "canonical": "#93000A",
+        "oklch": "oklch(41.7% 0.170 27.4)",
+        "tonalRamp": [
+          "#1E0001",
+          "#490505",
+          "#761513",
+          "#A32D28",
+          "#CB4E45",
+          "#E77A6E",
+          "#FCADA3",
+          "#FEE9E6"
+        ]
+      },
+      "on-error-container-dark": {
+        "role": "tertiary",
+        "displayName": "Sur conteneur retiré — sombre",
+        "canonical": "#FFDAD6",
+        "oklch": "oklch(91.8% 0.042 25.2)",
+        "tonalRamp": [
+          "#130807",
+          "#301F1D",
+          "#503937",
+          "#725653",
+          "#947571",
+          "#B39794",
+          "#D6BEBB",
+          "#FCEAE7"
+        ]
+      },
+      "warning-container-dark": {
+        "role": "tertiary",
+        "displayName": "Conteneur non renouvelé — sombre",
+        "canonical": "#544600",
+        "oklch": "oklch(39.7% 0.082 96.0)",
+        "tonalRamp": [
+          "#0F0B00",
+          "#2B2402",
+          "#4A3F13",
+          "#6A5D28",
+          "#8B7D45",
+          "#AA9F6F",
+          "#CEC59D",
+          "#F6EFD1"
+        ]
+      },
+      "on-warning-container-dark": {
+        "role": "tertiary",
+        "displayName": "Sur conteneur non renouvelé — sombre",
+        "canonical": "#FAE287",
+        "oklch": "oklch(91.3% 0.114 95.0)",
+        "tonalRamp": [
+          "#0F0B00",
+          "#2C2301",
+          "#4C3F02",
+          "#6F5C07",
+          "#927C22",
+          "#B09E58",
+          "#D3C48C",
+          "#FAEFC5"
+        ]
+      },
+      "secondary-container-dark": {
+        "role": "secondary",
+        "displayName": "Ardoise tonale (en vigueur) — sombre",
+        "canonical": "#3C4758",
+        "oklch": "oklch(39.5% 0.032 259.0)",
+        "tonalRamp": [
+          "#070B12",
+          "#1E242E",
+          "#38404D",
+          "#545E6F",
+          "#727E90",
+          "#959FAF",
+          "#BCC5D2",
+          "#E8EFF9"
+        ]
+      },
+      "on-secondary-container-dark": {
+        "role": "secondary",
+        "displayName": "Sur ardoise tonale — sombre",
+        "canonical": "#D8E3F8",
+        "oklch": "oklch(91.4% 0.031 263.5)",
+        "tonalRamp": [
+          "#080B12",
+          "#1F242E",
+          "#39404D",
+          "#555E6E",
+          "#747E8F",
+          "#969FAF",
+          "#BDC4D2",
+          "#E9EFF9"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Nom de marque en tête de fiche produit (headlineSmall, 700)."
+      },
+      "title-section": {
+        "displayName": "Titre de section",
+        "purpose": "Titre de chaque carte de section de la fiche (titleLarge, 600), en-tête sémantique."
+      },
+      "title-bar": {
+        "displayName": "Titre de barre",
+        "purpose": "Titre centré de la barre d'application et de l'erreur de démarrage (titleLarge, 400)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Titre du bandeau de statut et des états vides (titleMedium)."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Valeurs des champs et texte saisi (bodyLarge)."
+      },
+      "body-strong": {
+        "displayName": "Body gras",
+        "purpose": "Marque dans chaque ligne de résultat."
+      },
+      "body-numeric": {
+        "displayName": "Body tabulaire",
+        "purpose": "Codes, conditionnement, numéro d'enregistrement ; dosage sous la marque en tête de fiche."
+      },
+      "body-secondary": {
+        "displayName": "Body secondaire",
+        "purpose": "Détails du bandeau, notes, avertissement (bodyMedium)."
+      },
+      "body-secondary-numeric": {
+        "displayName": "Sous-titre de ligne",
+        "purpose": "Dosage · forme · conditionnement sous la marque, chiffres tabulaires."
+      },
+      "body-small": {
+        "displayName": "Body small",
+        "purpose": "Pied de source de la fiche."
+      },
+      "label-large": {
+        "displayName": "Label large",
+        "purpose": "Boutons ; en-têtes de groupe de dosage (tabulaires)."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Étiquettes de statut, libellés de champ, version de la nomenclature (labelMedium)."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card-soft",
+        "value": "Material elevation 1.5, shadowColor rgba(0,0,0,0.2) (≈ 0 1px 3px rgba(0,0,0,.2))",
+        "purpose": "Toutes les cartes en mode clair ; aucune ombre en sombre (élévation 0, profondeur tonale)."
+      },
+      {
+        "name": "app-bar-scrolled",
+        "value": "Material elevation 1 (scrolledUnderElevation)",
+        "purpose": "Barre d'application seulement quand du contenu défile dessous."
+      }
+    ],
+    "motion": [
+      {
+        "name": "search-debounce",
+        "value": "120ms",
+        "purpose": "Délai entre la frappe et la recherche locale."
+      },
+      {
+        "name": "route",
+        "value": "MaterialPageRoute (transition Android par défaut)",
+        "purpose": "Recherche → fiche → équivalent, en pile."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "single column, 16dp gutter (aucun point de rupture)"
+      }
+    ],
+    "dark": {
+      "note": "Clés suffixées -dark dans le frontmatter : primaire éclairci, fond ardoise, cartes plus claires sans ombre, statuts conservés."
+    }
+  },
+  "components": [
+    {
+      "name": "Champ de recherche",
+      "kind": "input",
+      "refersTo": "search-field",
+      "description": "Champ rempli bleu pâle, plat, rayon 16 dp, loupe bleue en tête ; focus au lancement de l'écran de recherche.",
+      "html": "<label class=\"ds-search\"><svg class=\"ds-search-icon\" viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z\"/></svg><input class=\"ds-search-input\" placeholder=\"Rechercher un médicament\"></label>",
+      "css": ".ds-search{display:flex;align-items:center;gap:16px;height:56px;padding:0 16px 0 24px;background:#DCE9F8;border-radius:16px;font-family:Nunito,system-ui,sans-serif;} .ds-search-icon{color:#2F78C4;flex:none} .ds-search-input{flex:1;border:none;background:transparent;outline:none;font:400 16px/1.5 Nunito,system-ui,sans-serif;letter-spacing:.5px;color:#191C20} .ds-search-input::placeholder{color:#43474E} .ds-search:focus-within{box-shadow:inset 0 0 0 2px #2F78C4}"
+    },
+    {
+      "name": "Ligne de résultat",
+      "kind": "custom",
+      "refersTo": "result-row",
+      "description": "Une présentation par ligne dans une carte blanche : marque en gras, dosage · forme · conditionnement en chiffres tabulaires, colonne de droite réservée au statut.",
+      "html": "<div class=\"ds-card ds-list\"><a class=\"ds-row\" href=\"#\"><span class=\"ds-row-text\"><span class=\"ds-row-title\">CETIRIPEX</span><span class=\"ds-row-sub\">10MG · COMPRIME PELLICULE · B/15</span></span></a><a class=\"ds-row\" href=\"#\"><span class=\"ds-row-text\"><span class=\"ds-row-title\">ARTIZ</span><span class=\"ds-row-sub\">10MG · COMPRIME PELLICULE · B/10</span></span><span class=\"ds-chip ds-chip-warn\">Non renouvelé</span></a><a class=\"ds-row\" href=\"#\"><span class=\"ds-row-text\"><span class=\"ds-row-title\">CETIRIZINE MYLAN</span><span class=\"ds-row-sub\">10MG · COMPRIME PELLICULE · B/15</span></span><span class=\"ds-chip ds-chip-err\">Retiré</span></a></div>",
+      "css": ".ds-card{background:#FFFFFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.2);margin:6px 16px;overflow:hidden;font-family:Nunito,system-ui,sans-serif;} .ds-row{display:flex;align-items:center;gap:16px;padding:8px 16px;min-height:72px;text-decoration:none;color:#191C20;position:relative} .ds-row+.ds-row::before{content:'';position:absolute;top:0;left:16px;right:16px;height:1px;background:#E3E8EF} .ds-row:hover{background:rgba(25,28,32,.08)} .ds-row:focus-visible{outline:2px solid #2F78C4;outline-offset:-2px} .ds-row-text{display:flex;flex-direction:column;flex:1;min-width:0} .ds-row-title{font:700 16px/1.5 Nunito,system-ui,sans-serif;letter-spacing:.5px} .ds-row-sub{font:400 14px/1.43 Nunito,system-ui,sans-serif;letter-spacing:.25px;color:#43474E;font-variant-numeric:tabular-nums} .ds-chip{border-radius:8px;padding:4px 8px;font:600 12px/1.33 Nunito,system-ui,sans-serif;letter-spacing:.5px;white-space:nowrap} .ds-chip-err{background:#FFDAD6;color:#93000A} .ds-chip-warn{background:#FAE287;color:#544600}"
+    },
+    {
+      "name": "Étiquette de statut",
+      "kind": "chip",
+      "refersTo": "status-chip-retired",
+      "description": "Étiquette tonale non interactive, rayon 8 dp : rouge = retiré, ambre = non renouvelé, ardoise = en vigueur (fiche seulement).",
+      "html": "<div class=\"ds-chips\"><span class=\"ds-status ds-status-err\">Retiré</span><span class=\"ds-status ds-status-warn\">Non renouvelé</span><span class=\"ds-status ds-status-ok\">En vigueur</span></div>",
+      "css": ".ds-chips{display:flex;gap:8px;font-family:Nunito,system-ui,sans-serif;} .ds-status{border-radius:8px;padding:4px 8px;font:600 12px/1.33 Nunito,system-ui,sans-serif;letter-spacing:.5px} .ds-status-err{background:#FFDAD6;color:#93000A} .ds-status-warn{background:#FAE287;color:#544600} .ds-status-ok{background:#D8E3F8;color:#3C4758}"
+    },
+    {
+      "name": "Bandeau de statut",
+      "kind": "custom",
+      "refersTo": "status-banner-retired",
+      "description": "Carte pleine dans le conteneur du statut, en tête de fiche d'un produit non en vigueur, icône en tête.",
+      "html": "<div class=\"ds-banner\" role=\"status\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9A7.902 7.902 0 0 1 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1A7.902 7.902 0 0 1 20 12c0 4.42-3.58 8-8 8z\"/></svg><div><div class=\"ds-banner-title\">Retiré le 12/03/2025</div><div class=\"ds-banner-body\">Retrait définitif</div></div></div>",
+      "css": ".ds-banner{display:flex;gap:16px;align-items:flex-start;margin:6px 16px;padding:16px;border-radius:16px;background:#FFDAD6;color:#93000A;font-family:Nunito,system-ui,sans-serif;} .ds-banner svg{flex:none} .ds-banner-title{font:500 16px/1.5 Nunito,system-ui,sans-serif;letter-spacing:.15px} .ds-banner-body{margin-top:4px;font:400 14px/1.43 Nunito,system-ui,sans-serif;letter-spacing:.25px}"
+    },
+    {
+      "name": "Carte de section et ligne de champ",
+      "kind": "card",
+      "refersTo": "section-title",
+      "description": "Carte blanche titrée qui regroupe une partie de la fiche ; chaque information précédée d'une icône bleue de 24 dp.",
+      "html": "<section class=\"ds-section\"><h2 class=\"ds-section-title\">Informations</h2><div class=\"ds-field\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M10 3v2h1v4.38L5.2 19.42A1.7 1.7 0 0 0 6.67 22h10.66a1.7 1.7 0 0 0 1.47-2.58L13 9.38V5h1V3h-4zm1 6.92V5h2v4.92L15.73 15H8.27L11 9.92zM7.17 20l.6-1.06 0 .06h8.46l.6 1H7.17z\"/></svg><div><div class=\"ds-field-label\">DCI</div><div class=\"ds-field-value\">CETIRIZINE DICHLORHYDRATE</div></div></div><div class=\"ds-field\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M20 10V8h-4V4h-2v4h-4V4H8v4H4v2h4v4H4v2h4v4h2v-4h4v4h2v-4h4v-2h-4v-4h4zm-6 4h-4v-4h4v4z\"/></svg><div><div class=\"ds-field-label\">Code DCI</div><div class=\"ds-field-value ds-num\">01 A 003</div></div></div></section>",
+      "css": ".ds-section{background:#FFFFFF;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.2);margin:6px 16px;padding-bottom:8px;font-family:Nunito,system-ui,sans-serif;color:#191C20} .ds-section-title{margin:0;padding:16px 16px 4px;font:600 22px/1.27 Nunito,system-ui,sans-serif} .ds-field{display:flex;gap:16px;align-items:flex-start;padding:8px 16px} .ds-field svg{color:#2F78C4;flex:none} .ds-field-label{font:500 12px/1.33 Nunito,system-ui,sans-serif;letter-spacing:.5px;color:#43474E} .ds-field-value{margin-top:2px;font:400 16px/1.5 Nunito,system-ui,sans-serif;letter-spacing:.5px} .ds-num{font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Bouton plein",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Pilule bleu azur, texte blanc, icône en tête si l'action en a une (« Vérifier maintenant », « Réessayer »).",
+      "html": "<button class=\"ds-btn\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z\"/></svg>Vérifier maintenant</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 24px 0 16px;border:none;border-radius:9999px;background:#2F78C4;color:#FFFFFF;font:600 14px/1.43 Nunito,system-ui,sans-serif;letter-spacing:.1px;cursor:pointer;transition:box-shadow .2s,background .2s} .ds-btn:hover{box-shadow:0 1px 2px rgba(0,0,0,.3);background:#3A80C9} .ds-btn:focus-visible{outline:2px solid #204876;outline-offset:2px} .ds-btn:active{background:#4787CD} .ds-btn:disabled{background:rgba(25,28,32,.12);color:rgba(25,28,32,.38)}"
+    },
+    {
+      "name": "Bouton texte",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "Action secondaire d'une carte (« Enregistrer »), bleu, alignée en fin.",
+      "html": "<button class=\"ds-btn-text\">Enregistrer</button>",
+      "css": ".ds-btn-text{height:40px;padding:0 12px;border:none;border-radius:9999px;background:transparent;color:#2F78C4;font:600 14px/1.43 Nunito,system-ui,sans-serif;letter-spacing:.1px;cursor:pointer} .ds-btn-text:hover{background:rgba(47,120,196,.08)} .ds-btn-text:focus-visible{outline:2px solid #2F78C4;outline-offset:2px} .ds-btn-text:active{background:rgba(47,120,196,.1)}"
+    },
+    {
+      "name": "Barre d'application",
+      "kind": "nav",
+      "refersTo": "app-bar",
+      "description": "Barre blanche, titre centré ; élévation 1 seulement quand du contenu défile dessous.",
+      "html": "<header class=\"ds-appbar\"><button class=\"ds-appbar-back\" aria-label=\"Retour\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z\"/></svg></button><h1 class=\"ds-appbar-title\">ARTIZ</h1></header>",
+      "css": ".ds-appbar{position:relative;display:flex;align-items:center;height:64px;padding:0 4px;background:#FFFFFF;color:#191C20;font-family:Nunito,system-ui,sans-serif;} .ds-appbar-back{width:48px;height:48px;border:none;border-radius:9999px;background:transparent;color:#43474E;cursor:pointer} .ds-appbar-back:hover{background:rgba(25,28,32,.08)} .ds-appbar-back:focus-visible{outline:2px solid #2F78C4} .ds-appbar-title{position:absolute;left:64px;right:64px;margin:0;text-align:center;font:400 22px/1.27 Nunito,system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Le registre au comptoir",
+    "overview": "Synapse est un outil de service public qu'on consulte debout, téléphone dans une main et ordonnance dans l'autre. Le système visuel reprend le vocabulaire familier des applications administratives algériennes (référence El Hana fournie par l'utilisateur) : fond gris clair, cartes blanches arrondies qui regroupent l'information, bleu azur pour tout ce qui agit ou désigne, champs remplis bleu pâle avec icône en tête, une icône Material devant chaque information de la fiche. C'est une inspiration de grammaire, pas d'identité : aucun logo, nom ni couleur propre à la CNAS.\n\nLa hiérarchie est réglementaire avant d'être esthétique. Le statut d'un produit (retiré, non renouvelé, en vigueur) est l'information la plus visible de chaque ligne et de chaque fiche ; le reste de l'interface est volontairement calme, bleu et gris, pour que le rouge d'erreur et l'ambre harmonisé gardent toute leur force. La densité est celle d'un registre : une ligne par présentation, marque en gras, dosage · forme · conditionnement en chiffres tabulaires, séparateurs fins.\n\nLe mode sombre est un gris ardoise (pas un noir pur) : les cartes y sont plus claires que le fond, le bleu est éclairci, les statuts gardent leurs rôles. Tout le texte suit la taille de police système (vérifié à 130 %).",
+    "keyCharacteristics": [
+      "Fond gris clair, cartes blanches de 16 dp à ombre douce ; en sombre, cartes ardoise plus claires sans ombre.",
+      "Un seul accent, le bleu azur, pour actions, icônes et focus.",
+      "Le statut est porté par la couleur de conteneur (erreur, ambre harmonisé, tonal neutre) et toujours par un libellé texte.",
+      "Nunito arrondie pour tout le texte, chiffres tabulaires pour dosages, codes et numéros.",
+      "Titre de barre centré ; pas de FAB ; navigation par pile d'écrans."
+    ],
+    "rules": [
+      {
+        "name": "The Reserved Amber Rule",
+        "body": "L'ambre et toute teinte orangée sont réservés au statut « non renouvelé ». Aucun orange décoratif, aucun accent chaud ailleurs (l'orange de la référence El Hana n'est pas repris).",
+        "section": "colors"
+      },
+      {
+        "name": "The Status Colour Rule",
+        "body": "Rouge = retiré (et stupéfiant), ambre = non renouvelé, ardoise tonale = en vigueur. Ces conteneurs ne servent à rien d'autre, et la couleur n'est jamais seule : un libellé texte l'accompagne toujours.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Accent Rule",
+        "body": "Le bleu azur est le seul accent. Pas de deuxième couleur de marque, pas de dégradé.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Data Rule",
+        "body": "Dosage, code DCI, conditionnement, numéro d'enregistrement et groupes de dosage utilisent les chiffres tabulaires. Une barre « / » n'est jamais suivie d'une coupure de ligne (« B/10 », « 5MG/ML » restent entiers).",
+        "section": "typography"
+      },
+      {
+        "name": "The Ministry Text Rule",
+        "body": "Les données de nomenclature s'affichent telles que publiées (majuscules, abréviations) ; seule l'interface est en casse normale. Jamais de capitales forcées par le style.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Field Rule",
+        "body": "Les champs ne portent jamais d'ombre : ils se distinguent par leur remplissage bleu pâle, les cartes par leur blanc et leur ombre.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** montrer le statut avant tout le reste : étiquette dans la colonne de droite des listes, étiquette et bandeau en tête de fiche.",
+      "**Do** regrouper l'information dans des cartes de 16 dp sur le fond gris, avec 16 dp de gouttière.",
+      "**Do** mettre une icône Material bleue de 24 dp devant chaque information de fiche.",
+      "**Do** utiliser les chiffres tabulaires pour dosages, codes et numéros, et empêcher la coupure après « / ».",
+      "**Do** lire chaque couleur dans le thème (`ColorScheme`, `StatusColors`, `FieldColors`) pour que le mode sombre suive.",
+      "**Do** utiliser des espacements directionnels et laisser le texte suivre la taille de police système.",
+      "**Do** citer la version de la nomenclature sous la recherche et en pied de fiche."
+    ],
+    "donts": [
+      "**Don't** utiliser l'ambre ou l'orange ailleurs que pour « non renouvelé ».",
+      "**Don't** mettre autre chose que le statut ou « Stupéfiant » dans la colonne de droite d'une ligne de résultat (liste I / II restent dans la fiche).",
+      "**Don't** reprendre le logo, le nom, les couleurs propres ou toute identité de la CNAS ou d'El Hana.",
+      "**Don't** signaler un statut par la couleur seule, sans libellé.",
+      "**Don't** ajouter d'ombre aux champs, de bordure aux cartes, ni de FAB.",
+      "**Don't** forcer les capitales par le style ou réécrire les libellés de la nomenclature."
+    ]
+  }
+}

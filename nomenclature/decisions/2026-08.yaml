@@ -1,0 +1,163 @@
+# Décisions pour la nomenclature 2026-08.
+# Pour chaque cas : remplir `choix` (une valeur de choix_possibles), `par` (votre nom) et `le` (AAAA-MM-JJ).
+version: 2026-08
+brouillon:
+  sha256: 950617aaf9fc1417be4fd9624a7f880c6aa753d91cbfa8d903a9646969c65dee
+  importe_le: '2026-11-02T00:16:18.466526+00:00'
+cas:
+- id: double_feuille:en_vigueur:2421
+  type: double_feuille
+  sujet:
+    n_enregistrement: 447/10 F 094/10/25
+    marque: SETREME
+    dosage: 8MG
+    forme: COMPRIME PELLICULE
+    conditionnement: B/07 ET B/28
+    labo: LABORATOIRES BEKER
+    feuille: en_vigueur
+    ligne: 2421
+  candidats:
+  - ref: c1
+    produit_id: null
+    n_enregistrement: 447/10 F 094/10/25
+    marque: SETREME
+    dosage: 8MG
+    forme: COMPRIME PELLICULE
+    conditionnement: B/07 ET B/28
+    labo: LABORATOIRES BEKER
+    feuille: en_vigueur
+    ligne: 2421
+  - ref: c2
+    produit_id: null
+    n_enregistrement: 447/10 F 094/10
+    marque: SETREME
+    dosage: 8MG
+    forme: COMPRIME PELLICULE
+    conditionnement: B/07 ET B/28
+    labo: BEKER (SARL LABORATOIRES BEKER)
+    feuille: non_renouvele
+    ligne: 728
+  choix_possibles:
+  - garder:c1
+  - garder:c2
+  empreinte: 4a37fbd7fef4dc54
+  choix: garder:c1
+  par: claude (provisoire, à valider par l'admin)
+  le: '2026-11-02'
+- id: double_feuille:en_vigueur:3108
+  type: double_feuille
+  sujet:
+    n_enregistrement: 035/13 F 199/11/25
+    marque: IMUZOLE
+    dosage: 500MG
+    forme: COMPRIME PELLICULE
+    conditionnement: B/20
+    labo: PHARMALLIANCE
+    feuille: en_vigueur
+    ligne: 3108
+  candidats:
+  - ref: c1
+    produit_id: null
+    n_enregistrement: 035/13 F 199/11/25
+    marque: IMUZOLE
+    dosage: 500MG
+    forme: COMPRIME PELLICULE
+    conditionnement: B/20
+    labo: PHARMALLIANCE
+    feuille: en_vigueur
+    ligne: 3108
+  - ref: c2
+    produit_id: null
+    n_enregistrement: 035/13 F 199/11
+    marque: IMUZOLE
+    dosage: 500MG
+    forme: COMPRIME PELLICULE
+    conditionnement: B/20
+    labo: PHARMALLIANCE
+    feuille: non_renouvele
+    ligne: 993
+  choix_possibles:
+  - garder:c1
+  - garder:c2
+  empreinte: cf1491777a5d6061
+  choix: garder:c1
+  par: claude (provisoire, à valider par l'admin)
+  le: '2026-11-02'
+- id: double_feuille:en_vigueur:4460
+  type: double_feuille
+  sujet:
+    n_enregistrement: 602/16 D 175/23
+    marque: ABILIFY MAINTENA
+    dosage: 400 MG
+    forme: POUDRE ET SOLVANT POUR SUSP INJ A LIB PROL
+    conditionnement: BOITE DE 01 SERINGUE
+    labo: H.LUNDBECK A/S
+    feuille: en_vigueur
+    ligne: 4460
+  candidats:
+  - ref: c1
+    produit_id: null
+    n_enregistrement: 602/16 D 175/23
+    marque: ABILIFY MAINTENA
+    dosage: 400 MG
+    forme: POUDRE ET SOLVANT POUR SUSP INJ A LIB PROL
+    conditionnement: BOITE DE 01 SERINGUE
+    labo: H.LUNDBECK A/S
+    feuille: en_vigueur
+    ligne: 4460
+  - ref: c2
+    produit_id: null
+    n_enregistrement: 602/16 D 175/23
+    marque: ABILIFY MAINTENA
+    dosage: 400 MG
+    forme: POUDRE ET SOLVANT POUR SUSP INJ A LIB PROL
+    conditionnement: BOITE DE 01 SERINGUE
+    labo: H.LUNDBECK A/S
+    feuille: retire
+    ligne: 2333
+  choix_possibles:
+  - garder:c1
+  - garder:c2
+  empreinte: 1cc50daaa296ba6c
+  choix: garder:c2
+  par: claude (provisoire, à valider par l'admin)
+  le: '2026-11-02'
+- id: double_feuille:en_vigueur:5064
+  type: double_feuille
+  sujet:
+    n_enregistrement: 003/21 F 056/09/24
+    marque: LATENDRA
+    dosage: 0,04
+    forme: CREME DERMIQUE
+    conditionnement: T/40G
+    labo: GROUPE SAIDAL
+    feuille: en_vigueur
+    ligne: 5064
+  candidats:
+  - ref: c1
+    produit_id: null
+    n_enregistrement: 003/21 F 056/09/24
+    marque: LATENDRA
+    dosage: 0,04
+    forme: CREME DERMIQUE
+    conditionnement: T/40G
+    labo: GROUPE SAIDAL
+    feuille: en_vigueur
+    ligne: 5064
+  - ref: c2
+    produit_id: null
+    n_enregistrement: 003/21 F 056/09
+    marque: LATENDRA
+    dosage: 0,04
+    forme: CREME DERM.
+    conditionnement: T/40G
+    labo: GROUPE SAIDAL
+    feuille: non_renouvele
+    ligne: 1472
+  choix_possibles:
+  - garder:c1
+  - garder:c2
+  empreinte: 82c71bd8dea536e6
+  choix: garder:c1
+  par: claude (provisoire, à valider par l'admin)
+  le: '2026-11-02'
