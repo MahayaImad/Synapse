@@ -47,8 +47,8 @@ Le notebook (section 2) montre côte à côte l'original et l'image envoyée : v
 | Moteur | Variables |
 | --- | --- |
 | Claude (API Anthropic) | `ANTHROPIC_API_KEY` (ou `ant auth login` + `SYNAPSE_CLAUDE=1`), `SYNAPSE_CLAUDE_MODEL` (défaut `claude-opus-5-5`) |
-| Open-weight sur la machine GPU | `SYNAPSE_LOCAL_URL=http://GPU:8000/v1`, `SYNAPSE_LOCAL_MODEL=Qwen/Qwen3-VL-32B-Instruct-FP8,Qwen/Qwen3-VL-4B-Instruct` |
-| OCR local + structuration | `SYNAPSE_OCR_URL`, `SYNAPSE_OCR_MODEL` (ex. PaddleOCR-VL) — le texte est structuré par le premier moteur configuré |
+| Open-weight sur la machine GPU | `SYNAPSE_LOCAL_URL=http://localhost:11434/v1` (Ollama), `SYNAPSE_LOCAL_MODEL=qwen3-vl:8b,qwen3-vl:30b`, `SYNAPSE_LOCAL_STRUCTURED=0` si le serveur refuse le JSON par schéma |
+| OCR local + structuration du texte | `SYNAPSE_OCR_MODEL=deepseek-ocr`, `SYNAPSE_OCR_PROMPT="Free OCR."`, `SYNAPSE_STRUCTURER_MODEL=qwen3-coder:30b` (modèle texte local ; sans lui, le premier moteur configuré structure le texte) |
 
 Serveurs sur la machine GPU (exemples, à adapter à la mémoire disponible) :
 

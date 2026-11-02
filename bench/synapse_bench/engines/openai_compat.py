@@ -66,10 +66,11 @@ class OpenAICompatEngine:
     def read_text(self, transcription: str) -> EngineResult:
         return self._lecture([{"type": "text", "text": f"{prompts.LECTURE_TEXTE}\n\n<transcription>\n{transcription}\n</transcription>"}])
 
-    def ocr(self, png: bytes) -> tuple[str, float]:
-        """Transcription brute (pour les modèles OCR spécialisés : PaddleOCR-VL, GLM-OCR…)."""
+    def ocr(self, png: bytes, consigne: str | None = None) -> tuple[str, float]:
+        """Transcription brute (modèles OCR spécialisés : deepseek-ocr, PaddleOCR-VL…). Certains attendent
+        leur propre consigne (ex. « Free OCR. » pour deepseek-ocr)."""
         t = time.perf_counter()
-        text, _ = self._complete([self._image(png), {"type": "text", "text": prompts.OCR}], None, "ocr")
+        text, _ = self._complete([self._image(png), {"type": "text", "text": consigne or prompts.OCR}], None, "ocr")
         return text, time.perf_counter() - t
 
     def choose(self, ligne_texte: str, candidats_texte: str):

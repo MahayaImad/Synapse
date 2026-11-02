@@ -36,19 +36,28 @@ if os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("SYNAPSE_CLAUDE"):
     from synapse_bench.engines.claude import ClaudeEngine
     engines.append(ClaudeEngine(model=os.environ.get("SYNAPSE_CLAUDE_MODEL", "claude-opus-5-5")))
 
-# Modèle open-weight sur la machine GPU (vLLM / Ollama), en Algérie : SYNAPSE_LOCAL_URL + SYNAPSE_LOCAL_MODEL
-# Plusieurs modèles : SYNAPSE_LOCAL_MODEL="Qwen/Qwen3-VL-32B-Instruct-FP8,Qwen/Qwen3-VL-4B-Instruct"
-if os.environ.get("SYNAPSE_LOCAL_URL"):
-    from synapse_bench.engines.openai_compat import OpenAICompatEngine
+# Modèles de vision open-weight sur la machine GPU (Ollama / vLLM), en Algérie
+# SYNAPSE_LOCAL_URL=http://localhost:11434/v1   SYNAPSE_LOCAL_MODEL="qwen3-vl:8b,qwen3-vl:30b"
+# SYNAPSE_LOCAL_STRUCTURED=0 si le serveur refuse la sortie JSON par schéma (le JSON est alors demandé dans la consigne)
+from synapse_bench.engines.openai_compat import OpenAICompatEngine
+URL = os.environ.get("SYNAPSE_LOCAL_URL", "")
+STRUCT = os.environ.get("SYNAPSE_LOCAL_STRUCTURED", "1") != "0"
+if URL and os.environ.get("SYNAPSE_LOCAL_MODEL"):
     for m in os.environ["SYNAPSE_LOCAL_MODEL"].split(","):
-        engines.append(OpenAICompatEngine(os.environ["SYNAPSE_LOCAL_URL"], m.strip()))
+        engines.append(OpenAICompatEngine(URL, m.strip(), structured=STRUCT))
 
-# Deux temps : OCR spécialisé local (PaddleOCR-VL, GLM-OCR…) puis structuration du texte par le 1er moteur ci-dessus
-if os.environ.get("SYNAPSE_OCR_URL") and engines:
-    from synapse_bench.engines.openai_compat import OpenAICompatEngine
+# Deux temps : OCR local (ex. deepseek-ocr) puis structuration du TEXTE par un modèle texte local (ex. qwen3-coder:30b)
+# SYNAPSE_OCR_MODEL=deepseek-ocr  SYNAPSE_OCR_PROMPT="Free OCR."  SYNAPSE_STRUCTURER_MODEL=qwen3-coder:30b
+# Sans SYNAPSE_STRUCTURER_MODEL, le texte est structuré par le premier moteur configuré (attention : Claude = hors d'Algérie).
+if os.environ.get("SYNAPSE_OCR_MODEL"):
     from synapse_bench.engines.two_stage import TwoStageEngine
-    ocr = OpenAICompatEngine(os.environ["SYNAPSE_OCR_URL"], os.environ["SYNAPSE_OCR_MODEL"], structured=False)
-    engines.append(TwoStageEngine(ocr, engines[0]))
+    ocr = OpenAICompatEngine(os.environ.get("SYNAPSE_OCR_URL", URL), os.environ["SYNAPSE_OCR_MODEL"], structured=False)
+    if os.environ.get("SYNAPSE_STRUCTURER_MODEL"):
+        structurer = OpenAICompatEngine(URL, os.environ["SYNAPSE_STRUCTURER_MODEL"], structured=STRUCT)
+    else:
+        structurer = engines[0] if engines else None
+    if structurer is not None:
+        engines.append(TwoStageEngine(ocr, structurer, os.environ.get("SYNAPSE_OCR_PROMPT")))
 
 print("Moteurs :", [e.name for e in engines] or "aucun (définir les variables d'environnement)")"""),
     md("## 2. Ce qui part vers le modèle\n\nÀ gauche l'ordonnance telle qu'elle reste sur place ; à droite l'image envoyée (masques gravés, recadrage, métadonnées retirées)."),

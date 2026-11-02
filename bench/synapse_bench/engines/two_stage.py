@@ -11,18 +11,20 @@ from .openai_compat import OpenAICompatEngine
 
 
 class TwoStageEngine:
-    def __init__(self, ocr: OpenAICompatEngine, structurer):
+    def __init__(self, ocr: OpenAICompatEngine, structurer, consigne_ocr: str | None = None):
         if ocr.external:
             raise ValueError("l'OCR doit tourner localement (en Algérie) dans ce mode")
         self.ocr = ocr
         self.structurer = structurer
+        self.consigne_ocr = consigne_ocr
         self.name = f"2temps:{ocr.model}+{structurer.name}"
-        self.external = False  # l'image ne sort pas ; seul le texte part vers le structurateur
+        # L'image ne sort jamais ; seul le texte part vers le structurateur (local ou Claude).
+        self.external = False
 
     def read(self, png: bytes) -> EngineResult:
         t = time.perf_counter()
         try:
-            text, _ = self.ocr.ocr(png)
+            text, _ = self.ocr.ocr(png, self.consigne_ocr)
         except Exception as e:  # noqa: BLE001 — banc d'essai : toute panne OCR est un résultat à afficher
             return EngineResult(None, time.perf_counter() - t, erreur=f"OCR : {e}")
         r = self.structurer.read_text(text)
