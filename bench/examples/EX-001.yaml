@@ -1,0 +1,40 @@
+type: imprimee
+notes: Ordonnance FICTIVE générée par make_examples.py
+masques:
+- - 0.0
+  - 0.0
+  - 1.0
+  - 0.16
+- - 0.6
+  - 0.78
+  - 1.0
+  - 0.9
+zone:
+- 0.0
+- 0.18
+- 1.0
+- 0.75
+attendu:
+  age: 34 ans
+  poids: null
+  lignes:
+  - produit_id: 24914b95-166d-4232-9f4c-22cae90ddd21
+    marque: DOLIPRANE
+    dosage: 1000MG
+    forme: COMPRIME
+    posologie:
+      dose_par_prise: 1
+      unite: cp
+      frequence: 3/j
+      duree: 5 j
+      voie: orale
+  - produit_id: 15ea9ae5-c6d6-42b1-8b77-7c96997b6c2b
+    marque: AUGMENTIN
+    dosage: 1G/125MG
+    forme: null
+    posologie:
+      dose_par_prise: 1
+      unite: sachet
+      frequence: 2/j
+      duree: 7 j
+      voie: orale
