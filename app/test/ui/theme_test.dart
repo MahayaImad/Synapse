@@ -67,6 +67,14 @@ void main() {
       expect(contrast(s.onSurfaceVariant, s.surfaceContainerLowest), greaterThanOrEqualTo(4.5));
     });
 
+    test('séparateurs et bords gris-bleu neutres (pas de lavande)', () {
+      final t = buildTheme(fallbackScheme(Brightness.light));
+      expect(t.dividerTheme.color, const Color(0xFFE3E8EF));
+      expect(t.colorScheme.outlineVariant, const Color(0xFFE3E8EF));
+      expect(t.cardTheme.elevation, greaterThan(0)); // ombre douce, pas de bordure
+      expect((t.cardTheme.shape! as RoundedRectangleBorder).side, BorderSide.none);
+    });
+
     test('police arrondie Nunito', () {
       expect(buildTheme(fallbackScheme(Brightness.light)).textTheme.bodyLarge!.fontFamily, 'Nunito');
     });

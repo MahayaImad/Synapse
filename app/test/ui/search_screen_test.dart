@@ -64,6 +64,14 @@ void main() {
     expect(find.text('Stupéfiant'), findsOneWidget);
   });
 
+  testWidgets('marque en gras au-dessus du sous-titre', (tester) async {
+    phone(tester);
+    await open(tester);
+    await typeQuery(tester, 'zytrex');
+    final title = tester.widget<Text>(find.descendant(of: find.byType(ProductTile).first, matching: find.text('ZYTREX')));
+    expect(title.style!.fontWeight, FontWeight.w700);
+  });
+
   testWidgets('aucun résultat', (tester) async {
     phone(tester);
     await open(tester);

@@ -28,7 +28,7 @@ class ProductTile extends StatelessWidget {
             : null;
     return ListTile(
       onTap: onTap,
-      title: Text(p.marque, maxLines: 1, overflow: TextOverflow.ellipsis),
+      title: Text(p.marque, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w700)),
       subtitle: Text(
         noBreakAfterSlash('${p.dosage} · ${p.forme} · ${p.conditionnement}'),
         key: const Key('subtitle'),

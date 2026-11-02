@@ -58,7 +58,13 @@ class _Sheet extends StatelessWidget {
     final active = p.statut == ProductStatus.enVigueur;
     final shownOnTop = active ? const <Product>[] : equivalents.activeSameDosage;
     final sameRest = [for (final e in equivalents.sameDosage) if (!shownOnTop.contains(e)) e];
-    List<Widget> tiles(Iterable<Product> ps) => [for (final e in ps) ProductTile(e, onTap: () => _open(context, e))];
+    // Lignes séparées comme dans la liste de résultats.
+    List<Widget> tiles(Iterable<Product> ps) => [
+          for (final (i, e) in ps.indexed) ...[
+            if (i > 0) const Divider(height: 1, indent: 16, endIndent: 16),
+            ProductTile(e, onTap: () => _open(context, e)),
+          ],
+        ];
 
     return Scaffold(
       body: CustomScrollView(slivers: [
@@ -231,7 +237,7 @@ class _Section extends StatelessWidget {
           child: Semantics(
             header: true,
             child: Text(title,
-                style: theme.textTheme.titleSmall!.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w700)),
+                style: theme.textTheme.titleLarge!.copyWith(color: theme.colorScheme.onSurface, fontWeight: FontWeight.w600)),
           ),
         ),
         ...children,

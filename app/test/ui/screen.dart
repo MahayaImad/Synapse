@@ -25,6 +25,10 @@ Future<void> typeQuery(WidgetTester tester, String q) async {
 Future<void> golden(WidgetTester tester, Finder finder, String name) async {
   debugDisableShadows = false;
   try {
+    // Repeindre tout l'arbre pour que les ombres réelles remplacent le trait de test.
+    for (final r in tester.allRenderObjects) {
+      r.markNeedsPaint();
+    }
     tester.binding.scheduleFrame();
     await tester.pumpAndSettle();
     await expectLater(finder, matchesGoldenFile('../goldens/$name.png'));

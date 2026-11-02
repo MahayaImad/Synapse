@@ -72,6 +72,7 @@ ColorScheme fallbackScheme(Brightness brightness) {
           surface: const Color(0xFFF3F5F8),
           surfaceContainerLowest: Colors.white,
           surfaceContainerLow: const Color(0xFFF8FAFC),
+          outlineVariant: const Color(0xFFE3E8EF),
         )
       : base.copyWith(
           primary: const Color(0xFF8AB8F0),
@@ -80,6 +81,7 @@ ColorScheme fallbackScheme(Brightness brightness) {
           surfaceContainerLowest: const Color(0xFF262B33),
           surfaceContainerLow: const Color(0xFF222730),
           onSurface: const Color(0xFFE3E6EB),
+          outlineVariant: const Color(0xFF353B45),
         );
 }
 
@@ -93,14 +95,12 @@ ThemeData buildTheme(ColorScheme scheme) {
     ],
     cardTheme: CardThemeData(
       color: scheme.surfaceContainerLowest,
-      elevation: 0,
+      // Carte blanche à ombre douce (référence El Hana) ; pas de teinte de surface.
+      elevation: light ? 1.5 : 0,
+      shadowColor: const Color(0x33000000),
       surfaceTintColor: Colors.transparent,
       margin: const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 6),
-      // Filet très clair plutôt qu'une ombre : même lecture « carte blanche sur fond gris », rendu identique partout.
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: light ? const BorderSide(color: Color(0xFFE3E8EF)) : BorderSide.none,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
     appBarTheme: AppBarTheme(
       centerTitle: true,
@@ -109,6 +109,7 @@ ThemeData buildTheme(ColorScheme scheme) {
       scrolledUnderElevation: 1,
       titleTextStyle: base.textTheme.titleLarge!.copyWith(color: scheme.onSurface),
     ),
+    dividerTheme: DividerThemeData(color: scheme.outlineVariant, space: 1, thickness: 1),
     listTileTheme: ListTileThemeData(minVerticalPadding: 8, iconColor: scheme.primary),
     iconTheme: IconThemeData(color: scheme.primary),
   );

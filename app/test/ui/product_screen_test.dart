@@ -35,6 +35,26 @@ void main() {
     expect(find.text('Source : nomenclature nationale des produits pharmaceutiques, version août 2026.', skipOffstage: false), findsOneWidget);
   });
 
+  testWidgets('titres de section : vrais titres, au-dessus des valeurs', (tester) async {
+    phone(tester);
+    await open(tester, idOf('CETIRIPEX', '10MG'));
+    final title = tester.widget<Text>(find.text('Informations'));
+    final value = tester.widget<Text>(find.text('CETIRIZINE DICHLORHYDRATE'));
+    final scheme = Theme.of(tester.element(find.text('Informations'))).colorScheme;
+    expect(title.style!.fontSize!, greaterThan(value.style!.fontSize!));
+    expect(title.style!.color, scheme.onSurface);
+  });
+
+  testWidgets('listes d\'équivalents séparées comme les résultats', (tester) async {
+    phone(tester);
+    await open(tester, idOf('CETIRIPEX', '10MG'));
+    final same = find.byKey(const Key('same-dosage'), skipOffstage: false);
+    final rows = find.descendant(of: same, matching: find.byType(ProductTile, skipOffstage: false), skipOffstage: false).evaluate().length;
+    final dividers = find.descendant(of: same, matching: find.byType(Divider, skipOffstage: false), skipOffstage: false).evaluate().length;
+    expect(rows, greaterThan(1));
+    expect(dividers, rows - 1);
+  });
+
   testWidgets('statut toujours écrit, nom dans la barre', (tester) async {
     phone(tester);
     await open(tester, idOf('CETIRIPEX', '10MG'));
