@@ -37,7 +37,7 @@ Future<void> main() async {
   runApp(SynapseApp(store: store, updates: updates, settings: settings, messengerKey: messenger, dynamicSeed: seed,
       home: const SearchScreen()));
   Future<void> tick() async {
-    if (updates.due) await updates.check();
+    if (updates.due) notifyUpdate(messenger, await updates.check());
   }
 
   unawaited(tick());

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'data/settings.dart';
 import 'data/store.dart';
 import 'data/update_service.dart';
+import 'ui/format.dart';
 import 'l10n/app_localizations.dart';
 import 'services.dart';
 import 'ui/theme.dart';
@@ -63,4 +64,11 @@ class PreparingApp extends StatelessWidget {
           ),
         ),
       );
+}
+
+/// Signale discrètement une mise à jour installée en arrière-plan (rien pour les autres issues).
+void notifyUpdate(GlobalKey<ScaffoldMessengerState> messenger, UpdateResult r) {
+  if (r.outcome != UpdateOutcome.updated) return;
+  final l = lookupAppLocalizations(const Locale('fr'));
+  messenger.currentState?.showSnackBar(SnackBar(content: Text(l.updateDone(versionLabel(r.newVersion ?? '')))));
 }
