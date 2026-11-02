@@ -89,6 +89,10 @@ CATALOG = [
      dict(code="04 A 001", dci="PHLOROGLUCINOL", forme="COMPRIME ORODISPERSIBLE", liste="")),
     ("SPASFON", "40MG/4ML", "B/6 AMP", "en_vigueur", "901/04 A 002/10",
      dict(code="04 A 002", dci="PHLOROGLUCINOL", forme="SOLUTION INJECTABLE")),
+    ("VITAM", "", "B/30", "en_vigueur", "801/14 H 097/20", dict(code="14 H 097", dci="POLYVITAMINES", forme="COMPRIME")),
+    ("POLIVIT", "", "B/20", "retire", "802/14 H 097/09",
+     dict(code="14 H 097", dci="POLYVITAMINES", forme="COMPRIME", date_retrait=date(2021, 5, 1), motif_retrait="ARRET")),
+    ("VITAM FORT", "500MG", "B/30", "en_vigueur", "801/14 H 097/21", dict(code="14 H 097", dci="POLYVITAMINES", forme="COMPRIME")),
     ("XYDOL ENFANTS ET NOURRISSONS", "2,4%", "FL/100ML", "en_vigueur", "115/05 A 013/22",
      dict(code="05 A 013", dci="PARACÉTAMOL", forme="SUSPENSION BUVABLE", liste="")),
 ]
@@ -119,14 +123,18 @@ def dosage_key(d: str) -> str:
     return "".join(d.split())
 
 
+UNKNOWN = ""  # dosage non précisé : jamais « même dosage », groupe à part
+
+
 def equivalents(items, pid):
     by_id = {str(i): p for i, p in items}
     me = by_id[pid]
     others = [(str(i), p) for i, p in items if str(i) != pid and p.dci_code == me.dci_code]
     order = lambda x: (STATUS_RANK[x[1].sheet], x[1].brand, x[0])
-    same = sorted([x for x in others if dosage_key(x[1].dosage) == dosage_key(me.dosage)], key=order)
+    mine = dosage_key(me.dosage)
+    same = sorted([x for x in others if mine != UNKNOWN and dosage_key(x[1].dosage) == mine], key=order)
     groups: dict[str, list] = {}
-    for x in sorted([x for x in others if dosage_key(x[1].dosage) != dosage_key(me.dosage)], key=order):
+    for x in sorted([x for x in others if x not in same], key=order):
         groups.setdefault(dosage_key(x[1].dosage), []).append(x)
     other = [{"dosage": g[0][1].dosage, "ids": [i for i, _ in g]} for _, g in sorted(groups.items())]
     return {"id": pid, "statut": me.sheet, "same_dosage": [i for i, _ in same],

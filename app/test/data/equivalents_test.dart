@@ -36,6 +36,14 @@ void main() {
     expect(e.otherDosages.map((g) => g.dosage), contains('500MG'));
   });
 
+  test('dosage non précisé : jamais proposé comme même dosage', () {
+    final e = equivalentsOf(db, byBrand('POLIVIT', ''));
+    expect(e.sameDosage, isEmpty);
+    expect(e.activeSameDosage, isEmpty);
+    expect(e.otherDosages.first.isUnknown, isTrue);
+    expect(e.otherDosages.first.products.map((p) => p.marque), ['VITAM']);
+  });
+
   test('produit sans équivalent', () {
     expect(equivalentsOf(db, byBrand('ALCOOL CHIRURGICAL 90°', '90°')).isEmpty, isTrue);
   });

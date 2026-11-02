@@ -19,6 +19,6 @@ STORY: Le pharmacien tape quelques lettres, voit tout de suite marque, dosage, f
 
 FIRST VIEWPORT: Barre de recherche Material en haut (focus au lancement, clavier ouvert), version de la nomenclature en sous-titre ; liste de résultats en dessous, une ligne par présentation, chip de statut à droite pour tout produit non en vigueur ; pas de FAB.
 
-FORM: canon Material 3 (sortie permanente choisie par l'utilisateur après deux tirages ; 7 références officinales écartées) ; seed: none (canon).
+FORM: canon Material 3 (sortie permanente choisie par l'utilisateur après deux tirages ; 7 références officinales écartées) ; seed:fe769b877b18a4ee (second tirage, avant le choix du canon).
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

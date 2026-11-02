@@ -4,21 +4,23 @@ import '../../data/product.dart';
 import '../../l10n/app_localizations.dart';
 import '../theme.dart';
 
-/// Statut réglementaire en étiquette tonale ; rien pour un produit en vigueur.
+/// Statut réglementaire en étiquette tonale. « En vigueur » n'est affiché que si [showActive] (fiche produit).
 class StatusChip extends StatelessWidget {
-  const StatusChip(this.status, {super.key});
+  const StatusChip(this.status, {super.key, this.showActive = false});
 
   final ProductStatus status;
+  final bool showActive;
 
   @override
   Widget build(BuildContext context) {
-    if (status == ProductStatus.enVigueur) return const SizedBox.shrink();
+    if (status == ProductStatus.enVigueur && !showActive) return const SizedBox.shrink();
     final l = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final warn = Theme.of(context).extension<StatusColors>()!;
     final (label, bg, fg) = switch (status) {
       ProductStatus.retire => (l.statusRetire, scheme.errorContainer, scheme.onErrorContainer),
-      _ => (l.statusNonRenouvele, warn.warningContainer, warn.onWarningContainer),
+      ProductStatus.nonRenouvele => (l.statusNonRenouvele, warn.warningContainer, warn.onWarningContainer),
+      ProductStatus.enVigueur => (l.statusActive, scheme.secondaryContainer, scheme.onSecondaryContainer),
     };
     return Semantics(
       label: 'Statut : $label',

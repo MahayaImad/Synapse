@@ -31,3 +31,13 @@ def test_cases_cover_review_focus(tmp_path):
     with sqlite3.connect(out / "nomenclature-test.sqlite") as c:
         assert c.execute("select max(length(conditionnement)) from produit").fetchone()[0] >= 200
         assert dict(c.execute("select cle, valeur from meta"))["version"] == "2026-08"
+
+
+def test_unknown_dosage_never_same_dosage(tmp_path):
+    out = generate(tmp_path)
+    eq = json.loads((out / "equivalents_cases.json").read_text())
+    with sqlite3.connect(out / "nomenclature-test.sqlite") as c:
+        ids = dict(c.execute("select marque, id from produit where code_dci = '14 H 097'"))
+    polivit = next(x for x in eq if x["id"] == ids["POLIVIT"])
+    assert polivit["same_dosage"] == [] and polivit["active_same_dosage"] == []
+    assert [g["dosage"] for g in polivit["other_dosages"]] == ["", "500MG"]

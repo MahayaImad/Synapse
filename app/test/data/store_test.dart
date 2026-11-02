@@ -72,6 +72,29 @@ void main() {
     s2.dispose();
   });
 
+  test('copie de l\'APK impossible : la base installée reste utilisée', () async {
+    final s = NomenclatureStore(dir: dir, loadAsset: assetsFrom(relabel(root, '2026-07'), '2026-07'));
+    await s.init();
+    s.dispose();
+    final failing = NomenclatureStore(dir: dir, loadAsset: (key) async {
+      if (key.endsWith('manifest.json')) return assetsFrom(File(fixtureDb), '2026-08')(key);
+      throw const FileSystemException('No space left on device');
+    });
+    await failing.init();
+    expect(failing.meta.version, '2026-07');
+    expect(dir.listSync().where((e) => e.path.endsWith('.tmp')), isEmpty);
+    failing.dispose();
+  });
+
+  test('premier lancement sans espace : erreur explicite', () async {
+    final failing = NomenclatureStore(dir: dir, loadAsset: (key) async {
+      if (key.endsWith('manifest.json')) return assetsFrom(File(fixtureDb), '2026-08')(key);
+      throw const FileSystemException('No space left on device');
+    });
+    await expectLater(failing.init(), throwsA(isA<FileSystemException>()));
+    expect(failing.isReady, isFalse);
+  });
+
   test('base installée corrompue : recopie depuis l\'APK', () async {
     File('${dir.path}/nomenclature.sqlite').writeAsStringSync('abîmé');
     final s = NomenclatureStore(dir: dir, loadAsset: assetsFrom(File(fixtureDb), '2026-08'));

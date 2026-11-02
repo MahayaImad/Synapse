@@ -29,6 +29,7 @@ class SynapseApp extends StatelessWidget {
       settings: settings,
       child: MaterialApp(
         onGenerateTitle: (c) => AppLocalizations.of(c).appTitle,
+        debugShowCheckedModeBanner: false,
         scaffoldMessengerKey: messengerKey,
         theme: buildTheme(schemeFor(Brightness.light, dynamicSeed)),
         darkTheme: buildTheme(schemeFor(Brightness.dark, dynamicSeed)),
@@ -71,4 +72,43 @@ void notifyUpdate(GlobalKey<ScaffoldMessengerState> messenger, UpdateResult r) {
   if (r.outcome != UpdateOutcome.updated) return;
   final l = lookupAppLocalizations(const Locale('fr'));
   messenger.currentState?.showSnackBar(SnackBar(content: Text(l.updateDone(versionLabel(r.newVersion ?? '')))));
+}
+
+/// Démarrage impossible (stockage plein, fichier illisible) : message et nouvel essai, jamais un chargement sans fin.
+class StartupErrorApp extends StatelessWidget {
+  const StartupErrorApp({super.key, required this.error, required this.onRetry});
+
+  final String error;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+        theme: buildTheme(fallbackScheme(Brightness.light)),
+        darkTheme: buildTheme(fallbackScheme(Brightness.dark)),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('fr'),
+        home: Builder(
+          builder: (c) {
+            final l = AppLocalizations.of(c);
+            final theme = Theme.of(c);
+            return Scaffold(
+              body: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.all(24),
+                  child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Icon(Icons.error_outline, size: 48, color: theme.colorScheme.error),
+                    const SizedBox(height: 16),
+                    Text(l.startupFailed, style: theme.textTheme.titleLarge),
+                    const SizedBox(height: 8),
+                    Text(error, style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                    const SizedBox(height: 24),
+                    FilledButton(onPressed: onRetry, child: Text(l.retry)),
+                  ]),
+                ),
+              ),
+            );
+          },
+        ),
+      );
 }

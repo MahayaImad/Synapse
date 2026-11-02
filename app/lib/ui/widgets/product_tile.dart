@@ -19,18 +19,13 @@ class ProductTile extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final p = product;
-    final liste = listeLabel(l, p.liste);
+    // Colonne de droite réservée au statut ; seule exception : le stupéfiant (liste I / II dans la fiche).
     final Widget? trailing = p.statut != ProductStatus.enVigueur
         ? StatusChip(p.statut)
-        : liste == null
-            ? null
-            : Text(
-                liste,
-                style: theme.textTheme.labelMedium!.copyWith(
-                  color: p.liste == 'STUPEFIANT' ? theme.colorScheme.error : theme.colorScheme.onSurfaceVariant,
-                  fontWeight: p.liste == 'STUPEFIANT' ? FontWeight.w600 : null,
-                ),
-              );
+        : p.liste == 'STUPEFIANT'
+            ? Text(l.stupefiant,
+                style: theme.textTheme.labelMedium!.copyWith(color: theme.colorScheme.error, fontWeight: FontWeight.w600))
+            : null;
     return ListTile(
       onTap: onTap,
       title: Text(p.marque, maxLines: 1, overflow: TextOverflow.ellipsis),

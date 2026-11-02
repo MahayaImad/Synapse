@@ -121,8 +121,8 @@ abstract class AppLocalizations {
   /// No description provided for @noResultsHelp.
   ///
   /// In fr, this message translates to:
-  /// **'Vérifiez l\'orthographe ou cherchez par la DCI. Nomenclature {version}.'**
-  String noResultsHelp(String version);
+  /// **'Vérifiez l\'orthographe ou cherchez par la DCI.'**
+  String get noResultsHelp;
 
   /// No description provided for @nomenclatureVersion.
   ///
@@ -135,6 +135,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Préparation de la nomenclature…'**
   String get preparing;
+
+  /// No description provided for @statusActive.
+  ///
+  /// In fr, this message translates to:
+  /// **'En vigueur'**
+  String get statusActive;
 
   /// No description provided for @statusRetire.
   ///
@@ -459,6 +465,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Retour'**
   String get back;
+
+  /// No description provided for @dosageUnknown.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dosage non précisé'**
+  String get dosageUnknown;
+
+  /// No description provided for @startupFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de préparer la nomenclature sur ce téléphone.'**
+  String get startupFailed;
+
+  /// No description provided for @retry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réessayer'**
+  String get retry;
 }
 
 class _AppLocalizationsDelegate

@@ -40,7 +40,7 @@ void main() {
     await open(tester);
     expect(find.text('août 2026 (2026-08)'), findsOneWidget);
     expect(find.text('31/08/2026'), findsOneWidget);
-    expect(find.text('40'), findsOneWidget);
+    expect(find.text('43'), findsOneWidget);
     expect(find.textContaining('La décision reste au pharmacien', skipOffstage: false), findsOneWidget);
   });
 

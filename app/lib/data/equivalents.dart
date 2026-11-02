@@ -5,8 +5,10 @@ import 'text.dart';
 class DosageGroup {
   const DosageGroup(this.dosage, this.products);
 
-  /// Dosage tel qu'écrit dans la nomenclature (premier produit du groupe).
+  /// Dosage tel qu'écrit dans la nomenclature (premier produit du groupe) ; vide = dosage non précisé.
   final String dosage;
+
+  bool get isUnknown => dosageKey(dosage).isEmpty;
   final List<Product> products;
 }
 
@@ -35,11 +37,11 @@ Equivalents equivalentsOf(NomenclatureDb db, Product p) {
       Product.fromRow(r)
   ]..sort(_order);
   final key = dosageKey(p.dosage);
-  final same = [for (final o in others) if (dosageKey(o.dosage) == key) o];
+  // Un dosage non précisé n'est jamais « le même » : on ne propose pas de substitution incertaine.
+  final same = key.isEmpty ? <Product>[] : [for (final o in others) if (dosageKey(o.dosage) == key) o];
   final groups = <String, List<Product>>{};
   for (final o in others) {
-    final k = dosageKey(o.dosage);
-    if (k != key) groups.putIfAbsent(k, () => []).add(o);
+    if (!same.contains(o)) groups.putIfAbsent(dosageKey(o.dosage), () => []).add(o);
   }
   final keys = groups.keys.toList()..sort();
   return Equivalents(same, [for (final k in keys) DosageGroup(groups[k]!.first.dosage, groups[k]!)]);

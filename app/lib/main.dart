@@ -15,10 +15,20 @@ import 'ui/search/search_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await start();
+}
+
+Future<void> start() async {
   runApp(const PreparingApp());
-  final dir = await getApplicationSupportDirectory();
-  final store = NomenclatureStore(dir: dir, loadAsset: rootBundle.load);
-  await store.init();
+  final NomenclatureStore store;
+  try {
+    final dir = await getApplicationSupportDirectory();
+    store = NomenclatureStore(dir: dir, loadAsset: rootBundle.load);
+    await store.init();
+  } catch (e) {
+    runApp(StartupErrorApp(error: '$e', onRetry: () => unawaited(start())));
+    return;
+  }
   final settings = await Settings.load();
   final updates = UpdateService(
     client: http.Client(),

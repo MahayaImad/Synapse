@@ -15,7 +15,7 @@ void main() {
   test('meta', () {
     expect(db.meta.version, '2026-08');
     expect(db.meta.referenceDate, DateTime(2026, 8, 31));
-    expect(db.meta.products, 40);
+    expect(db.meta.products, 43);
     expect(db.meta.publishedAt, DateTime.utc(2026, 9, 1));
   });
 

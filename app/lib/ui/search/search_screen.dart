@@ -52,6 +52,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _run(String q) {
+    _debounce?.cancel();
     if (!mounted) return;
     setState(() {
       _query = q;
@@ -91,6 +92,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
                       icon: const Icon(Icons.close),
                       onPressed: () {
+                        _debounce?.cancel();
                         _controller.clear();
                         _run('');
                       },
@@ -128,7 +130,7 @@ class _SearchScreenState extends State<SearchScreen> {
       return _Message(icon: Icons.manage_search, title: l.searchEmptyHelp);
     }
     if (_results.isEmpty) {
-      return _Message(icon: Icons.search_off, title: l.noResults(_query.trim()), body: l.noResultsHelp(version));
+      return _Message(icon: Icons.search_off, title: l.noResults(_query.trim()), body: l.noResultsHelp);
     }
     return ListView.builder(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,

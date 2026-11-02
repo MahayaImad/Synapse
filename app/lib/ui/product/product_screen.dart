@@ -61,17 +61,19 @@ class _Sheet extends StatelessWidget {
     List<Widget> tiles(Iterable<Product> ps) => [for (final e in ps) ProductTile(e, onTap: () => _open(context, e))];
 
     return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsetsDirectional.only(bottom: 24),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      body: CustomScrollView(slivers: [
+        // Barre Material moyenne : le nom du produit reste visible en haut quand on fait défiler la fiche.
+        SliverAppBar.medium(title: Text(p.marque, maxLines: 1, overflow: TextOverflow.ellipsis)),
+        SliverPadding(
+          padding: const EdgeInsetsDirectional.only(bottom: 24),
+          sliver: SliverToBoxAdapter(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 16),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(p.marque, style: theme.textTheme.headlineSmall),
-              const SizedBox(height: 4),
               Text(noBreakAfterSlash('${p.dosage} · ${p.forme}'),
                   style: theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.onSurfaceVariant, fontFeatures: tabular)),
+              const SizedBox(height: 8),
+              StatusChip(p.statut, showActive: true),
             ]),
           ),
           if (!active) ...[
@@ -108,7 +110,7 @@ class _Sheet extends StatelessWidget {
                 for (final g in equivalents.otherDosages) ...[
                   Padding(
                     padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 0),
-                    child: Text(noBreakAfterSlash(g.dosage),
+                    child: Text(g.isUnknown ? l.dosageUnknown : noBreakAfterSlash(g.dosage),
                         style: theme.textTheme.labelLarge!.copyWith(color: theme.colorScheme.onSurfaceVariant, fontFeatures: tabular)),
                   ),
                   ...tiles(g.products),
@@ -121,8 +123,9 @@ class _Sheet extends StatelessWidget {
             child: Text(l.sourceFooter(version),
                 style: theme.textTheme.bodySmall!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
           ),
-        ]),
-      ),
+          ])),
+        ),
+      ]),
     );
   }
 

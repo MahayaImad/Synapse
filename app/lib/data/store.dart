@@ -50,11 +50,21 @@ class NomenclatureStore extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    current?.close();
+    // Copie de la base embarquée ; en cas d'échec, l'ancienne base installée (encore ouverte) reste utilisée.
     final tmp = File('${dir.path}/embarquee.tmp');
-    final bytes = await loadAsset(embeddedKey);
-    await tmp.writeAsBytes(bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes), flush: true);
-    await install(tmp, notify: false);
+    try {
+      final bytes = await loadAsset(embeddedKey);
+      await tmp.writeAsBytes(bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes), flush: true);
+      if (current != null) {
+        _db = current;
+        current = null;
+      }
+      await install(tmp, notify: false);
+    } catch (_) {
+      if (tmp.existsSync()) tmp.deleteSync();
+      if (current == null && _db == null) rethrow;
+      _db ??= current; // base plus ancienne mais valide
+    }
     notifyListeners();
   }
 

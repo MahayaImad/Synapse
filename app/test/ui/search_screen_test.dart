@@ -43,12 +43,34 @@ void main() {
     expect(find.bySemanticsLabel(RegExp('Statut : Retiré')), findsOneWidget);
   });
 
+  testWidgets('effacer pendant le délai de frappe : pas de résultats fantômes', (tester) async {
+    phone(tester);
+    await open(tester);
+    await typeQuery(tester, 'doliprane');
+    await tester.enterText(find.byType(TextField), 'cetirizine');
+    await tester.pump(const Duration(milliseconds: 50));
+    await tester.tap(find.byIcon(Icons.close));
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byType(ProductTile), findsNothing);
+    expect(find.text('Marque, DCI, code DCI ou laboratoire'), findsOneWidget);
+  });
+
+  testWidgets('colonne de droite réservée au statut (et au stupéfiant)', (tester) async {
+    phone(tester);
+    await open(tester);
+    await typeQuery(tester, 'cetirizine');
+    expect(find.text('Liste II'), findsNothing);
+    await typeQuery(tester, 'codoliprane');
+    expect(find.text('Stupéfiant'), findsOneWidget);
+  });
+
   testWidgets('aucun résultat', (tester) async {
     phone(tester);
     await open(tester);
     await typeQuery(tester, 'zzzz');
     expect(find.text('Aucun produit pour « zzzz »'), findsOneWidget);
-    expect(find.textContaining('août 2026'), findsWidgets);
+    expect(find.text("Vérifiez l'orthographe ou cherchez par la DCI."), findsOneWidget);
+    expect(find.textContaining('août 2026'), findsOneWidget); // une seule fois, sous la barre
   });
 
   testWidgets('ouvre la fiche', (tester) async {
@@ -89,6 +111,27 @@ void main() {
       }
     }
     await expectLater(tester, meetsGuideline(textContrastGuideline));
+  });
+
+  testWidgets('golden fiche ouverte depuis la recherche', (tester) async {
+    phone(tester);
+    await open(tester);
+    await typeQuery(tester, 'cetirizine mylan');
+    await tester.tap(find.byType(ProductTile).first);
+    await tester.pumpAndSettle();
+    expect(find.byType(BackButton), findsOneWidget);
+    await golden(tester, find.byType(MaterialApp), 'pushed_product_retired_light');
+  });
+
+  testWidgets('golden à propos ouvert depuis le menu', (tester) async {
+    phone(tester);
+    await open(tester);
+    await tester.tap(find.byType(PopupMenuButton<void>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('À propos et mises à jour'));
+    await tester.pumpAndSettle();
+    expect(find.byType(BackButton), findsOneWidget);
+    await golden(tester, find.byType(MaterialApp), 'pushed_about_light');
   });
 
   testWidgets('golden empty', (tester) async {

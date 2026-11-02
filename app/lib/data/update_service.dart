@@ -1,4 +1,7 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
@@ -6,6 +9,7 @@ import 'package:sqlite3/sqlite3.dart';
 
 import 'manifest.dart';
 import 'nomenclature_db.dart';
+import 'product.dart';
 import 'store.dart';
 
 enum UpdateOutcome { upToDate, updated, disabled, waitingForWifi, failed }
@@ -28,7 +32,7 @@ class UpdateService {
     required this.manifestUrl,
     required this.onUnmeteredNetwork,
     DateTime Function()? now,
-    this.timeout = const Duration(seconds: 30),
+    this.timeout = const Duration(seconds: 30), // délai d'inactivité (aucun octet reçu), pas une durée totale
     this.interval = const Duration(hours: 24),
   }) : _now = now ?? DateTime.now;
 
@@ -50,7 +54,13 @@ class UpdateService {
   /// (« désactivé » et « en attente du Wi-Fi » ne comptent pas : on réessaie au prochain passage).
   bool get due => _lastAttempt == null || _now().difference(_lastAttempt!) >= interval;
 
-  Future<UpdateResult> check({bool userInitiated = false}) async {
+  Future<UpdateResult>? _inFlight;
+
+  /// Une seule vérification à la fois : un second appel pendant la première reçoit le même résultat.
+  Future<UpdateResult> check({bool userInitiated = false}) =>
+      _inFlight ??= _checkAndRecord(userInitiated).whenComplete(() => _inFlight = null);
+
+  Future<UpdateResult> _checkAndRecord(bool userInitiated) async {
     final result = await _check(userInitiated);
     _last = result;
     if (result.outcome != UpdateOutcome.waitingForWifi && result.outcome != UpdateOutcome.disabled) {
@@ -65,16 +75,28 @@ class UpdateService {
     if (!userInitiated && !await onUnmeteredNetwork()) return UpdateResult(UpdateOutcome.waitingForWifi, _now());
     File? tmp;
     try {
-      final m = await _get(Uri.parse(url));
-      final manifest = Manifest.parse(String.fromCharCodes(m));
+      final body = BytesBuilder(copy: false);
+      await _download(Uri.parse(url), (chunk) => body.add(chunk), maxBytes: 64 * 1024);
+      final manifest = Manifest.parse(utf8.decode(body.takeBytes(), allowMalformed: true));
       if (manifest.version.compareTo(store.meta.version) <= 0) return UpdateResult(UpdateOutcome.upToDate, _now());
-      final bytes = await _get(Uri.parse(url).resolve(manifest.file));
-      if (bytes.length != manifest.size) {
-        throw StateError('taille ${bytes.length} octets, ${manifest.size} attendus');
+      tmp = File('${store.dir.path}/telechargement-${DateTime.now().microsecondsSinceEpoch}.tmp');
+      final sink = tmp.openWrite();
+      final digest = _DigestSink();
+      final hasher = sha256.startChunkedConversion(digest);
+      var received = 0;
+      try {
+        await _download(Uri.parse(url).resolve(manifest.file), (chunk) {
+          received += chunk.length;
+          if (received > manifest.size) throw StateError('fichier plus grand que les ${manifest.size} octets annoncés');
+          sink.add(chunk);
+          hasher.add(chunk);
+        });
+      } finally {
+        await sink.close();
       }
-      if (sha256.convert(bytes).toString() != manifest.sha256) throw StateError('empreinte SHA-256 différente');
-      tmp = File('${store.dir.path}/telechargement.tmp');
-      await tmp.writeAsBytes(bytes, flush: true);
+      hasher.close();
+      if (received != manifest.size) throw StateError('taille $received octets, ${manifest.size} attendus');
+      if (digest.value.toString() != manifest.sha256) throw StateError('empreinte SHA-256 différente');
       _verify(tmp, manifest.version);
       await store.install(tmp);
       return UpdateResult(UpdateOutcome.updated, _now(), newVersion: manifest.version);
@@ -85,10 +107,48 @@ class UpdateService {
     }
   }
 
-  Future<List<int>> _get(Uri uri) async {
-    final r = await client.get(uri).timeout(timeout);
-    if (r.statusCode != 200) throw StateError('HTTP ${r.statusCode} sur ${uri.path}');
-    return r.bodyBytes;
+  /// Télécharge par morceaux ; échoue si aucun octet n'arrive pendant [timeout] (et non au bout d'une durée totale).
+  Future<void> _download(Uri uri, void Function(List<int>) onChunk, {int? maxBytes}) async {
+    final response = await client.send(http.Request('GET', uri)).timeout(timeout);
+    if (response.statusCode != 200) {
+      unawaited(response.stream.drain<void>().catchError((_) {}));
+      throw StateError('HTTP ${response.statusCode} sur ${uri.path}');
+    }
+    var total = 0;
+    final done = Completer<void>();
+    late final StreamSubscription<List<int>> sub;
+    Timer? idle;
+    void fail(Object e) {
+      idle?.cancel();
+      unawaited(sub.cancel().catchError((_) {})); // ne pas attendre : un flux bloqué peut ne jamais se terminer
+      if (!done.isCompleted) done.completeError(e);
+    }
+
+    void arm() {
+      idle?.cancel();
+      idle = Timer(timeout, () => fail(StateError('aucune donnée reçue pendant ${timeout.inSeconds} s')));
+    }
+
+    sub = response.stream.listen(
+      (chunk) {
+        arm();
+        total += chunk.length;
+        try {
+          if (maxBytes != null && total > maxBytes) throw StateError('réponse trop volumineuse');
+          onChunk(chunk);
+        } catch (e) {
+          fail(e);
+        }
+      },
+      onError: fail,
+      onDone: () {
+        idle?.cancel();
+        if (!done.isCompleted) done.complete();
+      },
+      cancelOnError: true,
+    );
+    arm();
+    return done.future;
   }
 
   void _verify(File f, String version) {
@@ -97,6 +157,15 @@ class UpdateService {
       if (db.meta.version != version) throw StateError('le fichier contient ${db.meta.version}, $version annoncée');
       final check = db.raw.select('PRAGMA integrity_check').first.values.first;
       if (check != 'ok') throw StateError('intégrité : $check');
+      // Chaque ligne doit être lisible par l'app : une valeur inattendue (statut inconnu, date illisible…)
+      // rendrait la recherche inutilisable après installation.
+      for (final row in db.raw.select('SELECT * FROM produit')) {
+        try {
+          Product.fromRow(row);
+        } on Object catch (e) {
+          throw StateError('produit ${row['id']} illisible : ${e is FormatException ? e.message : e}');
+        }
+      }
     } on SqliteException catch (e) {
       throw StateError('intégrité : ${e.message}');
     } finally {
@@ -110,4 +179,14 @@ class UpdateService {
         NomenclatureFormatError(:final message) => message,
         _ => e.toString(),
       };
+}
+
+class _DigestSink implements Sink<Digest> {
+  late Digest value;
+
+  @override
+  void add(Digest data) => value = data;
+
+  @override
+  void close() {}
 }

@@ -5,11 +5,11 @@
   "searchEmptyHelp": "Marque, DCI, code DCI ou laboratoire",
   "noResults": "Aucun produit pour « {query} »",
   "@noResults": {"placeholders": {"query": {"type": "String"}}},
-  "noResultsHelp": "Vérifiez l'orthographe ou cherchez par la DCI. Nomenclature {version}.",
-  "@noResultsHelp": {"placeholders": {"version": {"type": "String"}}},
+  "noResultsHelp": "Vérifiez l'orthographe ou cherchez par la DCI.",
   "nomenclatureVersion": "Nomenclature {version}",
   "@nomenclatureVersion": {"placeholders": {"version": {"type": "String"}}},
   "preparing": "Préparation de la nomenclature…",
+  "statusActive": "En vigueur",
   "statusRetire": "Retiré",
   "statusNonRenouvele": "Non renouvelé",
   "retiredOn": "Retiré le {date}",
@@ -68,5 +68,8 @@
   "save": "Enregistrer",
   "saved": "Adresse enregistrée",
   "disclaimer": "Synapse est un outil d'aide à la dispensation. La décision reste au pharmacien.",
-  "back": "Retour"
+  "back": "Retour",
+  "dosageUnknown": "Dosage non précisé",
+  "startupFailed": "Impossible de préparer la nomenclature sur ce téléphone.",
+  "retry": "Réessayer"
 }

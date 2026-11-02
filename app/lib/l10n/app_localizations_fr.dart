@@ -24,9 +24,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String noResultsHelp(String version) {
-    return 'Vérifiez l\'orthographe ou cherchez par la DCI. Nomenclature $version.';
-  }
+  String get noResultsHelp => 'Vérifiez l\'orthographe ou cherchez par la DCI.';
 
   @override
   String nomenclatureVersion(String version) {
@@ -35,6 +33,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get preparing => 'Préparation de la nomenclature…';
+
+  @override
+  String get statusActive => 'En vigueur';
 
   @override
   String get statusRetire => 'Retiré';
@@ -210,4 +211,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get back => 'Retour';
+
+  @override
+  String get dosageUnknown => 'Dosage non précisé';
+
+  @override
+  String get startupFailed =>
+      'Impossible de préparer la nomenclature sur ce téléphone.';
+
+  @override
+  String get retry => 'Réessayer';
 }

@@ -35,10 +35,21 @@ void main() {
     expect(find.text('Source : nomenclature nationale des produits pharmaceutiques, version août 2026.', skipOffstage: false), findsOneWidget);
   });
 
+  testWidgets('statut toujours écrit, nom dans la barre', (tester) async {
+    phone(tester);
+    await open(tester, idOf('CETIRIPEX', '10MG'));
+    expect(find.text('En vigueur'), findsOneWidget);
+    expect(find.descendant(of: find.byType(AppBar), matching: find.text('CETIRIPEX')), findsWidgets);
+    await open(tester, idOf('ARTIZ', '10MG'));
+    expect(find.text('En vigueur'), findsNothing);
+    expect(find.text('Non renouvelé'), findsOneWidget);
+  });
+
   testWidgets('produit retiré : bandeau puis équivalents en vigueur avant les informations', (tester) async {
     phone(tester);
     await open(tester, idOf('CETIRIZINE MYLAN', '10MG'));
     expect(find.text('Retiré le 31/03/2024'), findsOneWidget);
+    expect(find.text('Retiré'), findsOneWidget); // statut sous le dosage, détails dans le bandeau
     expect(find.text('RETRAIT PAR LE DETENTEUR POUR MOTIF COMMERCIAL'), findsOneWidget);
     final banner = tester.getTopLeft(find.byKey(const Key('status-banner'))).dy;
     final active = tester.getTopLeft(find.text('Équivalents en vigueur — même dosage')).dy;
@@ -114,6 +125,8 @@ void main() {
     ('product_retired_light', 'CETIRIZINE MYLAN', '10MG', Brightness.light),
     ('product_retired_dark', 'CETIRIZINE MYLAN', '10MG', Brightness.dark),
     ('product_long_font130', 'COAGIL-VII', '4,8MG', Brightness.light),
+    ('product_notrenewed_light', 'ARTIZ', '10MG', Brightness.light),
+    ('product_notrenewed_dark', 'ARTIZ', '10MG', Brightness.dark),
   ]) {
     testWidgets('golden $name', (tester) async {
       phone(tester, brightness: b, textScale: name.contains('font130') ? 1.3 : 1.0);

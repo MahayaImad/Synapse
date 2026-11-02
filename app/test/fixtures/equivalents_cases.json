@@ -721,6 +721,61 @@
   "other_dosages": []
  },
  {
+  "id": "b8194ead-0879-51e8-bab6-e03c5c43ebb6",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": [
+   {
+    "dosage": "",
+    "ids": [
+     "42a79dcd-444a-5e3e-baf0-d69438897717"
+    ]
+   },
+   {
+    "dosage": "500MG",
+    "ids": [
+     "9b05d5a3-7ef8-537d-a09f-c7ed6244e920"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "42a79dcd-444a-5e3e-baf0-d69438897717",
+  "statut": "retire",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": [
+   {
+    "dosage": "",
+    "ids": [
+     "b8194ead-0879-51e8-bab6-e03c5c43ebb6"
+    ]
+   },
+   {
+    "dosage": "500MG",
+    "ids": [
+     "9b05d5a3-7ef8-537d-a09f-c7ed6244e920"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "9b05d5a3-7ef8-537d-a09f-c7ed6244e920",
+  "statut": "en_vigueur",
+  "same_dosage": [],
+  "active_same_dosage": [],
+  "other_dosages": [
+   {
+    "dosage": "",
+    "ids": [
+     "b8194ead-0879-51e8-bab6-e03c5c43ebb6",
+     "42a79dcd-444a-5e3e-baf0-d69438897717"
+    ]
+   }
+  ]
+ },
+ {
   "id": "48e9a488-78dd-5a8a-88e2-6ac7610d93e5",
   "statut": "en_vigueur",
   "same_dosage": [],
