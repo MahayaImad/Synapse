@@ -124,6 +124,8 @@ void main() {
     await tester.runAsync(() => h.store.install(relabel(h.dir, '2026-09', name: 'maj.tmp', dropBrand: 'DOLIPRANE')));
     await tester.pumpAndSettle();
     expect(find.text('Ce produit ne figure plus dans la nomenclature septembre 2026.'), findsOneWidget);
+    expect(find.text('Produit introuvable'), findsOneWidget); // même forme que les autres états vides
+    expect(find.byIcon(Icons.inventory_2_outlined), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

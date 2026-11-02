@@ -45,6 +45,7 @@
   "availBoth": "Hôpital et officine",
   "sourceFooter": "Source : nomenclature nationale des produits pharmaceutiques, version {version}.",
   "@sourceFooter": {"placeholders": {"version": {"type": "String"}}},
+  "productGoneTitle": "Produit introuvable",
   "productGone": "Ce produit ne figure plus dans la nomenclature {version}.",
   "@productGone": {"placeholders": {"version": {"type": "String"}}},
   "about": "À propos et mises à jour",

@@ -70,6 +70,7 @@ void main() {
     await typeQuery(tester, 'zytrex');
     final title = tester.widget<Text>(find.descendant(of: find.byType(ProductTile).first, matching: find.text('ZYTREX')));
     expect(title.style!.fontWeight, FontWeight.w700);
+    expect((title.maxLines, title.overflow), (2, TextOverflow.ellipsis)); // noms longs proches distinguables
   });
 
   testWidgets('aucun résultat', (tester) async {

@@ -1,25 +1,23 @@
 /// Normalisations de texte partagées avec le backend (backend/src/synapse_admin/search.py).
 library;
 
-const _accents = {
-  'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Ç': 'C', 'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E',
-  'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I', 'Ñ': 'N', 'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O', 'Ù': 'U',
-  'Ú': 'U', 'Û': 'U', 'Ü': 'U', 'Ý': 'Y', 'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a', 'ç': 'c',
-  'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e', 'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i', 'ñ': 'n', 'ò': 'o', 'ó': 'o',
-  'ô': 'o', 'õ': 'o', 'ö': 'o', 'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u', 'ý': 'y', 'ÿ': 'y',
-};
+import 'accents.g.dart';
 
-/// Retire les accents latins (équivalent de la décomposition NFKD utilisée côté backend).
+/// Retire les accents et formes de compatibilité, comme la normalisation NFKD du backend
+/// (table générée : accents.g.dart).
 String stripAccents(String text) {
   final b = StringBuffer();
   for (final r in text.runes) {
-    final c = String.fromCharCode(r);
-    b.write(_accents[c] ?? c);
+    b.write(accentTable[r] ?? String.fromCharCode(r));
   }
   return b.toString();
 }
 
-final _elision = RegExp(r"\b[LDJCMNST]['’]");
+/// Majuscules comme Python : « ß » devient « SS ».
+String upper(String text) => text.toUpperCase().replaceAll('ß', 'SS');
+
+// Frontière de mot Unicode (comme \b en Python) : une lettre grecque ou accentuée précédente compte comme lettre.
+final _elision = RegExp(r"(?<![\p{L}\p{N}_])[LDJCMNST]['’]", unicode: true);
 final _token = RegExp(r'[A-Z0-9]+');
 final _nonAlnum = RegExp(r'[^A-Z0-9]');
 
@@ -27,12 +25,12 @@ const maxTokens = 8;
 
 /// Jetons de recherche : sans accents, en majuscules, élisions françaises retirées.
 List<String> searchTokens(String query) {
-  final text = stripAccents(query).toUpperCase().replaceAll(_elision, ' ');
+  final text = upper(stripAccents(query)).replaceAll(_elision, ' ');
   return _token.allMatches(text).map((m) => m.group(0)!).take(maxTokens).toList();
 }
 
 Set<String> trigrams(String text) {
-  final t = stripAccents(text).toUpperCase().replaceAll(_nonAlnum, '');
+  final t = upper(stripAccents(text)).replaceAll(_nonAlnum, '');
   return {for (var i = 0; i + 3 <= t.length; i++) t.substring(i, i + 3)};
 }
 

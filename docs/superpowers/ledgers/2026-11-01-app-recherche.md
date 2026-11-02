@@ -76,3 +76,8 @@ Final: fixed deferred minor #12 quick_check — store 'même version mais abîm�
 Final: fixed deferred minor #11 build URL https — theme_test validBuildUrl RED→GREEN
 Final: fixed deferred minor #7 rowid tiebreak (both sides) — no reproducible RED (depends on SQLite version); parity 69/69 re-verified on regenerated fixtures
 Final: Impeccable verdict pass on 5 fixes: ship (scope: the five fixes only)
+Follow-up: fixed 'produit absent' state (icon + title like other empty states) — product_screen test RED→GREEN
+Follow-up: Nunito 500 instance bundled (Material 500 roles no longer fall back) — theme_test RED→GREEN
+Follow-up: brand titles on 2 lines in result rows (near-identical long names) — search test RED→GREEN
+Follow-up: rare characters — accent table generated from Python NFKD (backend/scripts/make_accent_table.py → app/lib/data/accents.g.dart, 1153 entries), ß→SS, Unicode-aware elision boundary; 11 new parity cases (80 total) RED→GREEN
+Follow-up: setup script verifies Android cmdline-tools zip against the SHA-1 in Google's repository index (selection logic checked on a sample index; real index blocked here)

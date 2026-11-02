@@ -142,6 +142,9 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get productGoneTitle => 'Produit introuvable';
+
+  @override
   String productGone(String version) {
     return 'Ce produit ne figure plus dans la nomenclature $version.';
   }

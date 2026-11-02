@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -73,6 +74,16 @@ void main() {
       expect(t.colorScheme.outlineVariant, const Color(0xFFE3E8EF));
       expect(t.cardTheme.elevation, greaterThan(0)); // ombre douce, pas de bordure
       expect((t.cardTheme.shape! as RoundedRectangleBorder).side, BorderSide.none);
+    });
+
+    test('Nunito embarquée en 400, 500, 600, 700 (rôles Material 500 compris)', () {
+      final pubspec = File('pubspec.yaml').readAsStringSync();
+      for (final w in ['500', '600', '700']) {
+        expect(pubspec, contains('weight: $w'));
+      }
+      for (final f in ['Regular', 'Medium', 'SemiBold', 'Bold']) {
+        expect(File('assets/fonts/Nunito-$f.ttf').existsSync(), isTrue, reason: f);
+      }
     });
 
     test('police arrondie Nunito', () {

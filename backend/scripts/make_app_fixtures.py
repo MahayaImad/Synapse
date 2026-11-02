@@ -105,6 +105,7 @@ QUERIES = [
     "profenid", "ketoprofene", "alcool", "alcool 90", "l'alcool 90°", "codoliprane", "codeine", "coagil", "eptacog",
     "novoseven", "ventoline", "ventolin", "salbutamol", "levothyrox", "levotyrox", "spasfon", "phloroglucinol",
     "xydol", "nourrissons", "cetripex", "dolipran", "glucofage", "zzzz", "12 J 118",
+    "ﬁxapro", "ＤＯＬＩＰＲＡＮＥ", "straße", "x²", "½", "Ā Ł ø Ő", "ΑL'X", "Œdème", "µg", "ÉFFERALGAN", "ﬂuor",
     '"', "*", "-", "L'ALCOOL", "é", "", "AND OR NOT", "a" * 300, "  doliprane  ", "d'alcool",
 ]
 

@@ -26,11 +26,19 @@ class ProductScreen extends StatelessWidget {
         final p = db.productById(productId);
         final version = versionLabel(db.meta.version);
         if (p == null) {
+          final theme = Theme.of(context);
           return Scaffold(
             appBar: AppBar(),
-            body: Padding(
-              padding: const EdgeInsetsDirectional.all(24),
-              child: Text(l.productGone(version), style: Theme.of(context).textTheme.bodyLarge),
+            body: SingleChildScrollView(
+              padding: const EdgeInsetsDirectional.fromSTEB(32, 48, 32, 32),
+              child: Column(children: [
+                Icon(Icons.inventory_2_outlined, size: 48, color: theme.colorScheme.onSurfaceVariant),
+                const SizedBox(height: 16),
+                Text(l.productGoneTitle, textAlign: TextAlign.center, style: theme.textTheme.titleMedium),
+                const SizedBox(height: 8),
+                Text(l.productGone(version), textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+              ]),
             ),
           );
         }

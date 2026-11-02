@@ -340,6 +340,12 @@ abstract class AppLocalizations {
   /// **'Source : nomenclature nationale des produits pharmaceutiques, version {version}.'**
   String sourceFooter(String version);
 
+  /// No description provided for @productGoneTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit introuvable'**
+  String get productGoneTitle;
+
   /// No description provided for @productGone.
   ///
   /// In fr, this message translates to:

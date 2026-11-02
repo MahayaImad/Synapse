@@ -503,6 +503,82 @@
   ]
  },
  {
+  "query": "ﬁxapro",
+  "limit": 20,
+  "ids": []
+ },
+ {
+  "query": "ＤＯＬＩＰＲＡＮＥ",
+  "limit": 20,
+  "ids": [
+   "3843c540-a154-5d1a-a449-0b8a840c3e62",
+   "dc2e4ca3-1e2e-55ce-820f-41c3ffa7689b",
+   "46025a8f-91dd-52fa-a149-ecbedf8fd6b8"
+  ]
+ },
+ {
+  "query": "straße",
+  "limit": 20,
+  "ids": []
+ },
+ {
+  "query": "x²",
+  "limit": 20,
+  "ids": []
+ },
+ {
+  "query": "½",
+  "limit": 20,
+  "ids": []
+ },
+ {
+  "query": "Ā Ł ø Ő",
+  "limit": 20,
+  "ids": [
+   "31d938d3-f09e-5a53-a25c-ff0341080de0",
+   "8c5455c7-125b-56be-91f5-0266685a78a2",
+   "d5ac30a2-09db-50d3-aec2-7e30716fb114"
+  ]
+ },
+ {
+  "query": "ΑL'X",
+  "limit": 20,
+  "ids": [
+   "48e9a488-78dd-5a8a-88e2-6ac7610d93e5"
+  ]
+ },
+ {
+  "query": "Œdème",
+  "limit": 20,
+  "ids": []
+ },
+ {
+  "query": "µg",
+  "limit": 20,
+  "ids": [
+   "68f3fda6-3d92-5243-853f-88f99b6710a6",
+   "afaa7d49-3c0e-5333-88af-cad85e2dc6b7",
+   "c2a70e01-fc5f-5a72-b089-af291508bed9",
+   "66d8fca0-2256-5e31-b895-4b7cb27d0d9e",
+   "41160209-9977-5dcf-93fd-489df693a0da",
+   "8d79e50a-52ce-5f82-aeeb-9f7b75990504",
+   "b75b2aca-3718-5560-bc4d-ccaf8acfb26d"
+  ]
+ },
+ {
+  "query": "ÉFFERALGAN",
+  "limit": 20,
+  "ids": [
+   "c8e0267c-7cfd-568a-9315-bf061bf1619b",
+   "b447f7ad-2059-5b2a-b518-493475dbabae"
+  ]
+ },
+ {
+  "query": "ﬂuor",
+  "limit": 20,
+  "ids": []
+ },
+ {
   "query": "\"",
   "limit": 20,
   "ids": []
