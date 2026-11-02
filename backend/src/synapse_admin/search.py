@@ -53,7 +53,7 @@ def search(db_path: Path, query: str, limit: int = 20) -> list[SearchHit]:
         fts = " ".join(f'"{t}"*' for t in tokens)
         rows = con.execute(
             f"SELECT p.*, bm25(produit_fts) AS score FROM produit_fts JOIN produit p ON p.rowid = produit_fts.rowid "
-            f"WHERE produit_fts MATCH ? ORDER BY {_ORDER}, score LIMIT ?", (fts, limit)).fetchall()
+            f"WHERE produit_fts MATCH ? ORDER BY {_ORDER}, score, p.rowid LIMIT ?", (fts, limit)).fetchall()
         hits = [_hit(r) for r in rows]
         compact = "".join(tokens)
         if len(hits) < limit and len(compact) >= 4:
@@ -70,7 +70,7 @@ def _fuzzy(con: sqlite3.Connection, compact: str, limit: int, seen: set[str]) ->
         return []
     rows = con.execute(
         "SELECT p.* FROM marque_trgm JOIN produit p ON p.rowid = marque_trgm.rowid WHERE marque_trgm MATCH ? "
-        "ORDER BY bm25(marque_trgm) LIMIT ?", (" OR ".join(f'"{g}"' for g in grams), TRIGRAM_CANDIDATES)).fetchall()
+        "ORDER BY bm25(marque_trgm), marque_trgm.rowid LIMIT ?", (" OR ".join(f'"{g}"' for g in grams), TRIGRAM_CANDIDATES)).fetchall()
     q = set(grams)
     scored = []
     for r in rows:

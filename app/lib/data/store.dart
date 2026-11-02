@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:sqlite3/sqlite3.dart';
 
 import 'nomenclature_db.dart';
 import 'product.dart';
@@ -41,8 +42,15 @@ class NomenclatureStore extends ChangeNotifier {
     if (installedFile.existsSync()) {
       try {
         current = NomenclatureDb.open(installedFile.path);
+        if (current.raw.select('PRAGMA quick_check').first.values.first != 'ok') {
+          current.close();
+          current = null; // pages abîmées : on repart de la base embarquée
+        }
       } on NomenclatureFormatError {
         current = null; // fichier abîmé : on repart de la base embarquée
+      } on SqliteException {
+        current?.close();
+        current = null;
       }
     }
     if (current != null && current.meta.version.compareTo(embeddedVersion) >= 0) {

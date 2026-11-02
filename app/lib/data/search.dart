@@ -15,7 +15,7 @@ List<Product> search(NomenclatureDb db, String query, {int limit = 20}) {
   final fts = tokens.map((t) => '"$t"*').join(' ');
   final rows = db.raw.select(
     'SELECT p.*, bm25(produit_fts) AS score FROM produit_fts JOIN produit p ON p.rowid = produit_fts.rowid '
-    'WHERE produit_fts MATCH ? ORDER BY $_order, score LIMIT ?',
+    'WHERE produit_fts MATCH ? ORDER BY $_order, score, p.rowid LIMIT ?',
     [fts, limit],
   );
   final hits = [for (final r in rows) Product.fromRow(r)];
@@ -32,7 +32,7 @@ List<Product> _fuzzy(NomenclatureDb db, String compact, int limit, Set<String> s
   if (grams.isEmpty) return const [];
   final rows = db.raw.select(
     'SELECT p.* FROM marque_trgm JOIN produit p ON p.rowid = marque_trgm.rowid WHERE marque_trgm MATCH ? '
-    'ORDER BY bm25(marque_trgm) LIMIT ?',
+    'ORDER BY bm25(marque_trgm), marque_trgm.rowid LIMIT ?',
     [grams.map((g) => '"$g"').join(' OR '), trigramCandidates],
   );
   final q = grams.toSet();

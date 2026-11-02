@@ -5,7 +5,13 @@ class Settings {
   Settings._(this._prefs);
 
   /// Valeur fixée au build : --dart-define=SYNAPSE_MANIFEST_URL=https://…
-  static const buildManifestUrl = String.fromEnvironment('SYNAPSE_MANIFEST_URL');
+  static final buildManifestUrl = validBuildUrl(const String.fromEnvironment('SYNAPSE_MANIFEST_URL'));
+
+  /// Une adresse de build non https est ignorée (mises à jour désactivées) plutôt qu'utilisée.
+  static String validBuildUrl(String url) {
+    final uri = Uri.tryParse(url.trim());
+    return uri != null && uri.scheme == 'https' && uri.host.isNotEmpty ? url.trim() : '';
+  }
   static const _key = 'manifest_url';
 
   static Future<Settings> load() async => Settings._(await SharedPreferences.getInstance());

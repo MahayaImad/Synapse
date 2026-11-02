@@ -102,6 +102,8 @@ void main() {
     expect(() => s.setManifestUrl('http://non-securise.dz/m.json'), throwsArgumentError);
     await s.setManifestUrl('');
     expect((await Settings.load()).manifestUrl, '');
+    expect(Settings.validBuildUrl('http://maj.dz/m.json'), '');
+    expect(Settings.validBuildUrl('https://maj.dz/m.json'), 'https://maj.dz/m.json');
   });
 }
 

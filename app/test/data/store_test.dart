@@ -95,6 +95,23 @@ void main() {
     expect(failing.isReady, isFalse);
   });
 
+  test('base installée de même version mais abîmée (quick_check) : recopie depuis l\'APK', () async {
+    final s = NomenclatureStore(dir: dir, loadAsset: assetsFrom(File(fixtureDb), '2026-08'));
+    await s.init();
+    s.dispose();
+    final f = File('${dir.path}/nomenclature.sqlite');
+    final bytes = f.readAsBytesSync();
+    // Abîme une page de données au milieu du fichier (l'en-tête et le schéma restent lisibles).
+    for (var i = bytes.length ~/ 2; i < bytes.length ~/ 2 + 4096; i++) {
+      bytes[i] = 0xFF;
+    }
+    f.writeAsBytesSync(bytes);
+    final s2 = NomenclatureStore(dir: dir, loadAsset: assetsFrom(File(fixtureDb), '2026-08'));
+    await s2.init();
+    expect(s2.db.raw.select('PRAGMA quick_check').first.values.first, 'ok');
+    s2.dispose();
+  });
+
   test('base installée corrompue : recopie depuis l\'APK', () async {
     File('${dir.path}/nomenclature.sqlite').writeAsStringSync('abîmé');
     final s = NomenclatureStore(dir: dir, loadAsset: assetsFrom(File(fixtureDb), '2026-08'));
