@@ -39,21 +39,24 @@ if os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("SYNAPSE_CLAUDE"):
 # Modèles de vision open-weight sur la machine GPU (Ollama / vLLM), en Algérie
 # SYNAPSE_LOCAL_URL=http://localhost:11434/v1   SYNAPSE_LOCAL_MODEL="qwen3-vl:8b,qwen3-vl:30b"
 # SYNAPSE_LOCAL_STRUCTURED=0 si le serveur refuse la sortie JSON par schéma (le JSON est alors demandé dans la consigne)
+# SYNAPSE_LOCAL_THINK=1 pour laisser les modèles « raisonner » (désactivé par défaut : beaucoup plus lent)
 from synapse_bench.engines.openai_compat import OpenAICompatEngine
 URL = os.environ.get("SYNAPSE_LOCAL_URL", "")
 STRUCT = os.environ.get("SYNAPSE_LOCAL_STRUCTURED", "1") != "0"
+THINK = os.environ.get("SYNAPSE_LOCAL_THINK", "0") == "1"
 if URL and os.environ.get("SYNAPSE_LOCAL_MODEL"):
     for m in os.environ["SYNAPSE_LOCAL_MODEL"].split(","):
-        engines.append(OpenAICompatEngine(URL, m.strip(), structured=STRUCT))
+        engines.append(OpenAICompatEngine(URL, m.strip(), structured=STRUCT, think=THINK))
 
 # Deux temps : OCR local (ex. deepseek-ocr) puis structuration du TEXTE par un modèle texte local (ex. qwen3-coder:30b)
 # SYNAPSE_OCR_MODEL=deepseek-ocr  SYNAPSE_OCR_PROMPT="Free OCR."  SYNAPSE_STRUCTURER_MODEL=qwen3-coder:30b
 # Sans SYNAPSE_STRUCTURER_MODEL, le texte est structuré par le premier moteur configuré (attention : Claude = hors d'Algérie).
 if os.environ.get("SYNAPSE_OCR_MODEL"):
     from synapse_bench.engines.two_stage import TwoStageEngine
-    ocr = OpenAICompatEngine(os.environ.get("SYNAPSE_OCR_URL", URL), os.environ["SYNAPSE_OCR_MODEL"], structured=False)
+    ocr = OpenAICompatEngine(os.environ.get("SYNAPSE_OCR_URL", URL), os.environ["SYNAPSE_OCR_MODEL"], structured=False,
+                             think=THINK)
     if os.environ.get("SYNAPSE_STRUCTURER_MODEL"):
-        structurer = OpenAICompatEngine(URL, os.environ["SYNAPSE_STRUCTURER_MODEL"], structured=STRUCT)
+        structurer = OpenAICompatEngine(URL, os.environ["SYNAPSE_STRUCTURER_MODEL"], structured=STRUCT, think=THINK)
     else:
         structurer = engines[0] if engines else None
     if structurer is not None:

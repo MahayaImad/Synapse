@@ -47,7 +47,7 @@ Le notebook (section 2) montre côte à côte l'original et l'image envoyée : v
 | Moteur | Variables |
 | --- | --- |
 | Claude (API Anthropic) | `ANTHROPIC_API_KEY` (ou `ant auth login` + `SYNAPSE_CLAUDE=1`), `SYNAPSE_CLAUDE_MODEL` (défaut `claude-opus-5-5`) |
-| Open-weight sur la machine GPU | `SYNAPSE_LOCAL_URL=http://localhost:11434/v1` (Ollama), `SYNAPSE_LOCAL_MODEL=qwen3-vl:8b,qwen3-vl:30b`, `SYNAPSE_LOCAL_STRUCTURED=0` si le serveur refuse le JSON par schéma |
+| Open-weight sur la machine GPU | `SYNAPSE_LOCAL_URL=http://localhost:11434/v1` (Ollama), `SYNAPSE_LOCAL_MODEL=qwen3-vl:8b,qwen3-vl:30b`, `SYNAPSE_LOCAL_STRUCTURED=0` si le serveur refuse le JSON par schéma, `SYNAPSE_LOCAL_THINK=1` pour réactiver le raisonnement (désactivé par défaut) |
 | OCR local + structuration du texte | `SYNAPSE_OCR_MODEL=deepseek-ocr`, `SYNAPSE_OCR_PROMPT="Free OCR."`, `SYNAPSE_STRUCTURER_MODEL=qwen3-coder:30b` (modèle texte local ; sans lui, le premier moteur configuré structure le texte) |
 
 Serveurs sur la machine GPU (exemples, à adapter à la mémoire disponible) :
@@ -58,6 +58,12 @@ ollama run qwen3-vl:8b        # alternative plus simple (base_url http://GPU:114
 ```
 
 Vérifiez la licence de chaque modèle pour un usage commercial avant de le retenir.
+
+**Raisonnement (« thinking »)** : désactivé par défaut pour les moteurs locaux, en envoyant
+`reasoning_effort: "none"` (accepté par Ollama et llama.cpp sur `/v1`). Il multiplie le temps de lecture
+(plusieurs minutes par ordonnance) sans améliorer la transcription. Les balises `<think>…</think>` qu'un modèle
+laisserait dans sa réponse sont retirées avant la lecture du JSON. Pour comparer, relancez avec
+`SYNAPSE_LOCAL_THINK=1`. Si un serveur refuse ce champ (erreur 400), mettez `SYNAPSE_LOCAL_THINK=1`.
 
 ## Lancer
 

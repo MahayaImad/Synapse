@@ -25,6 +25,7 @@ class TwoStageEngine:
         t = time.perf_counter()
         try:
             text, _ = self.ocr.ocr(png, self.consigne_ocr)
+            text = self.ocr._THINK.sub("", text).strip()
         except Exception as e:  # noqa: BLE001 — banc d'essai : toute panne OCR est un résultat à afficher
             return EngineResult(None, time.perf_counter() - t, erreur=f"OCR : {e}")
         r = self.structurer.read_text(text)

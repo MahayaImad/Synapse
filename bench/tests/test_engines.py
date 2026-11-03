@@ -86,3 +86,25 @@ def test_two_stage_sends_only_text_to_structurer():
     assert r.lecture is not None and r.usage["ocr_texte"].startswith("Doliprane")
     sent = m.calls[0]["messages"][0]["content"]
     assert all(block["type"] == "text" for block in sent)  # aucune image vers le structurateur
+
+
+def test_reasoning_disabled_by_default_sends_reasoning_effort_none():
+    seen = []
+    e = openai_engine(json.dumps(LECTURE), seen)
+    assert e.read(b"png").lecture is not None
+    assert seen[0]["reasoning_effort"] == "none"
+
+
+def test_reasoning_can_be_enabled():
+    seen = []
+    e = openai_engine(json.dumps(LECTURE), seen)
+    e.think = True
+    e.read(b"png")
+    assert "reasoning_effort" not in seen[0]
+
+
+def test_think_block_in_content_is_stripped_before_json():
+    seen = []
+    e = openai_engine("<think>je réfléchis… {pas du json}</think>\n" + json.dumps(LECTURE), seen)
+    r = e.read(b"png")
+    assert r.lecture is not None and r.lecture.lignes[0].nom_lu == "Doliprane"
