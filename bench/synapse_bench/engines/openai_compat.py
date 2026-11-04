@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import base64
 import json
+import re
 import time
 
 import openai
@@ -20,17 +21,24 @@ from .base import EngineResult
 
 class OpenAICompatEngine:
     def __init__(self, base_url: str, model: str, *, external: bool = False, api_key: str = "local",
-                 structured: bool = True, timeout: float = 300, client: openai.OpenAI | None = None):
+                 structured: bool = True, think: bool = False, timeout: float = 300,
+                 client: openai.OpenAI | None = None):
         self.model = model
         self.name = f"local:{model}"
         #: False si le serveur est en Algérie (aucune donnée ne quitte le pays).
         self.external = external
         #: Sortie JSON contrainte par schéma (vLLM et Ollama récents) ; sinon JSON demandé dans la consigne.
         self.structured = structured
+        #: Raisonnement (« thinking ») des modèles qui en ont un. Désactivé par défaut : il multiplie le temps de
+        #: lecture (plusieurs minutes) sans améliorer la transcription. Envoie `reasoning_effort: "none"`
+        #: (accepté par Ollama et llama.cpp sur /v1 ; à vérifier sur votre version).
+        self.think = think
         self.client = client or openai.OpenAI(base_url=base_url, api_key=api_key, timeout=timeout)
 
     def _complete(self, content: list[dict], schema: dict | None, name: str) -> tuple[str, dict]:
         kwargs = {}
+        if not self.think:
+            kwargs["extra_body"] = {"reasoning_effort": "none"}
         if schema is not None and self.structured:
             kwargs["response_format"] = {"type": "json_schema", "json_schema": {"name": name, "schema": schema, "strict": True}}
         resp = self.client.chat.completions.create(model=self.model, temperature=0, max_tokens=8000,
@@ -39,9 +47,11 @@ class OpenAICompatEngine:
         usage = {"input_tokens": u.prompt_tokens, "output_tokens": u.completion_tokens} if u else {}
         return resp.choices[0].message.content or "", usage
 
-    @staticmethod
-    def _json(text: str) -> dict:
-        text = text.strip()
+    _THINK = re.compile(r"<think>.*?</think>", re.DOTALL)
+
+    @classmethod
+    def _json(cls, text: str) -> dict:
+        text = cls._THINK.sub("", text).strip()
         if text.startswith("```"):
             text = text.strip("`").split("\n", 1)[1] if "\n" in text else text
         start, end = text.find("{"), text.rfind("}")
@@ -66,10 +76,11 @@ class OpenAICompatEngine:
     def read_text(self, transcription: str) -> EngineResult:
         return self._lecture([{"type": "text", "text": f"{prompts.LECTURE_TEXTE}\n\n<transcription>\n{transcription}\n</transcription>"}])
 
-    def ocr(self, png: bytes) -> tuple[str, float]:
-        """Transcription brute (pour les modèles OCR spécialisés : PaddleOCR-VL, GLM-OCR…)."""
+    def ocr(self, png: bytes, consigne: str | None = None) -> tuple[str, float]:
+        """Transcription brute (modèles OCR spécialisés : deepseek-ocr, PaddleOCR-VL…). Certains attendent
+        leur propre consigne (ex. « Free OCR. » pour deepseek-ocr)."""
         t = time.perf_counter()
-        text, _ = self._complete([self._image(png), {"type": "text", "text": prompts.OCR}], None, "ocr")
+        text, _ = self._complete([self._image(png), {"type": "text", "text": consigne or prompts.OCR}], None, "ocr")
         return text, time.perf_counter() - t
 
     def choose(self, ligne_texte: str, candidats_texte: str):
