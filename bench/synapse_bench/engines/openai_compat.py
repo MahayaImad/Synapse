@@ -33,16 +33,27 @@ class OpenAICompatEngine:
         #: lecture (plusieurs minutes) sans améliorer la transcription. Envoie `reasoning_effort: "none"`
         #: (accepté par Ollama et llama.cpp sur /v1 ; à vérifier sur votre version).
         self.think = think
+        self._reasoning_field_ok = True  # passe à False si le modèle refuse le champ (modèle sans raisonnement)
         self.client = client or openai.OpenAI(base_url=base_url, api_key=api_key, timeout=timeout)
 
     def _complete(self, content: list[dict], schema: dict | None, name: str) -> tuple[str, dict]:
         kwargs = {}
-        if not self.think:
+        if not self.think and self._reasoning_field_ok:
             kwargs["extra_body"] = {"reasoning_effort": "none"}
         if schema is not None and self.structured:
             kwargs["response_format"] = {"type": "json_schema", "json_schema": {"name": name, "schema": schema, "strict": True}}
-        resp = self.client.chat.completions.create(model=self.model, temperature=0, max_tokens=8000,
-                                                   messages=[{"role": "user", "content": content}], **kwargs)
+        try:
+            resp = self.client.chat.completions.create(model=self.model, temperature=0, max_tokens=8000,
+                                                       messages=[{"role": "user", "content": content}], **kwargs)
+        except openai.BadRequestError as e:
+            # Modèle sans raisonnement : il refuse le champ. On le retire, et on ne le renvoie plus.
+            if "extra_body" in kwargs and any(w in str(e).lower() for w in ("think", "reasoning")):
+                self._reasoning_field_ok = False
+                kwargs.pop("extra_body")
+                resp = self.client.chat.completions.create(model=self.model, temperature=0, max_tokens=8000,
+                                                           messages=[{"role": "user", "content": content}], **kwargs)
+            else:
+                raise
         u = resp.usage
         usage = {"input_tokens": u.prompt_tokens, "output_tokens": u.completion_tokens} if u else {}
         return resp.choices[0].message.content or "", usage

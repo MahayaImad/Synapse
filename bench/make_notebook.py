@@ -63,6 +63,15 @@ if os.environ.get("SYNAPSE_OCR_MODEL"):
         engines.append(TwoStageEngine(ocr, structurer, os.environ.get("SYNAPSE_OCR_PROMPT")))
 
 print("Moteurs :", [e.name for e in engines] or "aucun (définir les variables d'environnement)")"""),
+    md("""### Diagnostic des moteurs locaux
+
+Quatre appels courts par moteur local : texte simple, raisonnement coupé, sortie JSON par schéma, image.
+Une ligne `ok = False` indique l'option à changer (voir le README : `SYNAPSE_LOCAL_STRUCTURED=0`, `SYNAPSE_LOCAL_THINK=1`)."""),
+    code("""from synapse_bench.diagnostic import diagnostic
+for e in engines:
+    if e.name.startswith("local:"):
+        print(e.name)
+        display(diagnostic(e))"""),
     md("## 2. Ce qui part vers le modèle\n\nÀ gauche l'ordonnance telle qu'elle reste sur place ; à droite l'image envoyée (masques gravés, recadrage, métadonnées retirées)."),
     code("""for o in ordonnances:
     avant_apres(o)"""),
@@ -73,6 +82,10 @@ print("Moteurs :", [e.name for e in engines] or "aucun (définir les variables d
 else:
     lignes = par_ordonnance = resume = None
     print("Aucun moteur configuré : voir la section 1.")"""),
+    md("### Échecs de lecture\n\nSi la colonne `lu` est vide partout, la lecture a échoué : le message est ici."),
+    code("""if par_ordonnance is not None:
+    echecs = par_ordonnance[par_ordonnance.erreur.notna()][["moteur", "ordonnance", "secondes", "erreur"]]
+    display(echecs if len(echecs) else "Aucun échec de lecture.")"""),
     md("### Synthèse par moteur et par type, face aux cibles\n\n`erreur` = mauvais produit choisi avec assurance (le pire cas) ; `atteint` exige aussi zéro erreur et zéro dose inventée."),
     code("""resume if resume is not None else None"""),
     code("""graphique(resume) if resume is not None else None"""),

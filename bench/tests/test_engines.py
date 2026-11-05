@@ -108,3 +108,43 @@ def test_think_block_in_content_is_stripped_before_json():
     e = openai_engine("<think>je réfléchis… {pas du json}</think>\n" + json.dumps(LECTURE), seen)
     r = e.read(b"png")
     assert r.lecture is not None and r.lecture.lignes[0].nom_lu == "Doliprane"
+
+
+def test_diagnostic_reports_each_capability():
+    import httpx as _h
+
+    from synapse_bench.diagnostic import diagnostic
+
+    def handler(request):
+        body = json.loads(request.content)
+        if "response_format" in body:
+            return _h.Response(400, json={"error": {"message": "response_format not supported"}})
+        return _h.Response(200, json={"id": "x", "object": "chat.completion", "created": 0, "model": "m",
+                                      "choices": [{"index": 0, "finish_reason": "stop",
+                                                   "message": {"role": "assistant", "content": "OK"}}]})
+    client = openai.OpenAI(base_url="http://gpu/v1", api_key="k", max_retries=0,
+                           http_client=_h.Client(transport=_h.MockTransport(handler)))
+    e = OpenAICompatEngine("http://gpu/v1", "qwen3-vl:8b", client=client)
+    d = diagnostic(e)
+    assert list(d.ok) == [True, True, False, True]
+    assert "response_format not supported" in d.loc[2, "réponse"]
+
+
+def test_model_without_thinking_support_retries_without_reasoning_field():
+    import httpx as _h
+    calls = []
+
+    def handler(request):
+        body = json.loads(request.content)
+        calls.append(body)
+        if "reasoning_effort" in body:
+            return _h.Response(400, json={"error": {"message": '"qwen3-vl:8b" does not support thinking'}})
+        return _h.Response(200, json={"id": "x", "object": "chat.completion", "created": 0, "model": "m",
+                                      "choices": [{"index": 0, "finish_reason": "stop",
+                                                   "message": {"role": "assistant", "content": json.dumps(LECTURE)}}]})
+    client = openai.OpenAI(base_url="http://gpu/v1", api_key="k", max_retries=0,
+                           http_client=_h.Client(transport=_h.MockTransport(handler)))
+    e = OpenAICompatEngine("http://gpu/v1", "qwen3-vl:8b", client=client)
+    assert e.read(b"png").lecture is not None
+    assert e.read(b"png").lecture is not None
+    assert ["reasoning_effort" in c for c in calls] == [True, False, False]  # appris une fois, plus renvoyé
